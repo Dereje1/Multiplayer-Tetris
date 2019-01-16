@@ -4,10 +4,11 @@
  * Module dependencies.
  */
 require('dotenv').config();
-process.env['DEBUG'] = 'Multiplayer-Tetris:server';
-const app = require('../server/app');
+
+process.env.DEBUG = 'Multiplayer-Tetris:server';
 const debug = require('debug')('Multiplayer-Tetris:server');
 const http = require('http');
+const app = require('../server/app');
 
 /**
  * Normalize a port into a number, string, or false.
