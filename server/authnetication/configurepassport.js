@@ -1,7 +1,7 @@
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 const User = require('../models/user');
 
-const startegy = new GoogleStrategy({
+const strategy = new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: '/auth/google/redirect',
@@ -33,7 +33,7 @@ const configuration = (passport) => {
       done(err, user);
     });
   });
-  passport.use(startegy);
+  passport.use(strategy);
 };
 
 module.exports = configuration;
