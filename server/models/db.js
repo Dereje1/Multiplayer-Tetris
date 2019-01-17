@@ -1,10 +1,10 @@
 // Establishes connection to the db
 const mongoose = require('mongoose');
 
-mongoose.connect(process.env.dbURI);
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 
 // on success
-mongoose.connection.on('connected', () => console.log(`Mongoose connected on ${process.env.dbURI}`));
+mongoose.connection.on('connected', () => console.log(`Mongoose connected on ${process.env.MONGO_URI}`));
 
 // on error
 mongoose.connection.on('error', err => console.log(`Mongoose connection error ${err}`));

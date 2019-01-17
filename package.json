@@ -11,11 +11,14 @@
   "private": false,
   "dependencies": {
     "body-parser": "^1.18.3",
+    "cookie-session": "^2.0.0-beta.3",
     "debug": "^4.1.1",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "mongoose": "^5.4.4",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "passport": "^0.4.0",
+    "passport-google-oauth": "^1.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.1",

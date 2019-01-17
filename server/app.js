@@ -1,13 +1,24 @@
 const express = require('express');
 const logger = require('morgan');
+const bodyParser = require('body-parser');
+const cookieSession = require('cookie-session');
 
 const app = express();
+// load root level middleware
 app.use(logger('dev'));
-
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieSession({
+  maxAge: 21 * 24 * 60 * 60 * 1000,
+  keys: [process.env.COOKIE_KEY],
+}));
+// connect to db
 require('./models/db');
+// configure authentication
+require('./authnetication/index')(app);
 
-app.get('/test', (req, res) => {
-  res.json({ message: 'Hello World!' });
+/* app routes */
+app.get('/', (req, res) => {
+  res.redirect('/auth/profile');
 });
 
 // catch 404 and forward to error handler
