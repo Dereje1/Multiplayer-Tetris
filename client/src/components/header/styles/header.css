@@ -22,4 +22,12 @@
   cursor: pointer;
   outline: none;
 }
+
+#header #logout {
+  width: 232px;
+  height: 70%;
+  font-size: 1.2em;
+  cursor: pointer;
+  outline: none;
+}
 /*# sourceMappingURL=header.css.map */
