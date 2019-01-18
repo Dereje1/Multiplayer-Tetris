@@ -1,8 +1,8 @@
-const testActionCreator = () => {
-    return {
-        type: 'test',
-        payload: 'Redux Setup Test'
-    }
-}
+const testActionCreator = () => (
+  {
+    type: 'test',
+    payload: 'Redux Setup Test',
+  }
+);
 
 export default testActionCreator;
