@@ -1,1 +1,3 @@
 node_modules
+# Ignore linting on CRA created files
+/client/src/serviceWorker.js

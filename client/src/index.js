@@ -5,13 +5,13 @@ import './index.css';
 /* custom imports */
 import { Provider } from 'react-redux';
 import store from './redux/store';
-import App from './App';
+import Router from './routes/index';
 import * as serviceWorker from './serviceWorker';
 
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <Router />
   </Provider>,
   document.getElementById('root'),
 );
