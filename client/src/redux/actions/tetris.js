@@ -1,8 +1,9 @@
+import axios from 'axios';
 import {
   INITIALIZE_GAME, LEVEL_UP, PAUSE,
   GET_NEXT_SHAPE, SCREEN_UPDATE, RAISE_FLOOR, COLLISION,
-} from '../constants/index';
-import axios from 'axios';
+} from '../../constants/index';
+
 
 const setBoundry = (unitBlockSize, width, height, boundryRowHeight) => {
   const boundry = [];

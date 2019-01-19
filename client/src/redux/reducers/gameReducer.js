@@ -1,7 +1,7 @@
 import {
   INITIALIZE_GAME, LEVEL_UP, PAUSE,
   GET_NEXT_SHAPE, SCREEN_UPDATE, RAISE_FLOOR, COLLISION,
-} from '../constants/index';
+} from '../../constants/index';
 
 const gameReducer = (state = {}, action) => {
   switch (action.type) {

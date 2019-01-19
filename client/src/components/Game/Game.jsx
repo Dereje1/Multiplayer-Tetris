@@ -2,24 +2,28 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './Game.css';
 
-import { socket } from '../../Actions/socket';
-import { SIMULATE_GAMEPLAY } from '../../constants';
+// import { socket } from '../../Actions/socket';
+// import { SIMULATE_GAMEPLAY } from '../../constants';
 // connect to redux and get action creators
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { gameReset, nextShape, updateScreen, raiseFloor,
-  collide, speedUp, pause, upDatedb } from '../../Actions/tetris';
+import {
+  gameReset, nextShape, updateScreen, raiseFloor,
+  collide, speedUp, pause,
+} from '../../redux/actions/tetris';
 
 // custom functions
 import tetrisShapes from './scripts/shapes';
 import shapeLocator from './scripts/locateShape';
 import { runCollisionTest } from './scripts/collision';
-import { clearCanvas, drawShape,
-  drawRuble, winRubble, drawNextShape, drawBoundary, drawCells } from './scripts/canvas';
+import {
+  clearCanvas, drawShape, drawRuble,
+  winRubble, drawNextShape, drawBoundary, drawCells,
+} from './scripts/canvas';
 import playerMoves from './scripts/player';
 // react Components
 import Controls from './controls';
-import Opponent from './opponent';
+// import Opponent from './opponent';
 
 // reads from store
 const mapStateToProps = state => state;
@@ -38,8 +42,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 // end redux
-
-
 class Demo extends React.Component {
 
   constructor(props) {
@@ -49,19 +51,21 @@ class Demo extends React.Component {
       disableExit: false,
       difficulty: 2,
       selfSocketId: '',
-      opponentSocketId: '', // will hold socket to emit game to
+      // opponentSocketId: '', // commented out for single player
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
   }
+
   componentDidMount() {
     this.resetBoard(false);
   }
+
   componentDidUpdate(prevProps) {
     if (Object.keys(prevProps.game).length) {
-      if ((this.props.game.points.level !== prevProps.game.points.level) &&
-          (this.props.game.timerInterval > 250) &&
-          (!this.state.multiPlayer)
+      if ((this.props.game.points.level !== prevProps.game.points.level)
+          && (this.props.game.timerInterval > 250)
+          && (!this.state.multiPlayer)
       ) {
         const l = setTimeout(() => {
           this.endTick(false, 'Level Change');
@@ -69,16 +73,16 @@ class Demo extends React.Component {
           clearTimeout(l);
         }, 250);
       }
-      if (this.props.game.rubble.boundaryCells.length !==
-        prevProps.game.rubble.boundaryCells.length) {
+      if (this.props.game.rubble.boundaryCells.length
+        !== prevProps.game.rubble.boundaryCells.length) {
         this.drawFloor();
       }
     }
   }
 
   componentWillUnmount() {
-    socket.emit('disconnect', '');
-    socket.emit('COMPONENT_UNMOUNTED', 'Demo');
+    // socket.emit('disconnect', '');
+    // socket.emit('COMPONENT_UNMOUNTED', 'Demo');
     this.endTick(true, 'componentWillUnmount');
   }
 
@@ -134,9 +138,9 @@ class Demo extends React.Component {
   }
 
   newShape = async () => {
-    const randomShape = this.props.game.nextShape ?
-      this.initializeShape(this.props.game.nextShape) :
-      this.initializeShape(tetrisShapes.getRandShapeName());
+    const randomShape = this.props.game.nextShape
+      ? this.initializeShape(this.props.game.nextShape)
+      : this.initializeShape(tetrisShapes.getRandShapeName());
     const newShapeName = tetrisShapes.getRandShapeName();
     const nextShapeInfo = this.initializeShape(newShapeName);
     await this.props.actions.nextShape(newShapeName);
@@ -146,10 +150,10 @@ class Demo extends React.Component {
 
   initializeShape = (shapeName) => {
     // finding intital y bound so it does not get cutoff
-    const x = (shapeName !== 'shapeI' && shapeName !== 'shapeO') ?
-      (this.props.game.canvas.canvasMajor.width / 2) +
-      (this.props.game.activeShape.unitBlockSize / 2) :
-      this.props.game.canvas.canvasMajor.width / 2;
+    const x = (shapeName !== 'shapeI' && shapeName !== 'shapeO')
+      ? (this.props.game.canvas.canvasMajor.width / 2)
+      + (this.props.game.activeShape.unitBlockSize / 2)
+      : this.props.game.canvas.canvasMajor.width / 2;
 
     const initialAbsoluteVertices = tetrisShapes.getAbsoluteVertices(
       this.props.game.activeShape.unitBlockSize,
@@ -205,6 +209,7 @@ class Demo extends React.Component {
     if (collisionResult && !collisionResult.length) {
       this.endTick(true, 'collision check - game done');
       // By Nature of the game, looser is the one that will send this signal
+      /* commented out for single player
       if (this.state.multiPlayer && this.state.opponentSocketId) {
         this.setState({
           opponentSocketId: '',
@@ -212,6 +217,7 @@ class Demo extends React.Component {
         }, () => socket.emit('GAME_OVER', ''));
         return;
       }
+      */
       this.gameOver();
     } else if (collisionResult && collisionResult.length) {
       if (collisionResult[1]) { // winner found
@@ -248,12 +254,14 @@ class Demo extends React.Component {
       await this.props.actions.updateScreen(data);
     }
     // if (this.state.multiPlayer) socket.emit(SIMULATE_GAMEPLAY, JSON.stringify(this.props.game));
+    /* commented out for single player
     if (this.state.opponentSocketId) {
       socket.emit(
         SIMULATE_GAMEPLAY,
         { gameState: JSON.stringify(this.props.game), socketId: this.state.opponentSocketId },
       );
     }
+    */
   }
 
   /* Handle Player Events Below */
@@ -281,28 +289,32 @@ class Demo extends React.Component {
       } else this.drawScreen(ans);
     }
   }
+
   arrowKeyLag = (e) => {
     if (e.keyCode === 40) this.startTick(false);
   }
+
   /* opponent component Callbacks */
   handleMultiplayer = () => {
     if (this.props.user.authenticated) {
       clearCanvas(this.canvasContextMajor, this.props.game, true); // clear canvasMajor
       clearCanvas(this.canvasContextMinor, this.props.game, true); // clear canvasMajor
       this.setState({
-        multiPlayer: !this.state.multiPlayer,
+        multiPlayer: false, /* static false for single player */
       }, () => this.resetBoard(false));// don't forget to add reset board call back here
     } else {
       window.location = '/login';
     }
   }
 
+  /* commented out for single player
   gameEmit = ({ self, opponnent }) => {
     this.setState({
       selfSocketId: self,
       opponentSocketId: opponnent.socketId,
     }, () => this.resetBoard());
   }
+  
 
   gameOver = async (multiPlayerData) => {
     if (this.state.multiPlayer && multiPlayerData) {
@@ -327,7 +339,7 @@ class Demo extends React.Component {
       selfSocketId: '',
     }, () => this.resetBoard(false));
   }
-
+  */
   render() {
     if (Object.keys(this.props.game).length) {
       return (
@@ -351,21 +363,25 @@ class Demo extends React.Component {
             onKeyDown={e => this.gamePlay(e)}
             onKeyUp={e => this.arrowKeyLag(e)}
           />
-          {this.state.multiPlayer ?
-            <Opponent
-              onReset={reStart => this.resetBoard(reStart)}
-              onGameEmit={socketInfo => this.gameEmit(socketInfo)}
-              onFloorRaise={f => this.floorRaise(f)}
-              onGameOver={db => this.gameOver(db)}
-              onPause={() => this.handlePause(true)}
-              onClearCanvas={() => clearCanvas(this.canvasContextMajor, this.props.game)}
-              onSetDifficulty={d => this.setState({ difficulty: d })}
-              onGetSocketId={sId => this.setState({ selfSocketId: sId })}
-              onDisableExit={setTo => this.setState({ disableExit: setTo })}
-              difficulty={this.state.difficulty}
-            />
-            :
-            null
+          {this.state.multiPlayer
+            ? (
+              /* comment out for single player 
+              <Opponent
+                onReset={reStart => this.resetBoard(reStart)}
+                onGameEmit={socketInfo => this.gameEmit(socketInfo)}
+                onFloorRaise={f => this.floorRaise(f)}
+                onGameOver={db => this.gameOver(db)}
+                onPause={() => this.handlePause(true)}
+                onClearCanvas={() => clearCanvas(this.canvasContextMajor, this.props.game)}
+                onSetDifficulty={d => this.setState({ difficulty: d })}
+                onGetSocketId={sId => this.setState({ selfSocketId: sId })}
+                onDisableExit={setTo => this.setState({ disableExit: setTo })}
+                difficulty={this.state.difficulty}
+              />
+              */
+              null
+            )
+            : null
           }
         </div>
       );

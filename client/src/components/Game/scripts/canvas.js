@@ -1,6 +1,6 @@
 import tetrisShapes from './shapes';
 import shapeLocator from './locateShape';
-import floorPattern from '../../../assets/pattern.bmp';
+import floorPattern from '../pattern.bmp';
 
 export const drawCells = (ctx, shape, opponent = false) => {
   const canvasContext = ctx;

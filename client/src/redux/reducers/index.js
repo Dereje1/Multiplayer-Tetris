@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
 import authReducer from './authentication';
-import testReducer from './test';
+import gameReducer from './gameReducer';
 
 export default combineReducers({
-  tester: testReducer,
+  game: gameReducer,
   user: authReducer,
 });
