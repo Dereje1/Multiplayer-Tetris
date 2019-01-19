@@ -65,8 +65,8 @@ export const drawRuble = (ctx, state, opponent = false) => {
 
 export const drawBoundary = (ctx, state) => {
   const yBoundary = state.rubble.boundaryCells.map(c => Number(c.split('-')[1]));
-  const boundaryHeight = (Array.from(new Set(yBoundary)).length - 1) *
-   state.activeShape.unitBlockSize;
+  const boundaryHeight = (Array.from(new Set(yBoundary)).length - 1)
+   * state.activeShape.unitBlockSize;
   const yStart = ctx.canvas.height - boundaryHeight;
   const img = new Image();
   img.src = floorPattern;
@@ -92,8 +92,8 @@ export const drawShape = (ctx, shapeToDraw) => {
 // clear canvas
 export const clearCanvas = (canvasContext, state, fullClear = false) => {
   const yBoundary = state.rubble.boundaryCells.map(c => Number(c.split('-')[1]));
-  const boundaryHeight = (Array.from(new Set(yBoundary)).length - 1) *
-   state.activeShape.unitBlockSize;
+  const boundaryHeight = (Array.from(new Set(yBoundary)).length - 1)
+   * state.activeShape.unitBlockSize;
   const yStart = canvasContext.canvas.height - boundaryHeight;
   const heightToClear = fullClear ? canvasContext.canvas.height : yStart;
   canvasContext.clearRect(0, 0, canvasContext.canvas.width, heightToClear);
@@ -115,8 +115,8 @@ export const drawNextShape = (ctx, newShape, state) => {
     initiailizedShape.yPosition -= (initiailizedShape.unitBlockSize / 2);
   }
 
-  [initiailizedShape.boundingBox, initiailizedShape.absoluteVertices] =
-   tetrisShapes.getDims(initiailizedShape);
+  [initiailizedShape.boundingBox,
+    initiailizedShape.absoluteVertices] = tetrisShapes.getDims(initiailizedShape);
 
   const locatedShape = shapeLocator(
     ctx,

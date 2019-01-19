@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {
   INITIALIZE_GAME, LEVEL_UP, PAUSE,
-  GET_NEXT_SHAPE, SCREEN_UPDATE, RAISE_FLOOR, COLLISION,
+  SET_NEXT_SHAPE, SCREEN_UPDATE, RAISE_FLOOR, COLLISION,
 } from '../../constants/index';
 
 
@@ -84,7 +84,7 @@ export const pause = status => (
 
 export const nextShape = shape => (
   {
-    type: GET_NEXT_SHAPE,
+    type: SET_NEXT_SHAPE,
     payload: shape,
   }
 );

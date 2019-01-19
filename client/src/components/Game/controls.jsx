@@ -4,55 +4,74 @@ import './controls.css';
 /* font awesome */
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPowerOff, faPause, faPlay, faUsers, faUser } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPowerOff, faPause, faPlay, faUsers, faUser,
+} from '@fortawesome/free-solid-svg-icons';
 
 /* adds font awesome icons */
 library.add(faPowerOff, faPause, faPlay);
 
-const Controls = (props) => {
-  if (!props.multiPlayer[0]) {
+const Controls = ({
+  onhandlePause,
+  onMultiPlayer,
+  onFloorRaise,
+  onReset,
+  onCanvas,
+  game,
+  multiPlayer,
+  difficulty,
+  socketId,
+}) => {
+  if (!multiPlayer[0]) {
     return (
       <div className="controls">
         <canvas
-          ref={props.onCanvas}
-          width={props.game.canvas.canvasMinor.width}
-          height={props.game.canvas.canvasMinor.height}
+          ref={onCanvas}
+          width={game.canvas.canvasMinor.width}
+          height={game.canvas.canvasMinor.height}
           tabIndex="0"
         />
         <div className="controls__resetPause">
           <FontAwesomeIcon
             className="controls__resetPause__reset"
             icon={faPowerOff}
-            onClick={() => props.onReset(false)}
+            onClick={() => onReset(false)}
           />
           {
-            props.game.paused ?
-              <FontAwesomeIcon
-                className="controls__resetPause__play"
-                icon={faPlay}
-                onClick={props.onhandlePause()}
-              />
-              :
-              <FontAwesomeIcon
-                className="controls__resetPause__pause"
-                icon={faPause}
-                onClick={props.onhandlePause()}
-              />
+            game.paused
+              ? (
+                <FontAwesomeIcon
+                  className="controls__resetPause__play"
+                  icon={faPlay}
+                  onClick={onhandlePause()}
+                />
+              )
+              : (
+                <FontAwesomeIcon
+                  className="controls__resetPause__pause"
+                  icon={faPause}
+                  onClick={onhandlePause()}
+                />
+              )
           }
         </div>
         <FontAwesomeIcon
           className="controls__multiplayer"
           icon={faUsers}
-          onClick={props.onMultiPlayer()}
+          onClick={onMultiPlayer()}
         />
 
-        <button className="controls__raise" onClick={() => props.onFloorRaise()}>
-          Raise Floor
+        <button
+          className="controls__raise"
+          type="submit"
+          onClick={() => onFloorRaise()}
+        >
+          {'Raise Floor'}
         </button>
-        <label htmlFor="test">Lines Cleared</label>
-        <label htmlFor="test">{props.game.points.totalLinesCleared}</label>
-        <label htmlFor="test">Level</label>
-        <label htmlFor="test">{props.game.points.level}</label>
+        <span>Lines Cleared</span>
+        <span>{game.points.totalLinesCleared}</span>
+        <span>Level</span>
+        <span>{game.points.level}</span>
       </div>
 
     );
@@ -61,31 +80,30 @@ const Controls = (props) => {
   return (
     <div className="controls">
       <canvas
-        ref={props.onCanvas}
-        width={props.game.canvas.canvasMinor.width}
-        height={props.game.canvas.canvasMinor.height}
+        ref={onCanvas}
+        width={game.canvas.canvasMinor.width}
+        height={game.canvas.canvasMinor.height}
         tabIndex="0"
       />
       {
-        !props.multiPlayer[1] ?
+        !multiPlayer[1] ? (
           <FontAwesomeIcon
             className="controls__multiplayer"
             icon={faUser}
-            onClick={props.onMultiPlayer()}
+            onClick={onMultiPlayer()}
           />
-          :
-          null
+        )
+          : null
       }
 
-      <label htmlFor="test">Lines Cleared</label>
-      <label htmlFor="test">{props.game.points.totalLinesCleared}</label>
-      <label htmlFor="test">Difficulty</label>
-      <label htmlFor="test">{props.difficulty}</label>
+      <span>Lines Cleared</span>
+      <span>{game.points.totalLinesCleared}</span>
+      <span>Difficulty</span>
+      <span>{difficulty}</span>
       {
-        props.socketId ?
-          <label className="controls__socket" htmlFor="test">{props.socketId}</label>
-          :
-          null
+        socketId
+          ? <span className="controls__socket">{socketId}</span>
+          : null
       }
     </div>
 

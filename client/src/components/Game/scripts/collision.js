@@ -110,8 +110,7 @@ export const runCollisionTest = (state, shapeTested) => {
     if (winners.length) {
       // assign points if winner found
       copyOfPoints.totalLinesCleared = state.points.totalLinesCleared + winners.length;
-      copyOfPoints.level = Math.floor(copyOfPoints.totalLinesCleared /
-       (state.points.levelUp));
+      copyOfPoints.level = Math.floor(copyOfPoints.totalLinesCleared / (state.points.levelUp));
       // assign new rubble coordinates
       copyOfRubble.occupiedCells = clearRows(newOccupied, winners, state);
       copyOfRubble.winRows = winners;

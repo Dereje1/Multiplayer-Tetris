@@ -57,4 +57,3 @@ const shapeLocator = (
 
 
 export default shapeLocator;
-

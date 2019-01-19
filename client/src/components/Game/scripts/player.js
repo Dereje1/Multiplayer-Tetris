@@ -9,15 +9,15 @@ const rotation = (state, ctx) => {
   rotatedShape.unitVertices = unitVerticesAfterRotation;
   [rotatedShape.boundingBox, rotatedShape.absoluteVertices] = tetrisShapes.getDims(rotatedShape);
 
-  rotatedShape.rotationStage = rotatedShape.rotationStage > 2 ?
-    0 :
-    rotatedShape.rotationStage + 1;
+  rotatedShape.rotationStage = rotatedShape.rotationStage > 2
+    ? 0
+    : rotatedShape.rotationStage + 1;
   rotatedShape.cells = [];
 
   // do crude wall kicks, ideally should translate with a recursive function
   if (
-    rotatedShape.boundingBox[0] < 0 ||
-        rotatedShape.boundingBox[1] > state.canvas.canvasMajor.width
+    rotatedShape.boundingBox[0] < 0
+        || rotatedShape.boundingBox[1] > state.canvas.canvasMajor.width
   ) { // side wall kicks
     const translateUnits = state.activeShape.name === 'shapeI' ? 2 : 1;
     if (rotatedShape.boundingBox[0] < 0) { // translate to the left
@@ -49,10 +49,10 @@ const playerMoves = (e, state, ctx) => {
   if (!(left || right || up || down)) return null; // do nothing for any other keypress
 
   // check X boundaries
-  const leftOutOfBound = left && (state.activeShape.boundingBox[0] -
-       state.activeShape.unitBlockSize) < 0;
-  const rightOutOfBound = right && (state.activeShape.boundingBox[1] +
-      state.activeShape.unitBlockSize) > state.canvas.canvasMajor.width;
+  const leftOutOfBound = left && (state.activeShape.boundingBox[0]
+       - state.activeShape.unitBlockSize) < 0;
+  const rightOutOfBound = right && (state.activeShape.boundingBox[1]
+      + state.activeShape.unitBlockSize) > state.canvas.canvasMajor.width;
   if (leftOutOfBound || rightOutOfBound) return null;
 
   const copyOfActiveShape = Object.assign({}, state.activeShape);
@@ -60,11 +60,11 @@ const playerMoves = (e, state, ctx) => {
     if (getSideBlock('L', state)) return null;
     copyOfActiveShape.xPosition -= state.activeShape.unitBlockSize;
     return copyOfActiveShape;
-  } else if (right) {
+  } if (right) {
     if (getSideBlock('R', state)) return null;
     copyOfActiveShape.xPosition += state.activeShape.unitBlockSize;
     return copyOfActiveShape;
-  } else if (down) return 'tick';
+  } if (down) return 'tick';
 
   return rotation(state, ctx);
 };

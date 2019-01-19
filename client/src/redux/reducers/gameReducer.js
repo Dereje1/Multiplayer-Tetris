@@ -1,6 +1,6 @@
 import {
   INITIALIZE_GAME, LEVEL_UP, PAUSE,
-  GET_NEXT_SHAPE, SCREEN_UPDATE, RAISE_FLOOR, COLLISION,
+  SET_NEXT_SHAPE, SCREEN_UPDATE, RAISE_FLOOR, COLLISION,
 } from '../../constants/index';
 
 const gameReducer = (state = {}, action) => {
@@ -15,7 +15,7 @@ const gameReducer = (state = {}, action) => {
       return Object.assign({}, state, {
         paused: action.payload,
       });
-    case GET_NEXT_SHAPE:
+    case SET_NEXT_SHAPE:
       return Object.assign({}, state, {
         nextShape: action.payload,
       });

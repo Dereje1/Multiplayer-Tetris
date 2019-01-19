@@ -1,10 +1,10 @@
 import React from 'react';
-import Demo from '../Game/Game';
+import Game from '../game/game';
 import './styles/landing.css';
 
 const Landing = () => (
   <div id="landing">
-    <Demo />
+    <Game />
   </div>
 );
 
