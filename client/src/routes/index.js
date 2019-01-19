@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import Header from '../components/header/header';
-import App from '../App';
+import Landing from '../components/landing/landing';
 import routerTester from '../components/testRouter';
 
 const Router = () => (
@@ -9,7 +9,7 @@ const Router = () => (
     <React.Fragment>
       <Header />
       <Switch>
-        <Route path="/" exact component={App} />
+        <Route path="/" exact component={Landing} />
         <Route Path="/test" component={routerTester} />
       </Switch>
     </React.Fragment>
