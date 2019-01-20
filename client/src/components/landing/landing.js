@@ -1,5 +1,5 @@
 import React from 'react';
-import Game from '../game/game';
+import Game from '../game/game_backup';
 import './styles/landing.css';
 
 const Landing = () => (

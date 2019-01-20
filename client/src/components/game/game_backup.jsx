@@ -24,7 +24,7 @@ import playerMoves from './scripts/player';
 // react Components
 import Controls from './controls';
 // import Opponent from './opponent';
-
+// testshot
 // reads from store
 const mapStateToProps = state => state;
 
