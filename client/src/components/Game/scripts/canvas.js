@@ -91,12 +91,15 @@ export const drawShape = (ctx, shapeToDraw) => {
 
 // clear canvas
 export const clearCanvas = (canvasContext, state, fullClear = false) => {
+  if (fullClear) {
+    canvasContext.clearRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
+    return;
+  }
   const yBoundary = state.rubble.boundaryCells.map(c => Number(c.split('-')[1]));
   const boundaryHeight = (Array.from(new Set(yBoundary)).length - 1)
    * state.activeShape.unitBlockSize;
   const yStart = canvasContext.canvas.height - boundaryHeight;
-  const heightToClear = fullClear ? canvasContext.canvas.height : yStart;
-  canvasContext.clearRect(0, 0, canvasContext.canvas.width, heightToClear);
+  canvasContext.clearRect(0, 0, canvasContext.canvas.width, yStart);
 };
 
 export const drawNextShape = (ctx, newShape, state) => {

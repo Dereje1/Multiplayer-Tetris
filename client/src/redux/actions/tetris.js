@@ -53,12 +53,12 @@ const initialState = { // determine what needs to go into state, a very small po
 };
 
 
-export const gameReset = () => {
+export const gameReset = (floorHeight) => {
   initialState.rubble.boundaryCells = setBoundry(
     initialState.activeShape.unitBlockSize,
     initialState.canvas.canvasMajor.width,
     initialState.canvas.canvasMajor.height,
-    1,
+    floorHeight,
   );
   return (
     {

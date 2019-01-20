@@ -16,17 +16,18 @@ const Controls = ({
   onMultiPlayer,
   onFloorRaise,
   onReset,
-  onCanvas,
+  minorCanvas,
   game,
   multiPlayer,
   difficulty,
   socketId,
+  pauseButtonState,
 }) => {
   if (!multiPlayer[0]) {
     return (
       <div className="controls">
         <canvas
-          ref={onCanvas}
+          ref={minorCanvas}
           width={game.canvas.canvasMinor.width}
           height={game.canvas.canvasMinor.height}
           tabIndex="0"
@@ -38,7 +39,7 @@ const Controls = ({
             onClick={() => onReset(false)}
           />
           {
-            game.paused
+            pauseButtonState
               ? (
                 <FontAwesomeIcon
                   className="controls__resetPause__play"
@@ -80,7 +81,7 @@ const Controls = ({
   return (
     <div className="controls">
       <canvas
-        ref={onCanvas}
+        ref={minorCanvas}
         width={game.canvas.canvasMinor.width}
         height={game.canvas.canvasMinor.height}
         tabIndex="0"
@@ -115,7 +116,7 @@ Controls.defaultProps = {
   onFloorRaise: null,
   onhandlePause: null,
   game: {},
-  onCanvas: null,
+  minorCanvas: null,
   onMultiPlayer: null,
   multiPlayer: [],
   difficulty: 2,
@@ -127,9 +128,10 @@ Controls.propTypes = {
   onhandlePause: PropTypes.func,
   onMultiPlayer: PropTypes.func,
   game: PropTypes.objectOf(PropTypes.any),
-  onCanvas: PropTypes.objectOf(PropTypes.any),
+  minorCanvas: PropTypes.objectOf(PropTypes.any),
   multiPlayer: PropTypes.arrayOf(PropTypes.bool),
   difficulty: PropTypes.number,
   socketId: PropTypes.string,
+  pauseButtonState: PropTypes.bool.isRequired,
 };
 export default Controls;
