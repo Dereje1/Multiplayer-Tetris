@@ -16,6 +16,7 @@ const setBoundry = (unitBlockSize, width, height, boundryRowHeight) => {
   }
   return boundry;
 };
+
 const initialState = { // determine what needs to go into state, a very small portion here
   timerInterval: 700,
   paused: true,
@@ -52,6 +53,23 @@ const initialState = { // determine what needs to go into state, a very small po
   },
 };
 
+export const getFloorRaiseBoundry = (oldRubble, raiseBy = 1) => {
+  const newOccupied = oldRubble.occupiedCells.map((c) => {
+    const oldY = Number(c[0].split('-')[1]);
+    const oldX = Number(c[0].split('-')[0]);
+    return ([`${oldX}-${oldY - raiseBy}`, c[1]]);
+  });
+
+  const yBoundary = oldRubble.boundaryCells.map(c => Number(c.split('-')[1]));
+  const oldHeight = Array.from(new Set(yBoundary)).length;
+  const newBoundary = setBoundry(
+    initialState.activeShape.unitBlockSize,
+    initialState.canvas.canvasMajor.width,
+    initialState.canvas.canvasMajor.height,
+    oldHeight + raiseBy,
+  );
+  return [newOccupied, newBoundary];
+};
 
 export const gameReset = (floorHeight) => {
   initialState.rubble.boundaryCells = setBoundry(
@@ -97,26 +115,13 @@ export const updateScreen = data => (
 );
 
 export const raiseFloor = (oldRubble, raiseBy = 1) => {
-  const newOccupied = oldRubble.occupiedCells.map((c) => {
-    const oldY = Number(c[0].split('-')[1]);
-    const oldX = Number(c[0].split('-')[0]);
-    return ([`${oldX}-${oldY - raiseBy}`, c[1]]);
-  });
-
-  const yBoundary = oldRubble.boundaryCells.map(c => Number(c.split('-')[1]));
-  const oldHeight = Array.from(new Set(yBoundary)).length;
-  const newBoundary = setBoundry(
-    initialState.activeShape.unitBlockSize,
-    initialState.canvas.canvasMajor.width,
-    initialState.canvas.canvasMajor.height,
-    oldHeight + raiseBy,
-  );
+  const newFloor = getFloorRaiseBoundry(oldRubble, raiseBy);
   return (
     {
       type: RAISE_FLOOR,
       payload: {
-        occupiedCells: newOccupied,
-        boundaryCells: newBoundary,
+        occupiedCells: newFloor[0],
+        boundaryCells: newFloor[1],
         winRows: null,
       },
     }
