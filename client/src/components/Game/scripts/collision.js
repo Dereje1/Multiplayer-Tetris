@@ -84,8 +84,10 @@ const clearRows = (occupied, winners, state) => {
   return fillBlankRows(occupied, state);
 };
 
-export const runCollisionTest = (state, shapeTested) => {
-  const occupiedCellLocations = state.rubble.occupiedCells.map(c => c[0]);
+export const runCollisionTest = (state, shapeTested, floorTest = false) => {
+  const occupiedCellLocations = floorTest
+    ? floorTest[0].map(c => c[0])
+    : state.rubble.occupiedCells.map(c => c[0]);
   // shape to test for collison
   const testedShape = shapeTested.cells.map(c => c.join('-'));
   // currently active shape
@@ -93,7 +95,9 @@ export const runCollisionTest = (state, shapeTested) => {
   // game play area occupied cells
   const isOccupied = testedShape.filter(c => (occupiedCellLocations.includes(c)));
   // bottom boundary occupied cells
-  const isLowerBoundary = testedShape.filter(c => (state.rubble.boundaryCells.includes(c)));
+  const isLowerBoundary = floorTest
+    ? testedShape.filter(c => (floorTest[1].includes(c)))
+    : testedShape.filter(c => (state.rubble.boundaryCells.includes(c)));
   // upperBoundary ocupied cells
   const isUpperBoundary = shapeTested.cells.filter(c => c[1] === 0);
   if (isOccupied.length || isLowerBoundary.length) { // collision detected
