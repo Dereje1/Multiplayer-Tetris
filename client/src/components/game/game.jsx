@@ -18,7 +18,7 @@ import shapeLocator from './scripts/locateShape';
 import { runCollisionTest } from './scripts/collision';
 import {
   clearCanvas, drawShape, drawRubble,
-  winRubble, drawNextShape, drawBoundary, drawCells,
+  winRubble, drawNextShape, drawBoundary,
 } from './scripts/canvas';
 import playerMoves from './scripts/player';
 // react Components
@@ -119,7 +119,7 @@ class Game extends React.Component {
       this.tickCounter = this.tickCounter + 1;
       if (this.tickCounter === 4) {
         this.tickCounter = 0;
-        // this.floorRaise(1);
+        this.floorRaise(1);
       }
       this.tick();
     }, game.timerInterval);
@@ -202,11 +202,9 @@ class Game extends React.Component {
 
   drawFloor = async () => {
     const { game } = this.props;
-    // await actions.pause(true);
     drawBoundary(this.canvasContextMajor, game);
     drawRubble(this.canvasContextMajor, game);
     this.setState({ floor: false });
-    // await actions.pause(false);
   }
 
   drawScreen = async (updatedShape) => {
@@ -275,7 +273,6 @@ class Game extends React.Component {
       await actions.updateScreen(data);
       if (floor) await this.drawFloor();
       drawShape(this.canvasContextMajor, locatedShape, game);
-      drawCells(this.canvasContextMajor, locatedShape);
     }
     // if (this.state.multiPlayer) socket.emit(SIMULATE_GAMEPLAY, JSON.stringify(this.props.game));
     /* commented out for single player
@@ -314,8 +311,10 @@ class Game extends React.Component {
       console.log('Unable to move floor', collisionResult);
     } else {
       await actions.raiseFloor(game.rubble, f);
-      this.setState({ floor: true });
-      if (game.activeShape.boundingBox.length) this.startTick(false);
+      if (game.paused) {
+        await this.drawFloor();
+      } else this.setState({ floor: true });
+      // if (game.activeShape.boundingBox.length) this.startTick(false);
     }
   }
 

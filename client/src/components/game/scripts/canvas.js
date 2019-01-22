@@ -6,17 +6,19 @@ export const getBoundryHeight = (state) => {
   const yBoundary = state.rubble.boundaryCells.map(c => Number(c.split('-')[1]));
   const boundaryHeight = (Array.from(new Set(yBoundary)).length - 1)
    * state.activeShape.unitBlockSize;
-  return boundaryHeight;
+  return 600 - boundaryHeight;
 };
 export const getRubbleHeight = (state) => {
+  // since rubble height is inclusive of floor height, return
+  // floor height if no rubble.
   if (state.rubble) {
     const yBoundary = state.rubble.occupiedCells.map(c => Number(c[0].split('-')[1]));
     const rubbleHeight = yBoundary.length
       ? Math.min.apply(null, yBoundary) * state.activeShape.unitBlockSize
-      : null;
+      : getBoundryHeight(state);
     return rubbleHeight;
   }
-  return null;
+  return getBoundryHeight(state);
 };
 // clear canvas
 export const clearCanvas = (canvasContext, clearHeight, caller) => {
@@ -69,7 +71,7 @@ export const drawGridSpecial = (x, y, occupied, b, ctx) => {
 
 export const drawRubble = (ctx, state, opponent = false) => {
   console.log('Drawing rubble');
-  clearCanvas(ctx, ctx.canvas.height - getBoundryHeight(state), 'drawRubble');
+  clearCanvas(ctx, getBoundryHeight(state), 'drawRubble');
   const canvasContext = ctx;
   const b = state.activeShape.unitBlockSize;
   state.rubble.occupiedCells.forEach((cell) => {
@@ -91,27 +93,27 @@ export const drawRubble = (ctx, state, opponent = false) => {
 };
 
 export const drawBoundary = (ctx, state) => {
+  console.log('Drawing Boundry');
   ctx.clearRect(0, getRubbleHeight(state), ctx.canvas.width, ctx.canvas.height);
-  const boundaryHeight = getBoundryHeight(state);
   const img = new Image();
   img.src = floorPattern;
   img.onload = () => {
     const pattern = ctx.createPattern(img, 'repeat');
     ctx.fillStyle = pattern;
-    ctx.fillRect(0, ctx.canvas.height - boundaryHeight, ctx.canvas.width, boundaryHeight);
+    ctx.fillRect(0, getBoundryHeight(state), ctx.canvas.width, ctx.canvas.height);
   };
 };
 
 export const drawShape = (ctx, shapeToDraw, state) => {
   if (getRubbleHeight(state)) {
-    const distanceBetweenRubble = getRubbleHeight(state) - shapeToDraw.boundingBox[3];
-    if (distanceBetweenRubble > 0) {
-      clearCanvas(ctx, shapeToDraw.boundingBox[3] + 33, 'drawshape');
+    console.log(`Boundry Height = ${getBoundryHeight(state)} Rubble Height = ${getRubbleHeight(state)}`);
+    const distanceBetweenRubble = (getRubbleHeight(state)) - shapeToDraw.boundingBox[3];
+    if (distanceBetweenRubble > 33) {
+      clearCanvas(ctx, shapeToDraw.boundingBox[3] + 33, 'drawshape1');
     } else {
-      clearCanvas(ctx, ctx.canvas.height - getBoundryHeight(state), 'drawshape');
       drawRubble(ctx, state);
     }
-  } else clearCanvas(ctx, shapeToDraw.boundingBox[3] + 33, 'drawshape');
+  } else clearCanvas(ctx, shapeToDraw.boundingBox[3] + 33, 'drawshape3');
 
   const canvasContext = ctx;
   canvasContext.beginPath();
@@ -122,6 +124,8 @@ export const drawShape = (ctx, shapeToDraw, state) => {
   });
   canvasContext.lineTo(shapeToDraw.xPosition, shapeToDraw.yPosition);
   canvasContext.fill();
+
+  drawCells(ctx, shapeToDraw);
 };
 
 export const drawNextShape = (ctx, newShape, state) => {
@@ -151,14 +155,22 @@ export const drawNextShape = (ctx, newShape, state) => {
     false,
     specialshapes,
   );
-  drawShape(ctx, locatedShape, state);
+  const canvasContext = ctx;
+  canvasContext.beginPath();
+  canvasContext.fillStyle = tetrisShapes[locatedShape.name].color;
+  canvasContext.moveTo(locatedShape.xPosition, locatedShape.yPosition);
+  locatedShape.absoluteVertices.forEach((v) => {
+    canvasContext.lineTo(v[0], v[1]);
+  });
+  canvasContext.lineTo(locatedShape.xPosition, locatedShape.yPosition);
+  canvasContext.fill();
   drawCells(ctx, locatedShape);
 };
 
 
 export const winRubble = (ctx, state, winners) => {
   const canvasContext = ctx;
-  drawBoundary(canvasContext, state);
+  // drawBoundary(canvasContext, state);
   const b = state.activeShape.unitBlockSize;
   state.rubble.occupiedCells.forEach((cell) => {
     const [cellString, color] = cell;
