@@ -1,0 +1,213 @@
+.opponentContainer{
+    margin-left: 30px;
+    margin-right:30px;
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+}
+
+.opponentContainer__opponentDescription{
+    display: flex;
+    width: 100%;
+    height: 50%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    
+    background: rgb(192, 191, 191);
+    font-size: 15px;
+    padding: 0;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+/* Player Listing */
+.opponentContainer__opponentDescription__Invitation{
+    justify-content: space-evenly;
+    width: 100%;
+    height: 100%;
+    background: rgb(89, 141, 201);
+    font-size:15 px;
+}
+.opponentContainer__opponentDescription_diffButtons{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+.opponentContainer__opponentDescription_diffButtons_dot {
+    height: 25px;
+    width: 25px;
+    background-color: rgb(243, 240, 240);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+  }
+.opponentContainer__opponentDescription_diffButtons_dot_highlight {
+    height: 25px;
+    width: 25px;
+    background-color:rgb(233, 113, 113);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+}
+.opponentContainer__opponentDescription__playersbutton{
+    width: 90%;
+    height: 30px;
+    font-size: 14px;
+    font-weight: bold;
+    margin:0 auto;
+    background:rgb(153, 238, 224);
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 6px;
+    outline: none;
+}
+.opponentContainer__opponentDescription__playersbutton:hover{
+    transition: all .5s;
+    transform: translateY(-1px);
+    box-shadow: 5px 5px;
+  }
+
+/* Invitation Display */
+.opponentContainer__opponentDescription__invitation{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    height: 100%;
+}
+.opponentContainer__opponentDescription__invitation__button-accept-invitation{
+    width:80%;
+    color: rgb(27, 133, 23);
+    font-weight: 900;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+}
+
+.opponentContainer__opponentDescription__invitation__button-decline-invitation{
+    width:80%;
+    color: rgb(226, 4, 4);
+    font-weight: 900;
+    font-size: 18px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+}
+/* Pre Game */
+.opponentContainer__opponentDescription__Timer{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background: rgb(245, 243, 161);
+}
+
+/* Game Play */
+.opponentContainer__opponentDescription__GamePlay{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+.opponentContainer__opponentDescription__GamePlay__linescleared{
+    color: rgb(56, 29, 212);
+    font-weight: 900;
+    font-size: 18px;
+}
+.opponentContainer__opponentDescription__GamePlay__gamesplayed{
+    color: rgb(32, 122, 62);
+    font-weight: 900;
+    font-size: 18px;
+}
+
+/* Game Over */
+.opponentContainer__opponentDescription__winner{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size:18 px;
+    font-weight: 900;
+    color:white;
+    background: rgb(23, 165, 30);
+    animation-name: flash;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+.opponentContainer__opponentDescription__looser{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size:18 px;
+    font-weight: 900;
+    color:white;
+    background:  rgb(212, 10, 10);
+    animation-name: flash;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+/* Misc shared*/ 
+.loading{
+    margin:0 auto;
+    width:50px;
+    height: 50px;
+    border: 20px solid black;
+    border-top-color: #1a6aed;
+    border-bottom-color: #f49b42;
+    border-radius: 50%;
+    animation-name: picloading;
+    animation-duration: 5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+.writing{
+    color: darkred;
+    font-weight: 900;
+    font-size: 18px;
+}
+
+.timercountdown{
+    color: darkred;
+    font-weight: 900;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+@keyframes picloading {
+    0%{
+      transform: rotate(0deg) scale(1);
+    }
+    50%{
+      transform: rotate(360deg) scale(1.05);
+    }
+    100%{
+      transform: rotate(720deg) scale(1);
+    }
+  }
+
+  @keyframes flash {
+    50%{
+      background: white;
+    }
+  }
