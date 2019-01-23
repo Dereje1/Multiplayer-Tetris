@@ -102,7 +102,7 @@ class Game extends React.Component {
     const floorHeight = game.rubble && keepFloor ? game.rubble.boundaryCells.length / 10 : 1;
     actions.gameReset(floorHeight);
     if (this.downInterval) this.endTick(false, 'reset Board');
-    if (reStart) {
+    if (reStart) { // fresh game
       this.startTick();
     } else {
       this.setState({
@@ -129,7 +129,7 @@ class Game extends React.Component {
       this.tickCounter = this.tickCounter + 1;
       if (this.tickCounter === 4) {
         this.tickCounter = 0;
-        // this.floorRaise(1);
+        this.floorRaise(1);
       }
       this.tick();
     // eslint-disable-next-line react/destructuring-assignment

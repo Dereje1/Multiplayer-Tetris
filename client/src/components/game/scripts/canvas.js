@@ -1,6 +1,5 @@
 import tetrisShapes from './shapes';
 import shapeLocator from './locateShape';
-import floorPattern from '../pattern.bmp';
 
 export const getBoundryHeight = (state) => {
   const yBoundary = state.rubble.boundaryCells.map(c => Number(c.split('-')[1]));
@@ -94,14 +93,22 @@ export const drawRubble = (ctx, state, opponent = false) => {
 
 export const drawBoundary = (ctx, state) => {
   console.log('Drawing Boundry');
+  const b = state.activeShape.unitBlockSize;
   ctx.clearRect(0, getRubbleHeight(state), ctx.canvas.width, ctx.canvas.height);
-  const img = new Image();
-  img.src = floorPattern;
-  img.onload = () => {
-    const pattern = ctx.createPattern(img, 'repeat');
-    ctx.fillStyle = pattern;
-    ctx.fillRect(0, getBoundryHeight(state), ctx.canvas.width, ctx.canvas.height);
-  };
+  state.rubble.boundaryCells.forEach((cell) => {
+    const x = Number(cell.split('-')[0]);
+    const y = Number(cell.split('-')[1]);
+    // filled rects
+
+    ctx.fillStyle = 'rgba(93, 149, 221, 0.403921568627451)';
+    ctx.fillRect(x * b, y * b, b, b);
+    // draw borders for rubble
+    ctx.beginPath();
+    ctx.lineWidth = '4';
+    ctx.strokeStyle = 'white';
+    ctx.rect(x * b, y * b, b, b);
+    ctx.stroke();
+  });
 };
 
 export const drawShape = (ctx, shapeToDraw, state) => {
