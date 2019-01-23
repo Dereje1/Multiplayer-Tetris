@@ -17,7 +17,7 @@ import tetrisShapes from './scripts/shapes';
 import shapeLocator from './scripts/locateShape';
 import { runCollisionTest } from './scripts/collision';
 import {
-  clearCanvas, drawRubble, drawNextShape, drawBoundary,
+  clearCanvas, drawRubble, drawNextShape, drawBoundary, drawGameOver,
 } from './scripts/canvas';
 import drawScreen from './scripts/drawscreen';
 import playerMoves from './scripts/player';
@@ -95,10 +95,14 @@ class Game extends React.Component {
     if (this.canvasMajor.current) this.setState({ canvasReady: true });
   }
 
-  resetBoard = (reStart = true, keepFloor = false) => {
+  resetBoard = (reStart = true, keepFloor = false, gameover = false) => {
     const { canvasReady } = this.state;
     if (!canvasReady) return;
     const { game, actions } = this.props;
+    if (gameover) {
+      drawGameOver(this.canvasContextMajor, this.canvasContextMinor, game);
+      return;
+    }
     const floorHeight = game.rubble && keepFloor ? game.rubble.boundaryCells.length / 10 : 1;
     actions.gameReset(floorHeight);
     if (this.downInterval) this.endTick(false, 'reset Board');
@@ -129,7 +133,7 @@ class Game extends React.Component {
       this.tickCounter = this.tickCounter + 1;
       if (this.tickCounter === 4) {
         this.tickCounter = 0;
-        this.floorRaise(1);
+        // this.floorRaise(1);
       }
       this.tick();
     // eslint-disable-next-line react/destructuring-assignment
@@ -344,7 +348,7 @@ class Game extends React.Component {
       // opponentSocketId: '', /* comment out for single player */
       selfSocketId: '',
       buttonPause: true,
-    }, () => this.resetBoard(false));
+    }, () => this.resetBoard(false, false, true));
   }
 
   render() {
