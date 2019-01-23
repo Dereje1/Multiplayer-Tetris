@@ -52,6 +52,7 @@ class Game extends React.Component {
       selfSocketId: '',
       buttonPause: true,
       floor: false,
+      canvasReady: false,
       // opponentSocketId: '', // commented out for single player
     };
     this.canvasMajor = React.createRef();
@@ -59,6 +60,7 @@ class Game extends React.Component {
   }
 
   componentDidMount() {
+    this.loadCanvas();
     this.resetBoard(false);
   }
 
@@ -79,21 +81,27 @@ class Game extends React.Component {
     this.endTick(true, 'componentWillUnmount');
   }
 
-  resetBoard =async (reStart = true, keepFloor = false) => {
-    const { game, actions } = this.props;
-    const floorHeight = game.rubble && keepFloor ? game.rubble.boundaryCells.length / 10 : 1;
-    await actions.gameReset(floorHeight);
+  loadCanvas = async () => {
+    const { actions } = this.props;
+    await actions.gameReset(1); // needed to initialize canvas width/height
     const canvasMajor = this.canvasMajor.current;
     const canvasMinor = this.canvasMinor.current;
-    if (canvasMajor) {
-      canvasMajor.focus();
-      canvasMajor.style.backgroundColor = 'black';
-      canvasMinor.style.backgroundColor = 'black';
-      // setting context so it can be accesible everywhere in the class , maybe a better way ?
-      this.canvasContextMajor = canvasMajor.getContext('2d');
-      this.canvasContextMinor = canvasMinor.getContext('2d');
-      if (this.downInterval) this.endTick(false, 'reset Board');
-    }
+    canvasMajor.focus();
+    canvasMajor.style.backgroundColor = 'black';
+    canvasMinor.style.backgroundColor = 'black';
+    // setting context so it can be accesible everywhere in the class , maybe a better way ?
+    this.canvasContextMajor = canvasMajor.getContext('2d');
+    this.canvasContextMinor = canvasMinor.getContext('2d');
+    if (this.canvasMajor.current) this.setState({ canvasReady: true });
+  }
+
+  resetBoard = (reStart = true, keepFloor = false) => {
+    const { canvasReady } = this.state;
+    if (!canvasReady) return;
+    const { game, actions } = this.props;
+    const floorHeight = game.rubble && keepFloor ? game.rubble.boundaryCells.length / 10 : 1;
+    actions.gameReset(floorHeight);
+    if (this.downInterval) this.endTick(false, 'reset Board');
     if (reStart) {
       this.startTick();
     } else {
@@ -110,19 +118,22 @@ class Game extends React.Component {
   }
 
   startTick = (makeNewShape = true) => {
-    const { game } = this.props;
     this.abortCounter = 0;
     if (!this.tickCounter && this.tickCounter !== 0) this.tickCounter = 0;
     if (this.downInterval)clearInterval(this.downInterval);
     if (makeNewShape) this.newShape();
     this.downInterval = setInterval(() => {
+      console.log('ticking');
+      // eslint-disable-next-line react/destructuring-assignment
+      if (this.props.game.paused) clearInterval(this.downInterval);
       this.tickCounter = this.tickCounter + 1;
       if (this.tickCounter === 4) {
         this.tickCounter = 0;
-        this.floorRaise(1);
+        // this.floorRaise(1);
       }
       this.tick();
-    }, game.timerInterval);
+    // eslint-disable-next-line react/destructuring-assignment
+    }, this.props.game.timerInterval);
   }
 
   tick = () => {
@@ -141,13 +152,13 @@ class Game extends React.Component {
     );
   }
 
-  endTick = async (gameOver, comments) => {
+  endTick = (gameOver, comments) => {
     const { actions } = this.props;
     this.abortCounter += 1;
     console.log(`Called by ${comments} , attempts = ${this.abortCounter}`);
     if (this.downInterval) {
       clearInterval(this.downInterval);
-      await actions.pause(true);
+      actions.pause(true);
       if (gameOver) {
         clearCanvas(this.canvasContextMajor, 'All', 'gameover');
       }
@@ -162,12 +173,12 @@ class Game extends React.Component {
     return copyOfActiveShape;
   }
 
-  speedUp = async () => {
+  speedUp = () => {
     const { actions } = this.props;
-    await actions.speedUp();
+    actions.speedUp();
   }
 
-  newShape = async () => {
+  newShape = () => {
     const { game, actions } = this.props;
     const { floor } = this.state;
     const randomShape = game.nextShape
@@ -175,7 +186,7 @@ class Game extends React.Component {
       : this.initializeShape(tetrisShapes.getRandShapeName());
     const newShapeName = tetrisShapes.getRandShapeName();
     const nextShapeInfo = this.initializeShape(newShapeName);
-    await actions.nextShape(newShapeName);
+    actions.nextShape(newShapeName);
     drawNextShape(this.canvasContextMinor, nextShapeInfo, game);
     drawScreen(
       randomShape,
@@ -218,7 +229,7 @@ class Game extends React.Component {
     return activeShape;
   }
 
-  drawFloor = async () => {
+  drawFloor = () => {
     const { game } = this.props;
     drawBoundary(this.canvasContextMajor, game);
     drawRubble(this.canvasContextMajor, game);
@@ -226,16 +237,17 @@ class Game extends React.Component {
   }
 
   /* Handle Player Events Below */
-  handlePause = async (val) => {
+  handlePause = (val) => {
     this.setState(prevState => ({ buttonPause: !prevState.buttonPause }));
     const { game, actions } = this.props;
     const toDO = typeof (val) === 'object' ? !game.paused : val;
     this.canvasMajor.current.focus();
-    await actions.pause(toDO);
+    actions.pause(toDO);
+    if (!toDO) this.startTick(false);
     if (!game.activeShape.boundingBox.length) this.resetBoard(true, true);
   }
 
-  floorRaise = async (f) => {
+  floorRaise = (f) => {
     const { game, actions } = this.props;
     // Locate Shape on screen and then set .cell prop of activeShape
     const locatedShape = shapeLocator(
@@ -250,9 +262,9 @@ class Game extends React.Component {
     if (collisionResult) {
       console.log('Unable to move floor', collisionResult);
     } else {
-      await actions.raiseFloor(game.rubble, f);
+      actions.raiseFloor(game.rubble, f);
       if (game.paused) {
-        await this.drawFloor();
+        this.drawFloor();
       } else this.setState({ floor: true });
       // if (game.activeShape.boundingBox.length) this.startTick(false);
     }
@@ -307,11 +319,11 @@ class Game extends React.Component {
   }
  */
 
-  gameOver = async (multiPlayerData) => {
+  gameOver = (multiPlayerData) => {
     if (multiPlayerData) console.log('Do nothing Till db setup');
     /* commented out for single player
     if (this.state.multiPlayer && multiPlayerData) {
-      await upDatedb({ match: multiPlayerData });
+       upDatedb({ match: multiPlayerData });
     } else if (!this.state.multiPlayer && this.props.user.authenticated) {
       const databaseEntry =
         {
@@ -324,7 +336,7 @@ class Game extends React.Component {
             },
           ],
         };
-      await upDatedb({ match: databaseEntry });
+       upDatedb({ match: databaseEntry });
     }
     */
     this.setState({
