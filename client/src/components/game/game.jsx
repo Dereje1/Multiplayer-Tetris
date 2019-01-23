@@ -17,9 +17,9 @@ import tetrisShapes from './scripts/shapes';
 import shapeLocator from './scripts/locateShape';
 import { runCollisionTest } from './scripts/collision';
 import {
-  clearCanvas, drawShape, drawRubble,
-  winRubble, drawNextShape, drawBoundary,
+  clearCanvas, drawRubble, drawNextShape, drawBoundary,
 } from './scripts/canvas';
+import drawScreen from './scripts/drawscreen';
 import playerMoves from './scripts/player';
 // react Components
 import Controls from './controls';
@@ -127,9 +127,18 @@ class Game extends React.Component {
 
   tick = () => {
     const { game: { paused } } = this.props;
+    const { floor } = this.state;
     if (paused) return;
     // handle y direction movements
-    this.drawScreen(this.positionForecast());
+    drawScreen(
+      this.positionForecast(),
+      floor,
+      this.canvasContextMajor,
+      this.endTick,
+      this.startTick,
+      this.drawFloor,
+      this.gameOver,
+    );
   }
 
   endTick = async (gameOver, comments) => {
@@ -160,6 +169,7 @@ class Game extends React.Component {
 
   newShape = async () => {
     const { game, actions } = this.props;
+    const { floor } = this.state;
     const randomShape = game.nextShape
       ? this.initializeShape(game.nextShape)
       : this.initializeShape(tetrisShapes.getRandShapeName());
@@ -167,7 +177,15 @@ class Game extends React.Component {
     const nextShapeInfo = this.initializeShape(newShapeName);
     await actions.nextShape(newShapeName);
     drawNextShape(this.canvasContextMinor, nextShapeInfo, game);
-    this.drawScreen(randomShape);
+    drawScreen(
+      randomShape,
+      floor,
+      this.canvasContextMajor,
+      this.endTick,
+      this.startTick,
+      this.drawFloor,
+      this.gameOver,
+    );
   }
 
   initializeShape = (shapeName) => {
@@ -207,84 +225,6 @@ class Game extends React.Component {
     this.setState({ floor: false });
   }
 
-  drawScreen = async (updatedShape) => {
-    const { game, actions } = this.props;
-    const { floor } = this.state;
-    const shapeToDraw = updatedShape;
-    [shapeToDraw.boundingBox, shapeToDraw.absoluteVertices] = tetrisShapes.getDims(updatedShape);
-
-    const copyOfRubble = Object.assign({}, game.rubble);
-    copyOfRubble.winRows = null; // need to reset back to null incase of previous win
-
-    // Locate Shape on screen and then set .cell prop of activeShape
-    const locatedShape = shapeLocator(
-      this.canvasContextMajor,
-      game.canvas.canvasMajor.width,
-      game.canvas.canvasMajor.height,
-      shapeToDraw, false,
-    );
-
-    // test for collision
-    const collisionResult = runCollisionTest(game, locatedShape);
-    if (collisionResult && !collisionResult.length) {
-      this.endTick(true, 'collision check - game done');
-      // By Nature of the game, looser is the one that will send this signal
-      /* commented out for single player
-      if (this.state.multiPlayer && this.state.opponentSocketId) {
-        this.setState({
-          opponentSocketId: '',
-          selfSocketId: '',
-        }, () => socket.emit('GAME_OVER', ''));
-        return;
-      }
-      */
-      this.gameOver();
-    } else if (collisionResult && collisionResult.length) {
-      if (collisionResult[1]) { // winner found
-        // end tick to play animation and start tick back after animation is over
-        this.endTick(false, 'collision check - Win');
-        winRubble(
-          this.canvasContextMajor,
-          game,
-          collisionResult[1],
-        );
-        await actions.collide(collisionResult[0]);
-        const inter = setTimeout(() => {
-          // redux store update not taking effect in upper scope of game def.
-          // eslint-disable-next-line react/destructuring-assignment
-          drawRubble(this.canvasContextMajor, this.props.game);
-          this.startTick();
-          clearInterval(inter);
-        }, 250);
-      } else { // no winner found just set state with current rubble
-        this.endTick(false, 'collision check - No Win');
-        await actions.collide(collisionResult[0]);
-        // eslint-disable-next-line react/destructuring-assignment
-        drawRubble(this.canvasContextMajor, this.props.game);
-        this.startTick();
-      }
-    } else {
-      /*  no collision is found, do this */
-      const data = {
-        activeShape: locatedShape,
-        rubble: copyOfRubble,
-        paused: false,
-      };
-      await actions.updateScreen(data);
-      if (floor) await this.drawFloor();
-      drawShape(this.canvasContextMajor, locatedShape, game);
-    }
-    // if (this.state.multiPlayer) socket.emit(SIMULATE_GAMEPLAY, JSON.stringify(this.props.game));
-    /* commented out for single player
-    if (this.state.opponentSocketId) {
-      socket.emit(
-        SIMULATE_GAMEPLAY,
-        { gameState: JSON.stringify(this.props.game), socketId: this.state.opponentSocketId },
-      );
-    }
-    */
-  }
-
   /* Handle Player Events Below */
   handlePause = async (val) => {
     this.setState(prevState => ({ buttonPause: !prevState.buttonPause }));
@@ -320,12 +260,23 @@ class Game extends React.Component {
 
   gamePlay = (e) => {
     const { game } = this.props;
+    const { floor } = this.state;
     const ans = (playerMoves(e, game, this.canvasContextMajor));
     if (ans) {
       if (ans === 'tick') {
         this.endTick(false, 'Down Key');
         this.tick();
-      } else this.drawScreen(ans);
+      } else {
+        drawScreen(
+          ans,
+          floor,
+          this.canvasContextMajor,
+          this.endTick,
+          this.startTick,
+          this.drawFloor,
+          this.gameOver,
+        );
+      }
     }
   }
 
