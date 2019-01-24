@@ -14,7 +14,7 @@ app.use(cookieSession({
 // connect to db
 require('./models/db');
 // configure authentication
-require('./authnetication/index')(app);
+require('./authentication/index')(app);
 
 /* app routes */
 app.get('/', (req, res) => {

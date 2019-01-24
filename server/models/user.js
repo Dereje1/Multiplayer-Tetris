@@ -7,7 +7,7 @@ const userSchema = mongoose.Schema({
     displayName: String,
     email: String,
   },
-});
+}, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
 
