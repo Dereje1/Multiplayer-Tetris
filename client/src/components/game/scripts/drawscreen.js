@@ -15,11 +15,9 @@ import {
 
 const drawScreen = (
   updatedShape,
-  floor,
   canvasContextMajor,
   endTick,
   startTick,
-  drawFloor,
   gameOver,
 ) => {
   const { game } = store.getState();
@@ -82,7 +80,6 @@ const drawScreen = (
       paused: false,
     };
     store.dispatch(updateScreen(data));
-    if (floor) drawFloor();
     drawShape(canvasContextMajor, locatedShape, store.getState().game);
   }
   // if (this.state.multiPlayer) socket.emit(SIMULATE_GAMEPLAY, JSON.stringify(this.props.game));

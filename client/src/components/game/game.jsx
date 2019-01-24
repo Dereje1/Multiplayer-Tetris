@@ -51,8 +51,7 @@ class Game extends React.Component {
       difficulty: 2,
       selfSocketId: '',
       buttonPause: true,
-      floor: false,
-      canvasReady: false,
+      updateFloor: false,
       // opponentSocketId: '', // commented out for single player
     };
     this.canvasMajor = React.createRef();
@@ -60,18 +59,30 @@ class Game extends React.Component {
   }
 
   componentDidMount() {
-    this.loadCanvas();
-    this.resetBoard(false);
+    const { actions } = this.props;
+    actions.gameReset(1); // need to initialize canvas width/height
   }
 
   componentDidUpdate(prevProps) {
-    if (Object.keys(prevProps.game).length) {
-      const { game } = this.props;
-      const { multiPlayer } = this.state;
-      if ((game.points.level !== prevProps.game.points.level)
+    if (!Object.keys(prevProps.game).length) return;
+    const { game: prevGame } = prevProps;
+    const { game } = this.props;
+    const { multiPlayer } = this.state;
+
+    /* load Canvas */
+    if (this.canvasMajor) this.loadCanvas();
+
+    /* spped up on level up */
+    if ((game.points.level !== prevGame.points.level)
           && (game.timerInterval > 250)
           && (!multiPlayer)
-      ) this.speedUp();
+    ) this.speedUp();
+
+    /* draws floor or sets state to do so before the next tick */
+    if (game.rubble.boundaryCells.length > 10
+       && prevGame.rubble.boundaryCells.length !== game.rubble.boundaryCells.length) {
+      if (!game.activeShape.cells.length) this.drawFloor();
+      else this.setState({ updateFloor: true });
     }
   }
 
@@ -81,9 +92,7 @@ class Game extends React.Component {
     this.endTick(true, 'componentWillUnmount');
   }
 
-  loadCanvas = async () => {
-    const { actions } = this.props;
-    await actions.gameReset(1); // needed to initialize canvas width/height
+  loadCanvas = () => {
     const canvasMajor = this.canvasMajor.current;
     const canvasMinor = this.canvasMinor.current;
     canvasMajor.focus();
@@ -92,15 +101,13 @@ class Game extends React.Component {
     // setting context so it can be accesible everywhere in the class , maybe a better way ?
     this.canvasContextMajor = canvasMajor.getContext('2d');
     this.canvasContextMinor = canvasMinor.getContext('2d');
-    if (this.canvasMajor.current) this.setState({ canvasReady: true });
   }
 
   resetBoard = (reStart = true, keepFloor = false, gameover = false) => {
-    const { canvasReady } = this.state;
-    if (!canvasReady) return;
     const { game, actions } = this.props;
     if (gameover) {
       drawGameOver(this.canvasContextMajor, this.canvasContextMinor, game);
+      actions.gameReset(1);
       return;
     }
     const floorHeight = game.rubble && keepFloor ? game.rubble.boundaryCells.length / 10 : 1;
@@ -128,6 +135,7 @@ class Game extends React.Component {
     if (makeNewShape) this.newShape();
     this.downInterval = setInterval(() => {
       console.log('ticking');
+      const { updateFloor } = this.state;
       // eslint-disable-next-line react/destructuring-assignment
       if (this.props.game.paused) clearInterval(this.downInterval);
       this.tickCounter = this.tickCounter + 1;
@@ -135,23 +143,25 @@ class Game extends React.Component {
         this.tickCounter = 0;
         // this.floorRaise(1);
       }
-      this.tick();
+      if (updateFloor) { // drawFloor needs to happen before tick
+        this.drawFloor();
+        this.setState({ updateFloor: false }, () => this.tick());
+      } else this.tick();
+
+
     // eslint-disable-next-line react/destructuring-assignment
     }, this.props.game.timerInterval);
   }
 
   tick = () => {
     const { game: { paused } } = this.props;
-    const { floor } = this.state;
     if (paused) return;
     // handle y direction movements
     drawScreen(
       this.positionForecast(),
-      floor,
       this.canvasContextMajor,
       this.endTick,
       this.startTick,
-      this.drawFloor,
       this.gameOver,
     );
   }
@@ -184,7 +194,6 @@ class Game extends React.Component {
 
   newShape = () => {
     const { game, actions } = this.props;
-    const { floor } = this.state;
     const randomShape = game.nextShape
       ? this.initializeShape(game.nextShape)
       : this.initializeShape(tetrisShapes.getRandShapeName());
@@ -194,11 +203,9 @@ class Game extends React.Component {
     drawNextShape(this.canvasContextMinor, nextShapeInfo, game);
     drawScreen(
       randomShape,
-      floor,
       this.canvasContextMajor,
       this.endTick,
       this.startTick,
-      this.drawFloor,
       this.gameOver,
     );
   }
@@ -237,7 +244,6 @@ class Game extends React.Component {
     const { game } = this.props;
     drawBoundary(this.canvasContextMajor, game);
     drawRubble(this.canvasContextMajor, game);
-    this.setState({ floor: false });
   }
 
   /* Handle Player Events Below */
@@ -267,16 +273,11 @@ class Game extends React.Component {
       console.log('Unable to move floor', collisionResult);
     } else {
       actions.raiseFloor(game.rubble, f);
-      if (game.paused) {
-        this.drawFloor();
-      } else this.setState({ floor: true });
-      // if (game.activeShape.boundingBox.length) this.startTick(false);
     }
   }
 
   gamePlay = (e) => {
     const { game } = this.props;
-    const { floor } = this.state;
     const ans = (playerMoves(e, game, this.canvasContextMajor));
     if (ans) {
       if (ans === 'tick') {
@@ -285,11 +286,9 @@ class Game extends React.Component {
       } else {
         drawScreen(
           ans,
-          floor,
           this.canvasContextMajor,
           this.endTick,
           this.startTick,
-          this.drawFloor,
           this.gameOver,
         );
       }
@@ -368,7 +367,7 @@ class Game extends React.Component {
             pauseButtonState={buttonPause}
             onReset={b => this.resetBoard(b)}
             onhandlePause={() => this.handlePause}
-            onFloorRaise={() => this.floorRaise()}
+            onFloorRaise={() => this.floorRaise(1)}
             onMultiPlayer={() => this.handleMultiplayer}
           />
           <canvas
