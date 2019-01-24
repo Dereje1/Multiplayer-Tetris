@@ -8,6 +8,7 @@ require('dotenv').config();
 process.env.DEBUG = 'Multiplayer-Tetris:server';
 const debug = require('debug')('Multiplayer-Tetris:server');
 const http = require('http');
+const socket = require('socket.io');
 const app = require('../server/app');
 
 /**
@@ -39,8 +40,13 @@ app.set('port', port);
 /**
  * Create HTTP server.
  */
-
 const server = http.createServer(app);
+
+/* socket setup */
+const io = socket(server);
+require('../server/socket/index')(io);
+/* end socket setup */
+
 
 /**
  * Event listener for HTTP server "error" event.

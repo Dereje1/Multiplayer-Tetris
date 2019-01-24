@@ -20,7 +20,8 @@
     "mongoose": "^5.4.4",
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
-    "passport-google-oauth": "^1.0.0"
+    "passport-google-oauth": "^1.0.0",
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {
     "babel-eslint": "9.x",
