@@ -3,22 +3,41 @@
     height: 80px;
     background: rgb(207, 214, 207);
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    #login{
-        width: 232px;
-        height: 70%;
-        background: url('btn_google_signin_dark_normal_web@2x.png');
-        background-size: 100% 100%;
-        background-repeat: no-repeat;
-        cursor: pointer;
-        outline: none;
+    #profile{
+        width: 20%;
+        background: green;
     }
-    #logout{
-        width: 232px;
-        height: 70%;
-        font-size: 1.2em;
-        cursor: pointer;
-        outline: none;
+    #authbutton{
+            margin-top: 25px;
+            width: auto;
+            height: 100%;
+        #login{
+            width: 232px;
+            height: 70%;
+            background: url('btn_google_signin_dark_normal_web@2x.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            outline: none;
+        }
+        #logout{
+            width: 232px;
+            height: 70%;
+            font-size: 1.2em;
+            cursor: pointer;
+            outline: none;
+        }
+    }
+
+    #users{
+        width: 20%;
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 50px;
+        font-size: 1em;
+        color: rgb(119, 93, 23);
+        font-weight: bold;
     }
 }

@@ -5,15 +5,26 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
 }
 
-#header #login {
+#header #profile {
+  width: 20%;
+  background: green;
+}
+
+#header #authbutton {
+  margin-top: 25px;
+  width: auto;
+  height: 100%;
+}
+
+#header #authbutton #login {
   width: 232px;
   height: 70%;
   background: url("btn_google_signin_dark_normal_web@2x.png");
@@ -23,11 +34,25 @@
   outline: none;
 }
 
-#header #logout {
+#header #authbutton #logout {
   width: 232px;
   height: 70%;
   font-size: 1.2em;
   cursor: pointer;
   outline: none;
+}
+
+#header #users {
+  width: 20%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
+  padding-right: 50px;
+  font-size: 1em;
+  color: #775d17;
+  font-weight: bold;
 }
 /*# sourceMappingURL=header.css.map */
