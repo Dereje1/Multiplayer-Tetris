@@ -27,10 +27,12 @@ const OpponentDescription = ({
   if (opponentState.status[0] === 'opponents') {
     const players = opponentState.playerPool.map(p => (
       <button
+        type="submit"
         className="opponentContainer__opponentDescription__playersbutton"
         key={p.socketId}
         onClick={() => requestInvite(p.socketId)}
-      >{p.displayName.split(' ')[0]}
+      >
+        {p.displayName.split(' ')[0]}
       </button>));
     return (
       <div className="opponentContainer__opponentDescription">
@@ -38,10 +40,9 @@ const OpponentDescription = ({
         <div className="opponentContainer__opponentDescription_diffButtons">
           {
             [1, 2, 3, 4].map(d => (
-              d === difficulty ?
-                <span key={d} className="opponentContainer__opponentDescription_diffButtons_dot_highlight" role="button" onClick={() => setDifficulty(d)} onKeyDown={() => {}} tabIndex={0} >{d}</span>
-                :
-                <span key={d} className="opponentContainer__opponentDescription_diffButtons_dot" role="button" onClick={() => setDifficulty(d)} onKeyDown={() => {}} tabIndex={0} >{d}</span>
+              d === difficulty
+                ? <span key={d} className="opponentContainer__opponentDescription_diffButtons_dot_highlight" role="button" onClick={() => setDifficulty(d)} onKeyDown={() => {}} tabIndex={0}>{d}</span>
+                : <span key={d} className="opponentContainer__opponentDescription_diffButtons_dot" role="button" onClick={() => setDifficulty(d)} onKeyDown={() => {}} tabIndex={0}>{d}</span>
             ))
           }
         </div>
@@ -57,9 +58,9 @@ const OpponentDescription = ({
         <div className="opponentContainer__opponentDescription__invitation">
           <p className="writing">Invite from</p>
           <p className="writing">{opponentState.status[1][0].displayName.split(' ')[0]}</p>
-          <p className="writing">Difficulty = {opponentState.status[1][1]}</p>
-          <button className="opponentContainer__opponentDescription__invitation__button-accept-invitation" onClick={() => acceptInvite()}>Accept</button>
-          <button className="opponentContainer__opponentDescription__invitation__button-decline-invitation">Decline</button>
+          <p className="writing">{`Difficulty = ${opponentState.status[1][1]}`}</p>
+          <button type="submit" className="opponentContainer__opponentDescription__invitation__button-accept-invitation" onClick={() => acceptInvite()}>Accept</button>
+          <button type="submit" className="opponentContainer__opponentDescription__invitation__button-decline-invitation">Decline</button>
         </div>
       </div>
     );
@@ -72,7 +73,7 @@ const OpponentDescription = ({
           <h4>GET READY</h4>
           <h4>TO DUEL WITH:</h4>
           <p className="timercountdown">{opponentState.opponent.displayName.split(' ')[0]}</p>
-          <p className="timercountdown">in {opponentState.status[1]} s</p>
+          <p className="timercountdown">{`in ${opponentState.status[1]} s`}</p>
         </div>
       </div>
     );
@@ -93,23 +94,22 @@ const OpponentDescription = ({
   }
   // stage 6 - Game is done back to single player mode
   if (opponentState.status[0] === 'GameOver') {
-    return opponentState.status[1] ?
-      ( // to render on game
+    return opponentState.status[1]
+      ? ( // to render on game
         <div className="opponentContainer__opponentDescription">
           <div className="opponentContainer__opponentDescription__winner">
-            <p >Congratulations</p>
-            <p >You Have Won !!</p>
+            <p>Congratulations</p>
+            <p>You Have Won !!</p>
           </div>
         </div>
       )
-      :
-      ( // to render on game
+      : ( // to render on game
         <div className="opponentContainer__opponentDescription">
           <div className="opponentContainer__opponentDescription__looser">
-            <p >You Have Lost</p>
-            <p >This Game, </p>
-            <p >Better Luck</p>
-            <p >Next Time !!</p>
+            <p>You Have Lost</p>
+            <p>This Game, </p>
+            <p>Better Luck</p>
+            <p>Next Time !!</p>
           </div>
         </div>
       );

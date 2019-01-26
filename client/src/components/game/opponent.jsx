@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 import './opponentdescription.css';
 // connect to redux
 import { connect } from 'react-redux';
-
+/* not handled yet
 import {
   SIMULATE_GAMEPLAY,
 } from '../../constants';
-
-import { socket } from '../../Actions/socket';
-import { clearCanvas, drawRuble, drawBoundary, drawCells } from './scripts/canvas';
+*/
+// import { socket } from '../../Actions/socket';
+import {
+  clearCanvas, drawRubble, drawBoundary, drawCells,
+} from './scripts/canvas';
 
 // custom components
 import OpponentDescription from './opponentInfo';
@@ -32,43 +34,49 @@ class Opponent extends React.Component {
     };
     this.canvasOpponent = React.createRef();
 
+    /* comment out all socket Transactions for now
     socket.on('CURRENT_POOL', pool => this.processPool(pool));
     socket.on('INVITATION_RECEIVED', invitedBy => this.processInvite(invitedBy));
     socket.on('GAME_DISCONNECTED', sId => this.disconnectGame(sId));
     socket.on('START_GAME', opp => this.processGameStart(opp));
     socket.on(SIMULATE_GAMEPLAY, oppGame => this.processGame(oppGame));
     socket.on('GAME_END', win => this.processGameEnd(win));
+    */
   }
+
   componentDidMount() {
     this.countGameover = 0;
-    socket.emit('PLAYER_JOINED', JSON.stringify(this.props.user));
+    // socket.emit('PLAYER_JOINED', JSON.stringify(this.props.user));
     console.log('Opponent Mounted!!');
   }
 
   componentDidUpdate(prevProps, prevState) {
+    const { gameState, status } = this.state;
+    const { onDisableExit } = this.props;
     if (Object.keys(prevState.gameState).length) {
-      if (prevState.gameState.points.totalLinesCleared !==
-         this.state.gameState.points.totalLinesCleared) {
+      if (prevState.gameState.points.totalLinesCleared
+        !== gameState.points.totalLinesCleared) {
         this.processFloorRaise();
       }
     }
-    if (prevState.status[0] !== this.state.status[0]) {
-      if ((this.state.status[0] === 'Playing') || (this.state.status[0] === 'GameOver')) {
-        this.props.onDisableExit(true);
+    if (prevState.status[0] !== status[0]) {
+      if ((status[0] === 'Playing') || (status[0] === 'GameOver')) {
+        onDisableExit(true);
       }
     }
   }
 
   componentWillUnmount() {
-    socket.emit('COMPONENT_UNMOUNTED', 'opponent');
-    socket.emit('disconnect', '');
+    // socket.emit('COMPONENT_UNMOUNTED', 'opponent');
+    // socket.emit('disconnect', '');
   }
 
   setGame = () => {
-    if (Object.keys(this.state.gameState).length) {
+    const { gameState, status } = this.state;
+    if (Object.keys(gameState).length) {
       // full deep copy of game state needed as object mutation becomes a problem
-      const copyOfState = JSON.parse(JSON.stringify(this.state.gameState));
-      if (this.state.status[0] === 'GameOver') {
+      const copyOfState = JSON.parse(JSON.stringify(gameState));
+      if (status[0] === 'GameOver') {
         clearCanvas(this.canvasOpponentContext, copyOfState);
         return;
       }
@@ -79,27 +87,32 @@ class Opponent extends React.Component {
       clearCanvas(this.canvasOpponentContext, copyOfState);
       drawBoundary(this.canvasOpponentContext, copyOfState);
       drawCells(this.canvasOpponentContext, copyOfState.activeShape, true);
-      drawRuble(this.canvasOpponentContext, copyOfState, true);
+      drawRubble(this.canvasOpponentContext, copyOfState, true);
     }
   };
 
   setUp = () => {
-    const opponentsAvailable = !!this.state.playerPool.length;
+    const { playerPool } = this.state;
+    const opponentsAvailable = !!playerPool.length;
     if (!opponentsAvailable) {
       this.setState({
         status: ['noopponents', 0],
       });
     } else {
       this.setState({
-        status: ['opponents', this.state.playerPool.length],
+        status: ['opponents', playerPool.length],
       });
     }
   }
+
   setDifficulty = (val) => {
-    this.props.onSetDifficulty(val);
+    const { onSetDifficulty } = this.props;
+    onSetDifficulty(val);
   }
 
   processFloorRaise = () => {
+    const { gameState, levelsRaised } = this.state;
+    const { difficulty, onFloorRaise } = this.props;
     /*
     Difficulty                                 Description
     -----------------------------------------------------------------------------------
@@ -108,20 +121,21 @@ class Opponent extends React.Component {
       3               After player clears 2 rows , floor is raised by 1 row on opponent
       4               After player clears 1 row  , floor is raised by 1 row on opponent
     */
-    const { totalLinesCleared } = this.state.gameState.points;
+    const { totalLinesCleared } = gameState.points;
     const difficultyMap = [[4, 1], [3, 2], [2, 3], [1, 4]]; // [[level, ]]
-    const amountNeededForRaise = difficultyMap.filter(d => d[0] === this.props.difficulty)[0][1];
+    const amountNeededForRaise = difficultyMap.filter(d => d[0] === difficulty)[0][1];
     const targetRaised = Math.floor(totalLinesCleared * (1 / amountNeededForRaise));
-    const toRaise = targetRaised - this.state.levelsRaised;
-    if (toRaise > 0) this.props.onFloorRaise(Number(toRaise));
+    const toRaise = targetRaised - levelsRaised;
+    if (toRaise > 0) onFloorRaise(Number(toRaise));
     this.setState({
-      levelsRaised: this.state.levelsRaised + toRaise,
+      levelsRaised: levelsRaised + toRaise,
     });
   }
 
   /* process socket-in-coming below */
   processPool = (poolData) => {
-    const checkSelfSocketId = this.state.selfSocketId === '' ? poolData.self : this.state.selfSocketId;
+    const { selfSocketId } = this.state;
+    const checkSelfSocketId = selfSocketId === '' ? poolData.self : selfSocketId;
     const nonSelfPoolData = poolData.pool.filter(p => p.socketId !== checkSelfSocketId);
     const playerChoices = [];
     nonSelfPoolData.forEach((sock, idx) => {
@@ -130,24 +144,28 @@ class Opponent extends React.Component {
 
     this.setState({
       playerPool: playerChoices,
-      selfSocketId: this.state.selfSocketId === '' ? poolData.self : this.state.selfSocketId,
+      selfSocketId: selfSocketId === '' ? poolData.self : selfSocketId,
     }, () => this.setUp());
   }
 
   disconnectGame = () => {
+    const { onGameOver } = this.props;
     console.log('A signal has come in that your Opponent Disconnected the Game!!');
     // add penalty in database for this in the future
-    this.props.onGameOver(null);
+    onGameOver(null);
   }
 
   processInvite = (host) => {
-    const fullPlayerInfo = this.state.playerPool.filter(p => p.socketId === host.hostSocketId)[0];
+    const { playerPool } = this.state;
+    const fullPlayerInfo = playerPool.filter(p => p.socketId === host.hostSocketId)[0];
     this.setState({
       status: ['Invite', [fullPlayerInfo, host.difficulty]],
     });
   }
 
   processGameStart = (opp) => {
+    const { selfSocketId } = this.state;
+    const { onGameEmit, onReset } = this.props;
     this.setState({
       opponent: opp,
     });
@@ -161,16 +179,17 @@ class Opponent extends React.Component {
         this.setState({
           status: ['Playing', null],
         });
-        this.props.onGameEmit({ self: this.state.selfSocketId, opponnent: opp });
-        this.props.onReset();
+        onGameEmit({ self: selfSocketId, opponnent: opp });
+        onReset();
         clearInterval(gameStartId);
       }
     }, 1000);
   }
 
   processGame = (msg) => {
-    if (this.state.status[0] === 'GameOver') {
-      clearCanvas(this.canvasOpponentContext, this.state.gameState);
+    const { gameState, status } = this.state;
+    if (status[0] === 'GameOver') {
+      clearCanvas(this.canvasOpponentContext, gameState);
       return;
     }
     const copyOfState = JSON.parse(JSON.stringify(this.state));
@@ -179,26 +198,30 @@ class Opponent extends React.Component {
   }
 
   processGameEnd = (isWinner) => {
-    this.props.onClearCanvas();
+    const {
+      onClearCanvas, difficulty, user, game,
+    } = this.props;
+    const { gameState, opponent } = this.state;
+    onClearCanvas();
     this.countGameover += 1;
     if (this.countGameover > 1) return;
     // clearCanvas(this.canvasOpponentContext, this.state.gameState);
     // isWinner , true if client won
-    const databaseEntry = isWinner ?
-      {
-        difficulty: this.props.difficulty,
+    const databaseEntry = isWinner
+      ? {
+        difficulty,
         multiPlayer: true,
         players: [
           {
-            name: this.props.user.displayName,
-            _id: this.props.user._id,
-            score: this.props.game.points.totalLinesCleared * 50,
+            name: user.displayName,
+            _id: user._id,
+            score: game.points.totalLinesCleared * 50,
             winner: isWinner,
           },
           {
-            name: this.state.opponent.displayName,
-            _id: this.state.opponent._id,
-            score: this.state.gameState.points.totalLinesCleared * 50,
+            name: opponent.displayName,
+            _id: opponent._id,
+            score: gameState.points.totalLinesCleared * 50,
             winner: !isWinner,
           },
         ],
@@ -206,51 +229,59 @@ class Opponent extends React.Component {
       : null;
 
     let startCounter = 10;
+    const {
+      onPause, onGameOver, onDisableExit, onReset,
+    } = this.props;
     this.setState({
       status: ['GameOver', isWinner],
-    }, () => this.props.onPause(true));
+    }, () => onPause(true));
     console.log(`game over called ${this.countGameover}`);
     const gameEndId = setInterval(() => {
       startCounter -= 1;
       if (startCounter <= 0) {
-        if (databaseEntry) this.props.onGameOver(databaseEntry);
-        else this.props.onGameOver(null);
-        this.props.onDisableExit(false);
+        if (databaseEntry) onGameOver(databaseEntry);
+        else onGameOver(null);
+        onDisableExit(false);
         clearInterval(gameEndId);
-        this.props.onReset(false);
+        onReset(false);
       }
     }, 1000);
   };
 
   /* process socket-out-going below */
   requestInvite = (p) => {
-    socket.emit('INVITATION_SENT', { hostSocketId: p, difficulty: this.props.difficulty });
+    console.log(p);
+    // socket.emit('INVITATION_SENT', { hostSocketId: p, difficulty: this.props.difficulty });
   }
 
   acceptInvite = () => {
-    this.props.onSetDifficulty(this.state.status[1][1]);
+    const { status } = this.state;
+    const { onSetDifficulty } = this.props;
+    onSetDifficulty(status[1][1]);
     this.setState({
       status: ['Loading', null],
     });
-    socket.emit('INVITATION_ACCEPTED', [this.state.selfSocketId, this.state.status[1][0].socketId]);
+    // socket.emit(
+    // 'INVITATION_ACCEPTED', [this.state.selfSocketId, this.state.status[1][0].socketId]);
   }
 
   /* done sockets */
 
   render() {
+    const { difficulty, game } = this.props;
     return (
       <div className="opponentContainer">
         <OpponentDescription
           opponentState={this.state}
-          difficulty={this.props.difficulty}
+          difficulty={difficulty}
           setDifficulty={this.setDifficulty}
           requestInvite={sId => this.requestInvite(sId)}
           acceptInvite={() => this.acceptInvite()}
         />
         <canvas
           ref={this.canvasOpponent}
-          width={this.props.game.canvas.canvasMajor.width / 2}
-          height={this.props.game.canvas.canvasMajor.height / 2}
+          width={game.canvas.canvasMajor.width / 2}
+          height={game.canvas.canvasMajor.height / 2}
         />
       </div>
     );
@@ -286,4 +317,3 @@ Opponent.propTypes = {
 };
 
 export default connect(mapStateToProps)(Opponent);
-

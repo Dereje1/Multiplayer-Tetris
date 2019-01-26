@@ -53,6 +53,7 @@ const master = (io) => {
         currentlyLoggedIn = [
           ...currentlyLoggedIn.slice(0, indexOfDisconnected),
           ...currentlyLoggedIn.slice(indexOfDisconnected + 1)];
+        // emit only if the disconneted user was already in the pool of currently LoggedIn
         io.emit(CONSTANTS.serverEmit.LOGGED_IN_USERS, currentlyLoggedIn.length);
       }
       console.log('A User has disconnected', discUser);
