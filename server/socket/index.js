@@ -43,6 +43,8 @@ const master = (io) => {
       console.log(currentlyLoggedIn);
       // send back to client the number of logged in users.
       io.emit(CONSTANTS.serverEmit.LOGGED_IN_USERS, currentlyLoggedIn.length);
+      // send back to specific client ONLY it's socket ID
+      socket.emit(CONSTANTS.serverEmit.ClIENT_SOCKET_ID, socket.id);
     });
     disconnectedUsers(socket, (err, discUser) => {
       if (err) throw err;

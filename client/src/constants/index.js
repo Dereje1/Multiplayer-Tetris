@@ -1,8 +1,8 @@
 module.exports = {
-  auth:{
+  auth: {
     GET_LOGIN_STATUS: 'GET_LOGIN_STATUS',
   },
-  game:{
+  game: {
     INITIALIZE_GAME: 'INITIALIZE_GAME',
     LEVEL_UP: 'LEVEL_UP',
     PAUSE: 'PAUSE',
@@ -11,14 +11,15 @@ module.exports = {
     RAISE_FLOOR: 'RAISE_FLOOR',
     COLLISION: 'COLLISION',
   },
-  socket:{
-    clientEmit:{
+  socket: {
+    clientEmit: {
       SEND_LOGGED_IN_USER: 'SEND_LOGGED_IN_USER',
       USER_LOGGED_OUT: 'USER_LOGGED_OUT',
     },
-    serverEmit:{
+    serverEmit: {
       LOGGED_IN_USERS: 'LOGGED_IN_USERS',
+      ClIENT_SOCKET_ID: 'ClIENT_SOCKET_ID',
     },
-    connection:'http://localhost:5000/',
-  }
+    connection: 'http://localhost:5000/',
+  },
 };
