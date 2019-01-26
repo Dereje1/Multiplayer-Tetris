@@ -2,23 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import io from 'socket.io-client';
 import getUser from '../../redux/actions/authentication';
-import { getLoggedInUsers } from '../../redux/actions/socket';
-import { socket } from '../../constants/index';
+import clientEmitter from '../../sockethandler';
+import { socket as socketConstants } from '../../constants/index';
+
 import './styles/header.css';
 
 const mapStateToProps = state => state;
-const mapDispatchToProps = dispatch => bindActionCreators({ getUser, getLoggedInUsers }, dispatch);
-const socketConnection = io(socket.connection);
+const mapDispatchToProps = dispatch => bindActionCreators({ getUser }, dispatch);
 
 class Header extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = { };
-    const { getLoggedInUsers: loggedInUsers } = this.props;
-    socketConnection.on(socket.serverEmit.LOGGED_IN_USERS, data => loggedInUsers(data));
+    // const { getLoggedInUsers: loggedInUsers } = this.props;
   }
 
   componentDidMount() {
@@ -29,8 +27,12 @@ class Header extends React.Component {
     const { getUser: getUserStatus } = this.props;
     await getUserStatus();
     const { user } = this.props;
-    const addUserToSocket = user.profile.authenticated ? user.profile : null;
-    socketConnection.emit(socket.clientEmit.SEND_LOGGED_IN_USER, addUserToSocket);
+    if (!user.profile.authenticated) return;
+    const payloadToSend = user.profile.authenticated ? user.profile : null;
+    clientEmitter(
+      socketConstants.clientEmit.SEND_LOGGED_IN_USER,
+      payloadToSend,
+    );
   }
 
   logOutUser = async () => {
@@ -38,13 +40,13 @@ class Header extends React.Component {
     await getUserStatus();
     const { user } = this.props;
     user.profile.remove = true;
-    socketConnection.emit(socket.clientEmit.USER_LOGGED_OUT, user.profile);
+    clientEmitter(socketConstants.clientEmit.USER_LOGGED_OUT, user.profile);
     window.location.assign('/auth/logout');
   }
 
   render() {
     const { user, socket } = this.props;
-    const usersMessage = socket.usersLoggedIn ? `${socket.usersLoggedIn} users logged in` : null
+    const usersMessage = socket.usersLoggedIn ? `${socket.usersLoggedIn} users logged in` : null;
     if (user.profile) {
       const { user: { profile: { authenticated } } } = this.props;
       return (
@@ -73,7 +75,6 @@ Header.defaultProps = {
 
 Header.propTypes = {
   getUser: PropTypes.func.isRequired,
-  getLoggedInUsers: PropTypes.func.isRequired,
   socket: PropTypes.shape({
     usersLoggedIn: PropTypes.number,
   }),
