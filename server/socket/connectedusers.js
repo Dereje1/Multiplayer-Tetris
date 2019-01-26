@@ -1,4 +1,4 @@
-const CONSTANTS = require('../../client/src/constants/index').socket
+const CONSTANTS = require('../../client/src/constants/index').socket;
 // recieves emits from the header component in client
 // when users login and logut
 const authorizedUsers = (socket, callback) => {

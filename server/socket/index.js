@@ -1,6 +1,7 @@
 // handles all socket transactions
-const authUsers = require('./users');
-const CONSTANTS = require('../../client/src/constants/index').socket
+const connectedUsers = require('./connectedusers');
+const disconnectedUsers = require('./disconnectedusers');
+const CONSTANTS = require('../../client/src/constants/index').socket;
 
 let currentlyLoggedIn = [];
 const modifyProfile = (profile, sockId) => {
@@ -18,7 +19,7 @@ const master = (io) => {
   io.on('connection', (socket) => {
     console.log('A User has connected');
     // call auth users to listen to client emits on user login / logout, recieves a callback
-    authUsers(socket, (err, userProfile) => {
+    connectedUsers(socket, (err, userProfile) => {
       if (err) throw err;
       if (userProfile) { // null if client is not logged in
         if (userProfile.remove) { // client is logging out
@@ -42,6 +43,19 @@ const master = (io) => {
       console.log(currentlyLoggedIn);
       // send back to client the number of logged in users.
       io.emit(CONSTANTS.serverEmit.LOGGED_IN_USERS, currentlyLoggedIn.length);
+    });
+    disconnectedUsers(socket, (err, discUser) => {
+      if (err) throw err;
+      const indexOfDisconnected = currentlyLoggedIn.findIndex(
+        l => l.socketId === discUser,
+      );
+      if (indexOfDisconnected !== -1) {
+        currentlyLoggedIn = [
+          ...currentlyLoggedIn.slice(0, indexOfDisconnected),
+          ...currentlyLoggedIn.slice(indexOfDisconnected + 1)];
+        io.emit(CONSTANTS.serverEmit.LOGGED_IN_USERS, currentlyLoggedIn.length);
+      }
+      console.log('A User has disconnected', discUser);
     });
   });
 };

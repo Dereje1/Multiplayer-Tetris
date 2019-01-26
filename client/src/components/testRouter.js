@@ -6,7 +6,7 @@ import { getLoggedInUsers } from '../redux/actions/socket';
 
 const mapStateToProps = state => state;
 const mapDispatchToProps = dispatch => bindActionCreators({ getLoggedInUsers }, dispatch);
-const socket = io('http://localhost:5000/');
+
 
 class socketTester extends React.Component {
 
@@ -14,10 +14,11 @@ class socketTester extends React.Component {
     super(props);
     this.state = { };
 
-    socket.on('LOGGED_IN_USERS', data => this.props.getLoggedInUsers(data));
+    // socket.on('LOGGED_IN_USERS', data => this.props.getLoggedInUsers(data));
   }
 
   socketTest = () => {
+    const socket = io('http://localhost:5000/');
     const { user } = this.props;
     const addUserToSocket = user.profile.authenticated ? user.profile : null;
     socket.emit('SEND_LOGGED_IN_USER', addUserToSocket);
