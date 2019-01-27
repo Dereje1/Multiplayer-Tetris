@@ -17,6 +17,7 @@ module.exports = {
       USER_LOGGED_OUT: 'USER_LOGGED_OUT',
     },
     serverEmit: {
+      SERVER_RESET: 'SERVER_RESET',
       LOGGED_IN_USERS: 'LOGGED_IN_USERS',
       SOCKET_ID: 'SOCKET_ID',
     },

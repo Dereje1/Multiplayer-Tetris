@@ -3,7 +3,7 @@ const connectedUsers = require('./connectedusers');
 const disconnectedUsers = require('./disconnectedusers');
 const CONSTANTS = require('../../client/src/constants/index').socket;
 
-const { serverEmit: { LOGGED_IN_USERS, SOCKET_ID } } = CONSTANTS;
+const { serverEmit: { LOGGED_IN_USERS, SOCKET_ID, SERVER_RESET } } = CONSTANTS;
 
 let currentlyLoggedIn = [];
 const modifyProfile = (profile, sockId) => {
@@ -13,6 +13,7 @@ const modifyProfile = (profile, sockId) => {
     displayname,
     userip,
     socketId: sockId,
+    playing: false,
   };
 };
 
@@ -20,6 +21,8 @@ const master = (io) => {
   // establish initial connection and get socket on callback
   io.on('connection', (socket) => {
     console.log('A User has connected');
+    // when a user connects search for existing logged in clients
+    socket.emit(SERVER_RESET, 'get users');
     // call auth users to listen to client emits on user login / logout, recieves a callback
     connectedUsers(socket, (err, userProfile) => {
       if (err) throw err;
