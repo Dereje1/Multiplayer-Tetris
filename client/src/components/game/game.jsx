@@ -23,7 +23,7 @@ import drawScreen from './scripts/drawscreen';
 import playerMoves from './scripts/player';
 // react Components
 import Controls from '../controls/controls';
-// import Opponent from './opponent';
+import Opponent from '../oponnent/opponent';
 // reads from store
 const mapStateToProps = state => state;
 
@@ -49,7 +49,6 @@ class Game extends React.Component {
       multiPlayer: false,
       disableExit: false,
       difficulty: 2,
-      selfSocketId: '',
       buttonPause: true,
       updateFloor: false,
       // opponentSocketId: '', // commented out for single player
@@ -117,9 +116,7 @@ class Game extends React.Component {
       this.startTick();
     } else {
       this.setState({
-        multiPlayer: false,
         // opponentSocketId: '', /* comment out for single player */
-        selfSocketId: '',
         buttonPause: true,
       }, () => {
         clearCanvas(this.canvasContextMajor, 'All', 'reset'); // clear canvasMajor
@@ -302,14 +299,13 @@ class Game extends React.Component {
   /* opponent component Callbacks */
   handleMultiplayer = () => {
     const { user } = this.props;
+    const { multiPlayer } = this.state;
     if (user.profile.authenticated) {
       clearCanvas(this.canvasContextMajor, 'All', 'Multi'); // clear canvasMajor
       clearCanvas(this.canvasContextMinor, 'All', 'Multi'); // clear canvasMajor
       this.setState({
-        multiPlayer: false, /* static false for single player */
+        multiPlayer: !multiPlayer,
       }, () => this.resetBoard(false));// don't forget to add reset board call back here
-    } else {
-      window.location = '/test';
     }
   }
 
@@ -345,15 +341,14 @@ class Game extends React.Component {
     this.setState({
       multiPlayer: false,
       // opponentSocketId: '', /* comment out for single player */
-      selfSocketId: '',
       buttonPause: true,
     }, () => this.resetBoard(false, false, true));
   }
 
   render() {
-    const { game } = this.props;
+    const { game, socket } = this.props;
     const {
-      difficulty, selfSocketId, multiPlayer, disableExit, buttonPause,
+      difficulty, multiPlayer, disableExit, buttonPause,
     } = this.state;
     if (Object.keys(game).length) {
       return (
@@ -362,13 +357,14 @@ class Game extends React.Component {
             minorCanvas={this.canvasMinor}
             game={game}
             difficulty={difficulty}
-            socketId={selfSocketId}
+            socketId={socket.mySocketId}
             multiPlayer={[multiPlayer, disableExit]}
             pauseButtonState={buttonPause}
             onReset={b => this.resetBoard(b)}
             onhandlePause={() => this.handlePause}
             onFloorRaise={() => this.floorRaise(1)}
             onMultiPlayer={() => this.handleMultiplayer}
+            allowMultiPlayer={Boolean(Object.keys(socket).length) && socket.usersLoggedIn > 1}
           />
           <canvas
             ref={this.canvasMajor}
@@ -380,21 +376,17 @@ class Game extends React.Component {
           />
           {multiPlayer
             ? (
-              /* comment out for single player
               <Opponent
                 onReset={reStart => this.resetBoard(reStart)}
                 onGameEmit={socketInfo => this.gameEmit(socketInfo)}
                 onFloorRaise={f => this.floorRaise(f)}
                 onGameOver={db => this.gameOver(db)}
                 onPause={() => this.handlePause(true)}
-                onClearCanvas={() => clearCanvas(this.canvasContextMajor, this.props.game)}
+                onClearCanvas={() => clearCanvas(this.canvasContextMajor, this.game)}
                 onSetDifficulty={d => this.setState({ difficulty: d })}
-                onGetSocketId={sId => this.setState({ selfSocketId: sId })}
                 onDisableExit={setTo => this.setState({ disableExit: setTo })}
-                difficulty={this.state.difficulty}
+                difficulty={difficulty}
               />
-              */
-              null
             )
             : null
           }
@@ -411,6 +403,7 @@ Game.defaultProps = {
   actions: {},
   game: {},
   user: {},
+  socket: {},
 };
 
 Game.propTypes = {
@@ -425,5 +418,6 @@ Game.propTypes = {
   }),
   game: PropTypes.objectOf(PropTypes.any),
   user: PropTypes.objectOf(PropTypes.any),
+  socket: PropTypes.objectOf(PropTypes.any),
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Game);

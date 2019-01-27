@@ -22,6 +22,7 @@ const Controls = ({
   difficulty,
   socketId,
   pauseButtonState,
+  allowMultiPlayer,
 }) => {
   if (!multiPlayer[0]) {
     return (
@@ -56,12 +57,17 @@ const Controls = ({
               )
           }
         </div>
-        <FontAwesomeIcon
-          className="controls__multiplayer"
-          icon={faUsers}
-          onClick={onMultiPlayer()}
-        />
-
+        {
+          allowMultiPlayer
+            ? (
+              <FontAwesomeIcon
+                className="controls__multiplayer"
+                icon={faUsers}
+                onClick={onMultiPlayer()}
+              />
+            )
+            : null
+        }
         <button
           className="controls__raise"
           type="submit"
@@ -133,5 +139,6 @@ Controls.propTypes = {
   difficulty: PropTypes.number,
   socketId: PropTypes.string,
   pauseButtonState: PropTypes.bool.isRequired,
+  allowMultiPlayer: PropTypes.bool.isRequired,
 };
 export default Controls;
