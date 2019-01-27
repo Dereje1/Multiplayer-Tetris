@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './game.css';
+import './styles/game.css';
 
 // import { socket } from '../../Actions/socket';
 // import { SIMULATE_GAMEPLAY } from '../../constants';
@@ -22,7 +22,7 @@ import {
 import drawScreen from './scripts/drawscreen';
 import playerMoves from './scripts/player';
 // react Components
-import Controls from './controls';
+import Controls from '../controls/controls';
 // import Opponent from './opponent';
 // reads from store
 const mapStateToProps = state => state;

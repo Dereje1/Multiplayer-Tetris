@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './opponentdescription.css';
+import './styles/opponentdescription.css';
 /* opponent top part of component */
 const OpponentDescription = ({
   opponentState,

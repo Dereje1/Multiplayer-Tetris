@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './opponentdescription.css';
+import './styles/opponentdescription.css';
 // connect to redux
 import { connect } from 'react-redux';
 /* not handled yet
@@ -11,7 +11,7 @@ import {
 // import { socket } from '../../Actions/socket';
 import {
   clearCanvas, drawRubble, drawBoundary, drawCells,
-} from './scripts/canvas';
+} from '../game/scripts/canvas';
 
 // custom components
 import OpponentDescription from './opponentInfo';
