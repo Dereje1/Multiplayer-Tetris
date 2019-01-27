@@ -1,12 +1,14 @@
 import { socket as socketConstants } from '../../constants/index';
 
+const { serverEmit: { LOGGED_IN_USERS, SOCKET_ID } } = socketConstants;
+
 const socketReducer = (state = {}, action) => {
   switch (action.type) {
-    case socketConstants.serverEmit.LOGGED_IN_USERS:
+    case LOGGED_IN_USERS:
       return Object.assign({}, state, {
         usersLoggedIn: action.payload,
       });
-    case socketConstants.serverEmit.ClIENT_SOCKET_ID:
+    case SOCKET_ID:
       return Object.assign({}, state, {
         mySocketId: action.payload,
       });

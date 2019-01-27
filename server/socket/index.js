@@ -3,6 +3,8 @@ const connectedUsers = require('./connectedusers');
 const disconnectedUsers = require('./disconnectedusers');
 const CONSTANTS = require('../../client/src/constants/index').socket;
 
+const { serverEmit: { LOGGED_IN_USERS, SOCKET_ID } } = CONSTANTS;
+
 let currentlyLoggedIn = [];
 const modifyProfile = (profile, sockId) => {
   const { username, displayname, userip } = profile;
@@ -42,9 +44,9 @@ const master = (io) => {
       }
       console.log(currentlyLoggedIn);
       // send back to client the number of logged in users.
-      io.emit(CONSTANTS.serverEmit.LOGGED_IN_USERS, currentlyLoggedIn.length);
+      io.emit(LOGGED_IN_USERS, currentlyLoggedIn.length);
       // send back to specific client ONLY it's socket ID
-      socket.emit(CONSTANTS.serverEmit.ClIENT_SOCKET_ID, socket.id);
+      socket.emit(SOCKET_ID, socket.id);
     });
     disconnectedUsers(socket, (err, discUser) => {
       if (err) throw err;
@@ -56,7 +58,7 @@ const master = (io) => {
           ...currentlyLoggedIn.slice(0, indexOfDisconnected),
           ...currentlyLoggedIn.slice(indexOfDisconnected + 1)];
         // emit only if the disconneted user was already in the pool of currently LoggedIn
-        io.emit(CONSTANTS.serverEmit.LOGGED_IN_USERS, currentlyLoggedIn.length);
+        io.emit(LOGGED_IN_USERS, currentlyLoggedIn.length);
       }
       console.log('A User has disconnected', discUser);
     });

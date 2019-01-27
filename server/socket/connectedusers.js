@@ -1,11 +1,14 @@
-const CONSTANTS = require('../../client/src/constants/index').socket;
 // recieves emits from the header component in client
 // when users login and logut
+const CONSTANTS = require('../../client/src/constants/index').socket;
+
+const { clientEmit: { SEND_LOGGED_IN_USER, USER_LOGGED_OUT } } = CONSTANTS;
+
 const authorizedUsers = (socket, callback) => {
-  socket.on(CONSTANTS.clientEmit.SEND_LOGGED_IN_USER, (userProfile) => {
+  socket.on(SEND_LOGGED_IN_USER, (userProfile) => {
     callback(null, userProfile);
   });
-  socket.on(CONSTANTS.clientEmit.USER_LOGGED_OUT, (userProfile) => {
+  socket.on(USER_LOGGED_OUT, (userProfile) => {
     callback(null, userProfile);
   });
 };

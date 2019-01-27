@@ -18,7 +18,7 @@ module.exports = {
     },
     serverEmit: {
       LOGGED_IN_USERS: 'LOGGED_IN_USERS',
-      ClIENT_SOCKET_ID: 'ClIENT_SOCKET_ID',
+      SOCKET_ID: 'SOCKET_ID',
     },
     connection: 'http://localhost:5000/',
   },

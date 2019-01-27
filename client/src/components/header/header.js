@@ -10,13 +10,13 @@ import './styles/header.css';
 
 const mapStateToProps = state => state;
 const mapDispatchToProps = dispatch => bindActionCreators({ getUser }, dispatch);
+const { clientEmit: { SEND_LOGGED_IN_USER, USER_LOGGED_OUT } } = socketConstants;
 
 class Header extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = { };
-    // const { getLoggedInUsers: loggedInUsers } = this.props;
   }
 
   componentDidMount() {
@@ -27,10 +27,9 @@ class Header extends React.Component {
     const { getUser: getUserStatus } = this.props;
     await getUserStatus();
     const { user } = this.props;
-    if (!user.profile.authenticated) return;
     const payloadToSend = user.profile.authenticated ? user.profile : null;
     clientEmitter(
-      socketConstants.clientEmit.SEND_LOGGED_IN_USER,
+      SEND_LOGGED_IN_USER,
       payloadToSend,
     );
   }
@@ -40,13 +39,15 @@ class Header extends React.Component {
     await getUserStatus();
     const { user } = this.props;
     user.profile.remove = true;
-    clientEmitter(socketConstants.clientEmit.USER_LOGGED_OUT, user.profile);
+    clientEmitter(USER_LOGGED_OUT, user.profile);
     window.location.assign('/auth/logout');
   }
 
   render() {
     const { user, socket } = this.props;
-    const usersMessage = socket.usersLoggedIn ? `${socket.usersLoggedIn} users logged in` : null;
+    const usersMessage = socket.usersLoggedIn
+      ? `${socket.usersLoggedIn} user${socket.usersLoggedIn < 2 ? '' : 's'} logged in`
+      : null;
     if (user.profile) {
       const { user: { profile: { authenticated } } } = this.props;
       return (
