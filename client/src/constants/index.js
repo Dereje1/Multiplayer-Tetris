@@ -15,11 +15,15 @@ module.exports = {
     clientEmit: {
       SEND_LOGGED_IN_USER: 'SEND_LOGGED_IN_USER',
       USER_LOGGED_OUT: 'USER_LOGGED_OUT',
+      LOOK_FOR_OPPONENTS: 'LOOK_FOR_OPPONENTS',
+      OPPONENT_UNMOUNTED: 'OPPONENT_UNMOUNTED',
     },
     serverEmit: {
       SERVER_RESET: 'SERVER_RESET',
       LOGGED_IN_USERS: 'LOGGED_IN_USERS',
       SOCKET_ID: 'SOCKET_ID',
+      OPPONENT_POOL: 'OPPONENT_POOL',
+      UNMOUNT_OPPONENT: 'UNMOUNT_OPPONENT',
     },
     connection: 'http://localhost:5000/',
   },

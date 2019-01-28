@@ -3,14 +3,14 @@ import PropTypes from 'prop-types';
 import './styles/opponentdescription.css';
 /* opponent top part of component */
 const OpponentDescription = ({
-  opponentState,
+  socketState,
   difficulty,
   setDifficulty,
   requestInvite,
   acceptInvite,
 }) => {
   // stage 1 - no logged in opponents in multiplayer mode found
-  if (opponentState.status[0] === 'noopponents' && !Object.keys(opponentState.opponent).length) {
+  if (socketState.opponents && !socketState.opponents.length) {
     return (
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription">
@@ -24,15 +24,15 @@ const OpponentDescription = ({
     );
   }
   // stage 2 - logged in opponents in multiplayer mode found, display invitation buttons
-  if (opponentState.status[0] === 'opponents') {
-    const players = opponentState.playerPool.map(p => (
+  if (socketState.opponents && socketState.opponents.length) {
+    const players = socketState.opponents.map(p => (
       <button
         type="submit"
         className="opponentContainer__opponentDescription__playersbutton"
         key={p.socketId}
         onClick={() => requestInvite(p.socketId)}
       >
-        {p.displayName.split(' ')[0]}
+        {p.displayname.split(' ')[0]}
       </button>));
     return (
       <div className="opponentContainer__opponentDescription">
@@ -52,13 +52,13 @@ const OpponentDescription = ({
     );
   }
   // stage 3 - an invitation has been requested, display invitation for the invited
-  if (opponentState.status[0] === 'Invite') {
+  if (socketState.status && socketState.status[0] === 'Invite') {
     return (
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription__invitation">
           <p className="writing">Invite from</p>
-          <p className="writing">{opponentState.status[1][0].displayName.split(' ')[0]}</p>
-          <p className="writing">{`Difficulty = ${opponentState.status[1][1]}`}</p>
+          <p className="writing">{socketState.status[1][0].displayName.split(' ')[0]}</p>
+          <p className="writing">{`Difficulty = ${socketState.status[1][1]}`}</p>
           <button type="submit" className="opponentContainer__opponentDescription__invitation__button-accept-invitation" onClick={() => acceptInvite()}>Accept</button>
           <button type="submit" className="opponentContainer__opponentDescription__invitation__button-decline-invitation">Decline</button>
         </div>
@@ -66,35 +66,35 @@ const OpponentDescription = ({
     );
   }
   // stage 4 - invitation has been accepted, display pre game warm up
-  if (opponentState.status[0] === 'PreGame') {
+  if (socketState.status && socketState.status[0] === 'PreGame') {
     return ( // to render on game
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription__Timer">
           <h4>GET READY</h4>
           <h4>TO DUEL WITH:</h4>
-          <p className="timercountdown">{opponentState.opponent.displayName.split(' ')[0]}</p>
-          <p className="timercountdown">{`in ${opponentState.status[1]} s`}</p>
+          <p className="timercountdown">{socketState.opponent.displayName.split(' ')[0]}</p>
+          <p className="timercountdown">{`in ${socketState.status[1]} s`}</p>
         </div>
       </div>
     );
   }
   // stage 5 - Game has started
-  if (opponentState.status[0] === 'Playing' && Object.keys(opponentState.gameState).length) {
+  if (socketState.status && socketState.status[0] === 'Playing' && Object.keys(socketState.gameState).length) {
     return ( // to render on game
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription__GamePlay">
-          <p className="writing">{opponentState.opponent.displayName.split(' ')[0]}</p>
+          <p className="writing">{socketState.opponent.displayName.split(' ')[0]}</p>
           <p className="writing">Lines Cleared</p>
-          <p className="opponentContainer__opponentDescription__GamePlay__linescleared">{opponentState.gameState.points.totalLinesCleared}</p>
+          <p className="opponentContainer__opponentDescription__GamePlay__linescleared">{socketState.gameState.points.totalLinesCleared}</p>
           <p className="writing">Games Played</p>
-          <p className="opponentContainer__opponentDescription__GamePlay__gamesplayed">{opponentState.opponent.stats.mpStats.games_played}</p>
+          <p className="opponentContainer__opponentDescription__GamePlay__gamesplayed">{socketState.opponent.stats.mpStats.games_played}</p>
         </div>
       </div>
     );
   }
   // stage 6 - Game is done back to single player mode
-  if (opponentState.status[0] === 'GameOver') {
-    return opponentState.status[1]
+  if (socketState.status && socketState.status[0] === 'GameOver') {
+    return socketState.status[1]
       ? ( // to render on game
         <div className="opponentContainer__opponentDescription">
           <div className="opponentContainer__opponentDescription__winner">
@@ -122,14 +122,14 @@ const OpponentDescription = ({
 };
 
 OpponentDescription.defaultProps = {
-  opponentState: {},
+  socketState: {},
   setDifficulty: null,
   requestInvite: null,
   acceptInvite: null,
   difficulty: 2,
 };
 OpponentDescription.propTypes = {
-  opponentState: PropTypes.objectOf(PropTypes.any),
+  socketState: PropTypes.objectOf(PropTypes.any),
   setDifficulty: PropTypes.func,
   requestInvite: PropTypes.func,
   acceptInvite: PropTypes.func,

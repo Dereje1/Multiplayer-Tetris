@@ -1,10 +1,17 @@
 import io from 'socket.io-client';
 import store from './redux/store';
 import { socket as socketConstants } from './constants/index';
-import { getLoggedInUsers, getClientSocketId } from './redux/actions/socket';
+import {
+  getLoggedInUsers, getClientSocketId, getOpponents, removeOpponents,
+} from './redux/actions/socket';
 
 const socketConnection = io(socketConstants.connection);
-const { serverEmit: { LOGGED_IN_USERS, SOCKET_ID, SERVER_RESET } } = socketConstants;
+const {
+  serverEmit: {
+    LOGGED_IN_USERS, SOCKET_ID, SERVER_RESET, OPPONENT_POOL,
+    UNMOUNT_OPPONENT,
+  },
+} = socketConstants;
 const { clientEmit: { SEND_LOGGED_IN_USER } } = socketConstants;
 
 const clientEmitter = (event, dataToEmit) => {
@@ -36,6 +43,16 @@ socketConnection.on(
 socketConnection.on(
   SOCKET_ID,
   data => store.dispatch(getClientSocketId(data)),
+);
+
+socketConnection.on(
+  OPPONENT_POOL,
+  data => store.dispatch(getOpponents(data)),
+);
+
+socketConnection.on(
+  UNMOUNT_OPPONENT,
+  () => store.dispatch(removeOpponents()),
 );
 
 export default clientEmitter;

@@ -1,10 +1,15 @@
 // handles all socket transactions
 const connectedUsers = require('./connectedusers');
 const disconnectedUsers = require('./disconnectedusers');
+const game = require('./game');
 const CONSTANTS = require('../../client/src/constants/index').socket;
 const utility = require('./utility');
 
-const { serverEmit: { LOGGED_IN_USERS, SOCKET_ID, SERVER_RESET } } = CONSTANTS;
+const {
+  serverEmit: {
+    LOGGED_IN_USERS, SOCKET_ID, SERVER_RESET, OPPONENT_POOL,
+  },
+} = CONSTANTS;
 
 const master = (io) => {
   // establish initial connection and get socket on callback
@@ -30,6 +35,12 @@ const master = (io) => {
       utility.setUsers(updatedUsers);
       io.emit(LOGGED_IN_USERS, updatedUsers.length);
       console.log('A User has disconnected', socket.id);
+    });
+    // Handle Game Play
+    game(socket, (err, returnedData) => {
+      if (err) throw err;
+      if (!returnedData) return;
+      if (returnedData.operation === 'generateOpponentPool') socket.emit(OPPONENT_POOL, returnedData.data);
     });
   });
 };

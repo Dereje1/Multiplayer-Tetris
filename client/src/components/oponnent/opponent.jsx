@@ -3,12 +3,8 @@ import PropTypes from 'prop-types';
 import './styles/opponentdescription.css';
 // connect to redux
 import { connect } from 'react-redux';
-/* not handled yet
-import {
-  SIMULATE_GAMEPLAY,
-} from '../../constants';
-*/
-// import { socket } from '../../Actions/socket';
+import clientEmitter from '../../sockethandler';
+import { socket as socketConstants } from '../../constants/index';
 import {
   clearCanvas, drawRubble, drawBoundary, drawCells,
 } from '../game/scripts/canvas';
@@ -18,8 +14,8 @@ import OpponentDescription from './opponentInfo';
 
 // reads from store
 const mapStateToProps = state => state;
+const { clientEmit: { LOOK_FOR_OPPONENTS, OPPONENT_UNMOUNTED } } = socketConstants;
 
-// writes to store
 class Opponent extends React.Component {
 
   constructor(props) {
@@ -47,6 +43,7 @@ class Opponent extends React.Component {
   componentDidMount() {
     this.countGameover = 0;
     // socket.emit('PLAYER_JOINED', JSON.stringify(this.props.user));
+    clientEmitter(LOOK_FOR_OPPONENTS, null);
     console.log('Opponent Mounted!!');
   }
 
@@ -67,6 +64,7 @@ class Opponent extends React.Component {
   }
 
   componentWillUnmount() {
+    clientEmitter(OPPONENT_UNMOUNTED, null);
     // socket.emit('COMPONENT_UNMOUNTED', 'opponent');
     // socket.emit('disconnect', '');
   }
@@ -268,11 +266,11 @@ class Opponent extends React.Component {
   /* done sockets */
 
   render() {
-    const { difficulty, game } = this.props;
+    const { difficulty, game, socket } = this.props;
     return (
       <div className="opponentContainer">
         <OpponentDescription
-          opponentState={this.state}
+          socketState={socket}
           difficulty={difficulty}
           setDifficulty={this.setDifficulty}
           requestInvite={sId => this.requestInvite(sId)}
@@ -292,6 +290,7 @@ class Opponent extends React.Component {
 Opponent.defaultProps = {
   game: {},
   user: {},
+  socket: {},
   onFloorRaise: null,
   onReset: null,
   onGameEmit: null,
@@ -303,6 +302,7 @@ Opponent.defaultProps = {
   difficulty: 2,
 };
 Opponent.propTypes = {
+  socket: PropTypes.objectOf(PropTypes.any),
   game: PropTypes.objectOf(PropTypes.any),
   user: PropTypes.objectOf(PropTypes.any),
   difficulty: PropTypes.number,
