@@ -39,5 +39,10 @@
         font-size: 1em;
         color: rgb(119, 93, 23);
         font-weight: bold;
+        cursor: pointer;
     }
+}
+
+*:focus{
+    outline: none;
 }

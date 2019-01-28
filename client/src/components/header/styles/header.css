@@ -54,5 +54,10 @@
   font-size: 1em;
   color: #775d17;
   font-weight: bold;
+  cursor: pointer;
+}
+
+*:focus {
+  outline: none;
 }
 /*# sourceMappingURL=header.css.map */

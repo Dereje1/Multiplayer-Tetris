@@ -46,7 +46,7 @@ class Header extends React.Component {
   render() {
     const { user, socket } = this.props;
     const usersMessage = socket.usersLoggedIn
-      ? `${socket.usersLoggedIn} user${socket.usersLoggedIn < 2 ? '' : 's'} logged in`
+      ? `${socket.usersLoggedIn}  logged in user${socket.usersLoggedIn < 2 ? '' : 's'}`
       : null;
     if (user.profile) {
       const { user: { profile: { authenticated } } } = this.props;
@@ -58,7 +58,15 @@ class Header extends React.Component {
               ? <div id="authbutton"><button id="logout" type="submit" onClick={this.logOutUser}>Logout</button></div>
               : <div id="authbutton"><button id="login" type="submit" onClick={() => window.location.assign('/auth/google')} /></div>
           }
-          <div id="users"><span>{usersMessage}</span></div>
+          <div
+            id="users"
+            role="button"
+            tabIndex={-1}
+            onKeyDown={() => {}}
+            onClick={() => clientEmitter('pool', null)}
+          >
+            <span>{usersMessage}</span>
+          </div>
         </div>
       );
     }
