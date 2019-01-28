@@ -8,9 +8,15 @@ const OpponentDescription = ({
   setDifficulty,
   requestInvite,
   acceptInvite,
+  declineInvite,
+  getPool,
 }) => {
+  const { temp } = socketState;
+  const {
+    opponents, invitationFrom, invitationTo, declinedInvitation,
+  } = temp;
   // stage 1 - no logged in opponents in multiplayer mode found
-  if (socketState.opponents && !socketState.opponents.length) {
+  if (opponents && !opponents.length) {
     return (
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription">
@@ -24,8 +30,8 @@ const OpponentDescription = ({
     );
   }
   // stage 2 - logged in opponents in multiplayer mode found, display invitation buttons
-  if (socketState.opponents && socketState.opponents.length) {
-    const players = socketState.opponents.map(p => (
+  if (opponents && opponents.length) {
+    const players = socketState.temp.opponents.map(p => (
       <button
         type="submit"
         className="opponentContainer__opponentDescription__playersbutton"
@@ -52,49 +58,74 @@ const OpponentDescription = ({
     );
   }
   // stage 3 - an invitation has been requested, display invitation for the invited
-  if (socketState.status && socketState.status[0] === 'Invite') {
+  if (invitationFrom) {
     return (
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription__invitation">
           <p className="writing">Invite from</p>
-          <p className="writing">{socketState.status[1][0].displayName.split(' ')[0]}</p>
-          <p className="writing">{`Difficulty = ${socketState.status[1][1]}`}</p>
+          <p className="writing">{socketState.temp.invitationFrom.displayname.split(' ')[0]}</p>
+          <p className="writing">{`Difficulty = ${socketState.temp.invitationFrom.difficulty}`}</p>
           <button type="submit" className="opponentContainer__opponentDescription__invitation__button-accept-invitation" onClick={() => acceptInvite()}>Accept</button>
-          <button type="submit" className="opponentContainer__opponentDescription__invitation__button-decline-invitation">Decline</button>
+          <button type="submit" className="opponentContainer__opponentDescription__invitation__button-decline-invitation" onClick={() => declineInvite()}>Decline</button>
+        </div>
+      </div>
+    );
+  }
+  // display pending invitation for the requester
+  if (invitationTo) {
+    return (
+      <div className="opponentContainer__opponentDescription">
+        <div className="opponentContainer__opponentDescription__invitation">
+          <p className="writing">Pending</p>
+          <p className="writing">Invitation to</p>
+          <p className="writing">{socketState.temp.invitationTo.displaynameReciever.split(' ')[0]}</p>
+          <div className="loading" />
+        </div>
+      </div>
+    );
+  }
+  // Invitation has been declined
+  if (declinedInvitation) {
+    return (
+      <div className="opponentContainer__opponentDescription">
+        <div className="opponentContainer__opponentDescription__invitation">
+          <p className="writing">Invitation</p>
+          <p className="writing">Declined</p>
+          <button type="submit" className="opponentContainer__opponentDescription__invitation__button-decline-invitation" onClick={() => getPool()}>Back</button>
         </div>
       </div>
     );
   }
   // stage 4 - invitation has been accepted, display pre game warm up
-  if (socketState.status && socketState.status[0] === 'PreGame') {
+  if (socketState.temp.status && socketState.temp.status[0] === 'PreGame') {
     return ( // to render on game
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription__Timer">
           <h4>GET READY</h4>
           <h4>TO DUEL WITH:</h4>
-          <p className="timercountdown">{socketState.opponent.displayName.split(' ')[0]}</p>
-          <p className="timercountdown">{`in ${socketState.status[1]} s`}</p>
+          <p className="timercountdown">{socketState.temp.opponent.displayName.split(' ')[0]}</p>
+          <p className="timercountdown">{`in ${socketState.temp.status[1]} s`}</p>
         </div>
       </div>
     );
   }
   // stage 5 - Game has started
-  if (socketState.status && socketState.status[0] === 'Playing' && Object.keys(socketState.gameState).length) {
+  if (socketState.temp.status && socketState.temp.status[0] === 'Playing' && Object.keys(socketState.temp.gameState).length) {
     return ( // to render on game
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription__GamePlay">
-          <p className="writing">{socketState.opponent.displayName.split(' ')[0]}</p>
+          <p className="writing">{socketState.temp.opponent.displayName.split(' ')[0]}</p>
           <p className="writing">Lines Cleared</p>
-          <p className="opponentContainer__opponentDescription__GamePlay__linescleared">{socketState.gameState.points.totalLinesCleared}</p>
+          <p className="opponentContainer__opponentDescription__GamePlay__linescleared">{socketState.temp.gameState.points.totalLinesCleared}</p>
           <p className="writing">Games Played</p>
-          <p className="opponentContainer__opponentDescription__GamePlay__gamesplayed">{socketState.opponent.stats.mpStats.games_played}</p>
+          <p className="opponentContainer__opponentDescription__GamePlay__gamesplayed">{socketState.temp.opponent.stats.mpStats.games_played}</p>
         </div>
       </div>
     );
   }
   // stage 6 - Game is done back to single player mode
-  if (socketState.status && socketState.status[0] === 'GameOver') {
-    return socketState.status[1]
+  if (socketState.temp.status && socketState.temp.status[0] === 'GameOver') {
+    return socketState.temp.status[1]
       ? ( // to render on game
         <div className="opponentContainer__opponentDescription">
           <div className="opponentContainer__opponentDescription__winner">
@@ -127,6 +158,8 @@ OpponentDescription.defaultProps = {
   requestInvite: null,
   acceptInvite: null,
   difficulty: 2,
+  declineInvite: {},
+  getPool: {},
 };
 OpponentDescription.propTypes = {
   socketState: PropTypes.objectOf(PropTypes.any),
@@ -134,5 +167,7 @@ OpponentDescription.propTypes = {
   requestInvite: PropTypes.func,
   acceptInvite: PropTypes.func,
   difficulty: PropTypes.number,
+  declineInvite: PropTypes.func,
+  getPool: PropTypes.func,
 };
 export default OpponentDescription;

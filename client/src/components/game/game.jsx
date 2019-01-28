@@ -64,8 +64,8 @@ class Game extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (!Object.keys(prevProps.game).length) return;
-    const { game: prevGame } = prevProps;
-    const { game } = this.props;
+    const { game: prevGame, socket: prevSocket } = prevProps;
+    const { game, socket } = this.props;
     const { multiPlayer } = this.state;
 
     /* load Canvas */
@@ -82,6 +82,11 @@ class Game extends React.Component {
        && prevGame.rubble.boundaryCells.length !== game.rubble.boundaryCells.length) {
       if (!game.activeShape.cells.length) this.drawFloor();
       else this.setState({ updateFloor: true });
+    }
+
+    /* an Invitation from another client */
+    if (socket.temp) {
+      if (!prevSocket.temp && socket.temp.invitationFrom) this.setState({ multiPlayer: true });
     }
   }
 
@@ -300,6 +305,10 @@ class Game extends React.Component {
   handleMultiplayer = () => {
     const { user } = this.props;
     const { multiPlayer } = this.state;
+    /*
+    if (!multiPlayer) showOpp = true;
+    if (socket.invitationFrom && multiPlayer) showOpp = false;
+    */
     if (user.profile.authenticated) {
       clearCanvas(this.canvasContextMajor, 'All', 'Multi'); // clear canvasMajor
       clearCanvas(this.canvasContextMinor, 'All', 'Multi'); // clear canvasMajor

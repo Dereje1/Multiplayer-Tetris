@@ -14,7 +14,15 @@ import OpponentDescription from './opponentInfo';
 
 // reads from store
 const mapStateToProps = state => state;
-const { clientEmit: { LOOK_FOR_OPPONENTS, OPPONENT_UNMOUNTED } } = socketConstants;
+const {
+  clientEmit: {
+    LOOK_FOR_OPPONENTS,
+    OPPONENT_UNMOUNTED,
+    INVITATION_SENT,
+    INVITATION_DECLINED,
+    INVITATION_ACCEPTED,
+  },
+} = socketConstants;
 
 class Opponent extends React.Component {
 
@@ -41,15 +49,17 @@ class Opponent extends React.Component {
   }
 
   componentDidMount() {
-    this.countGameover = 0;
-    // socket.emit('PLAYER_JOINED', JSON.stringify(this.props.user));
-    clientEmitter(LOOK_FOR_OPPONENTS, null);
     console.log('Opponent Mounted!!');
+    this.countGameover = 0;
+    const { socket: { temp } } = this.props;
+    if (!temp) clientEmitter(LOOK_FOR_OPPONENTS, null);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
+    /*
     const { gameState, status } = this.state;
     const { onDisableExit } = this.props;
+
     if (Object.keys(prevState.gameState).length) {
       if (prevState.gameState.points.totalLinesCleared
         !== gameState.points.totalLinesCleared) {
@@ -61,9 +71,13 @@ class Opponent extends React.Component {
         onDisableExit(true);
       }
     }
+    */
   }
 
   componentWillUnmount() {
+    const { socket: { temp } } = this.props;
+    // if a person leaves component in the middle of an invitation
+    if (temp.invitationFrom) clientEmitter(INVITATION_DECLINED, temp);
     clientEmitter(OPPONENT_UNMOUNTED, null);
     // socket.emit('COMPONENT_UNMOUNTED', 'opponent');
     // socket.emit('disconnect', '');
@@ -247,15 +261,23 @@ class Opponent extends React.Component {
   };
 
   /* process socket-out-going below */
-  requestInvite = (p) => {
-    console.log(p);
+  requestInvite = (sentTo) => {
+    const { difficulty } = this.props;
+    clientEmitter(INVITATION_SENT, { sentTo, difficulty });
     // socket.emit('INVITATION_SENT', { hostSocketId: p, difficulty: this.props.difficulty });
   }
 
+  declineInvite = () => {
+    const { socket: { temp } } = this.props;
+    clientEmitter(INVITATION_DECLINED, temp);
+    clientEmitter(LOOK_FOR_OPPONENTS, null);
+  };
+
   acceptInvite = () => {
-    const { status } = this.state;
-    const { onSetDifficulty } = this.props;
-    onSetDifficulty(status[1][1]);
+    const { socket: { temp } } = this.props;
+    // const { onSetDifficulty } = this.props;
+    clientEmitter(INVITATION_ACCEPTED, temp);
+    // onSetDifficulty(status[1][1]);
     this.setState({
       status: ['Loading', null],
     });
@@ -267,6 +289,7 @@ class Opponent extends React.Component {
 
   render() {
     const { difficulty, game, socket } = this.props;
+    if (!socket.temp) return null;
     return (
       <div className="opponentContainer">
         <OpponentDescription
@@ -275,6 +298,8 @@ class Opponent extends React.Component {
           setDifficulty={this.setDifficulty}
           requestInvite={sId => this.requestInvite(sId)}
           acceptInvite={() => this.acceptInvite()}
+          declineInvite={() => this.declineInvite()}
+          getPool={() => clientEmitter(LOOK_FOR_OPPONENTS, null)}
         />
         <canvas
           ref={this.canvasOpponent}

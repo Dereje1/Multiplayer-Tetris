@@ -8,6 +8,7 @@ const utility = require('./utility');
 const {
   serverEmit: {
     LOGGED_IN_USERS, SOCKET_ID, SERVER_RESET, OPPONENT_POOL,
+    INVITE_SENT, INVITE_RECIEVED, DECLINED_INVITATION, ACCEPTED_INVITATION,
   },
 } = CONSTANTS;
 
@@ -36,11 +37,25 @@ const master = (io) => {
       io.emit(LOGGED_IN_USERS, updatedUsers.length);
       console.log('A User has disconnected', socket.id);
     });
-    // Handle Game Play
+    // Handle Game Pla
     game(socket, (err, returnedData) => {
       if (err) throw err;
       if (!returnedData) return;
       if (returnedData.operation === 'generateOpponentPool') socket.emit(OPPONENT_POOL, returnedData.data);
+      if (returnedData.operation === 'recieveInvite') {
+        io.to(returnedData.data.reciever.socketIdReciever)
+          .emit(INVITE_RECIEVED, returnedData.data.sender);
+        socket.emit(INVITE_SENT, returnedData.data.reciever);
+      }
+      if (returnedData.operation === 'declinedInvite') {
+        io.to(returnedData.data.sender)
+          .emit(DECLINED_INVITATION, null);
+      }
+      if (returnedData.operation === 'acceptedInvite') {
+        io.to(returnedData.data.reciever.opponentSID)
+          .emit(ACCEPTED_INVITATION, returnedData.data.sender);
+        socket.emit(ACCEPTED_INVITATION, returnedData.data.reciever);
+      }
     });
   });
 };

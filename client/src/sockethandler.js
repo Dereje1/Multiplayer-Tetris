@@ -3,13 +3,15 @@ import store from './redux/store';
 import { socket as socketConstants } from './constants/index';
 import {
   getLoggedInUsers, getClientSocketId, getOpponents, removeOpponents,
+  sendInvite, receiveInvite, declinedInvitation, acceptedInvitation,
 } from './redux/actions/socket';
 
 const socketConnection = io(socketConstants.connection);
 const {
   serverEmit: {
     LOGGED_IN_USERS, SOCKET_ID, SERVER_RESET, OPPONENT_POOL,
-    UNMOUNT_OPPONENT,
+    UNMOUNT_OPPONENT, INVITE_SENT, INVITE_RECIEVED, DECLINED_INVITATION,
+    ACCEPTED_INVITATION,
   },
 } = socketConstants;
 const { clientEmit: { SEND_LOGGED_IN_USER } } = socketConstants;
@@ -53,6 +55,26 @@ socketConnection.on(
 socketConnection.on(
   UNMOUNT_OPPONENT,
   () => store.dispatch(removeOpponents()),
+);
+
+socketConnection.on(
+  INVITE_SENT,
+  reciever => store.dispatch(sendInvite(reciever)),
+);
+
+socketConnection.on(
+  INVITE_RECIEVED,
+  sender => store.dispatch(receiveInvite(sender)),
+);
+
+socketConnection.on(
+  DECLINED_INVITATION,
+  () => store.dispatch(declinedInvitation()),
+);
+
+socketConnection.on(
+  ACCEPTED_INVITATION,
+  opponentData => store.dispatch(acceptedInvitation(opponentData)),
 );
 
 export default clientEmitter;
