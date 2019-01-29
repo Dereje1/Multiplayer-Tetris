@@ -4,6 +4,7 @@ import { socket as socketConstants } from './constants/index';
 import {
   getLoggedInUsers, getClientSocketId, getOpponents, removeOpponents,
   sendInvite, receiveInvite, declinedInvitation, acceptedInvitation,
+  startCountDown,
 } from './redux/actions/socket';
 
 const socketConnection = io(socketConstants.connection);
@@ -74,7 +75,11 @@ socketConnection.on(
 
 socketConnection.on(
   ACCEPTED_INVITATION,
-  opponentData => store.dispatch(acceptedInvitation(opponentData)),
+  async (opponentData) => {
+    const acceptDispatch = await store.dispatch(acceptedInvitation(opponentData));
+    const timeToCountDown = acceptDispatch.payload.countdown;
+    store.dispatch(startCountDown(timeToCountDown));
+  },
 );
 
 export default clientEmitter;

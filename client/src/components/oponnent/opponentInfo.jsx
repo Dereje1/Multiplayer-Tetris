@@ -14,6 +14,7 @@ const OpponentDescription = ({
   const { temp } = socketState;
   const {
     opponents, invitationFrom, invitationTo, declinedInvitation,
+    acceptedInvitation, gameStart,
   } = temp;
   // stage 1 - no logged in opponents in multiplayer mode found
   if (opponents && !opponents.length) {
@@ -97,20 +98,20 @@ const OpponentDescription = ({
     );
   }
   // stage 4 - invitation has been accepted, display pre game warm up
-  if (socketState.temp.status && socketState.temp.status[0] === 'PreGame') {
+  if (acceptedInvitation) {
     return ( // to render on game
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription__Timer">
           <h4>GET READY</h4>
           <h4>TO DUEL WITH:</h4>
-          <p className="timercountdown">{socketState.temp.opponent.displayName.split(' ')[0]}</p>
-          <p className="timercountdown">{`in ${socketState.temp.status[1]} s`}</p>
+          <p className="timercountdown">{acceptedInvitation.opponnetDisplayname.split(' ')[0]}</p>
+          <p className="timercountdown">{`in ${acceptedInvitation.countdown} s`}</p>
         </div>
       </div>
     );
   }
   // stage 5 - Game has started
-  if (socketState.temp.status && socketState.temp.status[0] === 'Playing' && Object.keys(socketState.temp.gameState).length) {
+  if (gameStart) {
     return ( // to render on game
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription__GamePlay">

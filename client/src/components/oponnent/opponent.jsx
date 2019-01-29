@@ -56,6 +56,21 @@ class Opponent extends React.Component {
   }
 
   componentDidUpdate() {
+    const { socket: { temp } } = this.props;
+    if (temp) {
+      const tempKey = Object.keys(temp)[0];
+
+      switch (tempKey) {
+        case 'acceptedInvitation': {
+          const { acceptedInvitation: { countdown, opponentSID, opponnetDisplayname } } = temp;
+          if (countdown === 0) console.log(`Ready to start game with ${opponnetDisplayname} ${opponentSID}`);
+        }
+          break;
+        default:
+          break;
+      }
+    }
+
     /*
     const { gameState, status } = this.state;
     const { onDisableExit } = this.props;

@@ -58,8 +58,9 @@ const gamePlay = (socket, callback) => {
   socket.on(INVITATION_ACCEPTED, (data) => {
     const currentlyLoggedIn = [...utility.getUsers()];
     const { invitationFrom: { socketId: invitationSenderId } } = data;
-    const sender = {};
-    const reciever = {};
+    const timeToGameStart = 15;
+    const sender = { };
+    const reciever = { };
     currentlyLoggedIn.forEach(
       (user) => {
         const { displayname, username } = user;
@@ -70,12 +71,14 @@ const gamePlay = (socket, callback) => {
           // for client usage
           reciever.opponnetDisplayname = displayname;
           reciever.opponnetusername = username;
+          sender.countdown = timeToGameStart;
           sender.opponentSID = socket.id;
         }
         if (user.socketId === socket.id) { // user that accepted the invite
           user.oponnentId = invitationSenderId;
           sender.opponnetDisplayname = displayname;
           sender.opponnetusername = username;
+          reciever.countdown = timeToGameStart;
           reciever.opponentSID = invitationSenderId;
         }
       },

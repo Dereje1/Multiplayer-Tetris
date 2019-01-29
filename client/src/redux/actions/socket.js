@@ -6,6 +6,7 @@ const {
     UNMOUNT_OPPONENT, INVITE_SENT, INVITE_RECIEVED,
     DECLINED_INVITATION, ACCEPTED_INVITATION,
   },
+  GAME_COUNTDOWN,
 } = socketConstants;
 
 export const getLoggedInUsers = data => (
@@ -62,3 +63,15 @@ export const acceptedInvitation = data => (
     payload: data,
   }
 );
+
+export const startCountDown = counter => (dispatch) => {
+  let secondsOfTimer = counter; // linter complaing on param reassignment
+  const intervalId = setInterval(() => {
+    secondsOfTimer -= 1;
+    if (secondsOfTimer <= 0) clearInterval(intervalId);
+    dispatch({
+      type: GAME_COUNTDOWN,
+      payload: secondsOfTimer,
+    });
+  }, 1000);
+};

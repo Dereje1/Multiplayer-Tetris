@@ -32,6 +32,7 @@ module.exports = {
       DECLINED_INVITATION: 'DECLINED_INVITATION',
       ACCEPTED_INVITATION: 'ACCEPTED_INVITATION',
     },
+    GAME_COUNTDOWN: 'GAME_COUNTDOWN',
     connection: 'http://localhost:5000/',
   },
 };

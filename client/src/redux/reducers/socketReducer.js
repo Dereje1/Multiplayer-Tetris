@@ -6,6 +6,7 @@ const {
     UNMOUNT_OPPONENT, INVITE_SENT, INVITE_RECIEVED,
     DECLINED_INVITATION, ACCEPTED_INVITATION,
   },
+  GAME_COUNTDOWN,
 } = socketConstants;
 
 const socketReducer = (state = {}, action) => {
@@ -64,6 +65,20 @@ const socketReducer = (state = {}, action) => {
           acceptedInvitation: action.payload,
         },
       });
+    }
+    case GAME_COUNTDOWN: {
+      let currentState = Object.assign({}, state);
+      currentState = {
+        ...state,
+        temp: {
+          ...state.temp,
+          acceptedInvitation: {
+            ...state.temp.acceptedInvitation,
+            countdown: action.payload,
+          },
+        },
+      };
+      return currentState;
     }
     default:
       return state;
