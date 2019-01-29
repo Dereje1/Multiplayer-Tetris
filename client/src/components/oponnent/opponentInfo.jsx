@@ -84,7 +84,7 @@ const OpponentDescription = ({
       </div>
     );
   }
-  // Invitation has been declined
+  // Invitation has been declined Inform the sender.
   if (declinedInvitation) {
     return (
       <div className="opponentContainer__opponentDescription">

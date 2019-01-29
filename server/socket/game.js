@@ -47,11 +47,11 @@ const gamePlay = (socket, callback) => {
     });
   });
   socket.on(INVITATION_DECLINED, (data) => {
-    const { invitationFrom: { socketId } } = data;
+    const { invitationFrom: { socketId: invitationSenderId } } = data;
     callback(null, {
       operation: 'declinedInvite',
       data: {
-        sender: socketId,
+        sender: invitationSenderId,
       },
     });
   });
@@ -65,7 +65,9 @@ const gamePlay = (socket, callback) => {
         const { displayname, username } = user;
         // send opponent data to respective players.
         if (user.socketId === invitationSenderId) { // user that sent the invite
+          // change status from null on server
           user.oponnentId = socket.id;
+          // for client usage
           reciever.opponnetDisplayname = displayname;
           reciever.opponnetusername = username;
           sender.opponentSID = socket.id;
