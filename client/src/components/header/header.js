@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import getUser from '../../redux/actions/authentication';
-import clientEmitter from '../../sockethandler';
+import { clientEmitter } from '../../sockethandler';
 import { socket as socketConstants } from '../../constants/index';
 
 import './styles/header.css';

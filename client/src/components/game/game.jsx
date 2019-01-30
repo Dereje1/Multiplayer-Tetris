@@ -1,9 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './styles/game.css';
-
-// import { socket } from '../../Actions/socket';
-// import { SIMULATE_GAMEPLAY } from '../../constants';
 // connect to redux and get action creators
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -51,7 +48,6 @@ class Game extends React.Component {
       difficulty: 2,
       buttonPause: true,
       updateFloor: false,
-      // opponentSocketId: '', // commented out for single player
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
@@ -91,8 +87,6 @@ class Game extends React.Component {
   }
 
   componentWillUnmount() {
-    // socket.emit('disconnect', '');
-    // socket.emit('COMPONENT_UNMOUNTED', 'Demo');
     this.endTick(true, 'componentWillUnmount');
   }
 
@@ -121,7 +115,6 @@ class Game extends React.Component {
       this.startTick();
     } else {
       this.setState({
-        // opponentSocketId: '', /* comment out for single player */
         buttonPause: true,
       }, () => {
         clearCanvas(this.canvasContextMajor, 'All', 'reset'); // clear canvasMajor
@@ -136,7 +129,6 @@ class Game extends React.Component {
     if (this.downInterval)clearInterval(this.downInterval);
     if (makeNewShape) this.newShape();
     this.downInterval = setInterval(() => {
-      console.log('ticking');
       const { updateFloor } = this.state;
       // eslint-disable-next-line react/destructuring-assignment
       if (this.props.game.paused) clearInterval(this.downInterval);
@@ -305,10 +297,7 @@ class Game extends React.Component {
   handleMultiplayer = () => {
     const { user } = this.props;
     const { multiPlayer } = this.state;
-    /*
-    if (!multiPlayer) showOpp = true;
-    if (socket.invitationFrom && multiPlayer) showOpp = false;
-    */
+
     if (user.profile.authenticated) {
       clearCanvas(this.canvasContextMajor, 'All', 'Multi'); // clear canvasMajor
       clearCanvas(this.canvasContextMinor, 'All', 'Multi'); // clear canvasMajor
@@ -317,15 +306,6 @@ class Game extends React.Component {
       }, () => this.resetBoard(false));// don't forget to add reset board call back here
     }
   }
-
-  /* commented out for single player
-  gameEmit = ({ self, opponnent }) => {
-    this.setState({
-      selfSocketId: self,
-      opponentSocketId: opponnent.socketId,
-    }, () => this.resetBoard());
-  }
- */
 
   gameOver = (multiPlayerData) => {
     if (multiPlayerData) console.log('Do nothing Till db setup');
@@ -349,7 +329,6 @@ class Game extends React.Component {
     */
     this.setState({
       multiPlayer: false,
-      // opponentSocketId: '', /* comment out for single player */
       buttonPause: true,
     }, () => this.resetBoard(false, false, true));
   }
@@ -387,13 +366,9 @@ class Game extends React.Component {
             ? (
               <Opponent
                 onReset={reStart => this.resetBoard(reStart)}
-                onGameEmit={socketInfo => this.gameEmit(socketInfo)}
                 onFloorRaise={f => this.floorRaise(f)}
                 onGameOver={db => this.gameOver(db)}
-                onPause={() => this.handlePause(true)}
-                onClearCanvas={() => clearCanvas(this.canvasContextMajor, this.game)}
                 onSetDifficulty={d => this.setState({ difficulty: d })}
-                onDisableExit={setTo => this.setState({ disableExit: setTo })}
                 difficulty={difficulty}
               />
             )

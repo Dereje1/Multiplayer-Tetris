@@ -80,7 +80,7 @@ const drawScreen = (
       paused: false,
     };
     store.dispatch(updateScreen(data));
-    drawShape(canvasContextMajor, locatedShape, store.getState().game);
+    drawShape(canvasContextMajor, store.getState().game);
   }
   // if (this.state.multiPlayer) socket.emit(SIMULATE_GAMEPLAY, JSON.stringify(this.props.game));
   /* commented out for single player
