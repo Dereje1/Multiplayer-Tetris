@@ -8,6 +8,8 @@ const {
     INVITATION_SENT,
     INVITATION_DECLINED,
     INVITATION_ACCEPTED,
+    START_GAME,
+    UPDATED_CLIENT_SCREEN,
   },
 } = CONSTANTS;
 const { serverEmit: { UNMOUNT_OPPONENT } } = CONSTANTS;
@@ -58,27 +60,24 @@ const gamePlay = (socket, callback) => {
   socket.on(INVITATION_ACCEPTED, (data) => {
     const currentlyLoggedIn = [...utility.getUsers()];
     const { invitationFrom: { socketId: invitationSenderId } } = data;
-    const timeToGameStart = 15;
-    const sender = { };
-    const reciever = { };
+    const timeToGameStart = 2;
+    // Initialize the game information objects
+    const sender = { countdown: timeToGameStart, difficulty: data.invitationFrom.difficulty };
+    const reciever = { countdown: timeToGameStart, difficulty: data.invitationFrom.difficulty };
     currentlyLoggedIn.forEach(
       (user) => {
-        const { displayname, username } = user;
+        const { displayname } = user;
         // send opponent data to respective players.
         if (user.socketId === invitationSenderId) { // user that sent the invite
           // change status from null on server
           user.oponnentId = socket.id;
           // for client usage
           reciever.opponnetDisplayname = displayname;
-          reciever.opponnetusername = username;
-          sender.countdown = timeToGameStart;
           sender.opponentSID = socket.id;
         }
         if (user.socketId === socket.id) { // user that accepted the invite
           user.oponnentId = invitationSenderId;
           sender.opponnetDisplayname = displayname;
-          sender.opponnetusername = username;
-          reciever.countdown = timeToGameStart;
           reciever.opponentSID = invitationSenderId;
         }
       },
@@ -90,6 +89,22 @@ const gamePlay = (socket, callback) => {
         sender,
         reciever,
       },
+    });
+  });
+  socket.on(START_GAME, (data) => {
+    const { opponentInfo, clientScreen } = data;
+    callback(null, {
+      operation: 'gamestart',
+      data: {
+        opponentInfo,
+        clientScreen,
+      },
+    });
+  });
+  socket.on(UPDATED_CLIENT_SCREEN, (data) => {
+    callback(null, {
+      operation: 'gameinprogress',
+      data,
     });
   });
 };

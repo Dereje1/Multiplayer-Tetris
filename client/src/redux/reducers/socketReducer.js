@@ -4,7 +4,7 @@ const {
   serverEmit: {
     LOGGED_IN_USERS, SOCKET_ID, OPPONENT_POOL,
     UNMOUNT_OPPONENT, INVITE_SENT, INVITE_RECIEVED,
-    DECLINED_INVITATION, ACCEPTED_INVITATION,
+    DECLINED_INVITATION, ACCEPTED_INVITATION, GAME_STARTED,
   },
   GAME_COUNTDOWN,
 } = socketConstants;
@@ -79,6 +79,15 @@ const socketReducer = (state = {}, action) => {
         },
       };
       return currentState;
+    }
+    case GAME_STARTED: {
+      const currentState = Object.assign({}, state);
+      delete currentState.temp;
+      return Object.assign({}, currentState, {
+        temp: {
+          gameInProgress: action.payload,
+        },
+      });
     }
     default:
       return state;

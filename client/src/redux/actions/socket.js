@@ -4,7 +4,7 @@ const {
   serverEmit: {
     LOGGED_IN_USERS, SOCKET_ID, OPPONENT_POOL,
     UNMOUNT_OPPONENT, INVITE_SENT, INVITE_RECIEVED,
-    DECLINED_INVITATION, ACCEPTED_INVITATION,
+    DECLINED_INVITATION, ACCEPTED_INVITATION, GAME_STARTED,
   },
   GAME_COUNTDOWN,
 } = socketConstants;
@@ -75,3 +75,10 @@ export const startCountDown = counter => (dispatch) => {
     });
   }, 1000);
 };
+
+export const startGame = data => (
+  {
+    type: GAME_STARTED,
+    payload: data,
+  }
+);

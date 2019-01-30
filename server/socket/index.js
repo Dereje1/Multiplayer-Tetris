@@ -9,6 +9,7 @@ const {
   serverEmit: {
     LOGGED_IN_USERS, SOCKET_ID, SERVER_RESET, OPPONENT_POOL,
     INVITE_SENT, INVITE_RECIEVED, DECLINED_INVITATION, ACCEPTED_INVITATION,
+    GAME_STARTED, OPPONENT_SCREEN,
   },
 } = CONSTANTS;
 
@@ -55,6 +56,19 @@ const master = (io) => {
         io.to(returnedData.data.reciever.opponentSID)
           .emit(ACCEPTED_INVITATION, returnedData.data.sender);
         socket.emit(ACCEPTED_INVITATION, returnedData.data.reciever);
+      }
+      if (returnedData.operation === 'gamestart') {
+        socket.emit(GAME_STARTED,
+          { info: returnedData.data.opponentInfo },
+          async (confirmation) => {
+            await console.log(confirmation);
+            io.to(returnedData.data.opponentInfo.opponentSID)
+              .emit(OPPONENT_SCREEN, returnedData.data.clientScreen);
+          });
+      }
+      if (returnedData.operation === 'gameinprogress') {
+        io.to(returnedData.data.opponentSID)
+          .emit(OPPONENT_SCREEN, returnedData.data.clientScreen);
       }
     });
   });

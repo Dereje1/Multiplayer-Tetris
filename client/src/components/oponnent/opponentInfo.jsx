@@ -14,7 +14,7 @@ const OpponentDescription = ({
   const { temp } = socketState;
   const {
     opponents, invitationFrom, invitationTo, declinedInvitation,
-    acceptedInvitation, gameStart,
+    acceptedInvitation, gameInProgress,
   } = temp;
   // stage 1 - no logged in opponents in multiplayer mode found
   if (opponents && !opponents.length) {
@@ -111,15 +111,15 @@ const OpponentDescription = ({
     );
   }
   // stage 5 - Game has started
-  if (gameStart) {
+  if (gameInProgress) {
     return ( // to render on game
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription__GamePlay">
-          <p className="writing">{socketState.temp.opponent.displayName.split(' ')[0]}</p>
+          <p className="writing">{gameInProgress.info.opponnetDisplayname.split(' ')[0]}</p>
           <p className="writing">Lines Cleared</p>
-          <p className="opponentContainer__opponentDescription__GamePlay__linescleared">{socketState.temp.gameState.points.totalLinesCleared}</p>
+          <p className="opponentContainer__opponentDescription__GamePlay__linescleared">{gameInProgress.opponentScreen ? gameInProgress.screen.points.totalLinesCleared : null}</p>
           <p className="writing">Games Played</p>
-          <p className="opponentContainer__opponentDescription__GamePlay__gamesplayed">{socketState.temp.opponent.stats.mpStats.games_played}</p>
+          <p className="opponentContainer__opponentDescription__GamePlay__gamesplayed">?</p>
         </div>
       </div>
     );
