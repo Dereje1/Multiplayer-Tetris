@@ -221,13 +221,13 @@ export const winRubble = (ctx, state, winners) => {
   });
 };
 
-export const drawGameOver = (ctx, ctxMinor, state) => {
+export const drawGameOver = (ctx, ctxMinor, state, opponent) => {
   const canvasContext = ctx;
   clearCanvas(ctx, 'All', 'draw game over Major');
   clearCanvas(ctxMinor, 'All', 'draw game over Minor');
   canvasContext.font = '60px serif';
   canvasContext.fillStyle = 'white';
-  canvasContext.fillText('Game Over', 14, 100);
+  canvasContext.fillText(opponent || 'Game Over', 14, 100);
   const textB = `${state.points.totalLinesCleared} Lines Cleared`;
   const textC = `Reached Level ${state.points.level}`;
   canvasContext.font = '30px serif';

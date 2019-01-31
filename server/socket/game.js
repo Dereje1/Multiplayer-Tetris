@@ -10,6 +10,7 @@ const {
     INVITATION_ACCEPTED,
     START_GAME,
     UPDATED_CLIENT_SCREEN,
+    GAME_OVER,
   },
 } = CONSTANTS;
 const { serverEmit: { UNMOUNT_OPPONENT } } = CONSTANTS;
@@ -29,10 +30,12 @@ const gamePlay = (socket, callback) => {
     });
     callback(null, { operation: 'generateOpponentPool', data: clientOpponentPool.slice(0, 4) });
   });
+
   socket.on(OPPONENT_UNMOUNTED, () => {
     socket.emit(UNMOUNT_OPPONENT, null);
     callback(null, null);
   });
+
   socket.on(INVITATION_SENT, (data) => {
     const currentlyLoggedIn = [...utility.getUsers()];
     const { sentTo, difficulty } = data;
@@ -48,6 +51,7 @@ const gamePlay = (socket, callback) => {
       },
     });
   });
+
   socket.on(INVITATION_DECLINED, (data) => {
     const { invitationFrom: { socketId: invitationSenderId } } = data;
     callback(null, {
@@ -57,6 +61,7 @@ const gamePlay = (socket, callback) => {
       },
     });
   });
+
   socket.on(INVITATION_ACCEPTED, (data) => {
     const currentlyLoggedIn = [...utility.getUsers()];
     const { invitationFrom: { socketId: invitationSenderId } } = data;
@@ -91,6 +96,7 @@ const gamePlay = (socket, callback) => {
       },
     });
   });
+
   socket.on(START_GAME, (data) => {
     const { opponentInfo, clientScreen } = data;
     callback(null, {
@@ -101,10 +107,25 @@ const gamePlay = (socket, callback) => {
       },
     });
   });
+
   socket.on(UPDATED_CLIENT_SCREEN, (data) => {
     callback(null, {
       operation: 'gameinprogress',
       data,
+    });
+  });
+
+  socket.on(GAME_OVER, (data) => {
+    const currentlyLoggedIn = [...utility.getUsers()];
+    const winnerSID = data.temp.gameInProgress.info.opponentSID;
+    const loosingSID = data.mySocketId;
+    currentlyLoggedIn.forEach((user) => {
+      if ((user.socketId === winnerSID) || (user.socketId === loosingSID)) user.oponnentId = null;
+    });
+    utility.setUsers(currentlyLoggedIn);
+    callback(null, {
+      operation: 'gameFinished',
+      data: { winnerSID, loosingSID },
     });
   });
 };

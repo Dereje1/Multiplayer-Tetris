@@ -84,6 +84,14 @@ class Opponent extends React.Component {
           }
         }
           break;
+        case 'gameOver': {
+          const { socket, onGameOver } = this.props;
+          const message = temp.gameOver.winnerSID === socket.mySocketId
+            ? 'You Won !!'
+            : 'You Lost !!';
+          if (!prevTemp.gameOver) onGameOver(message);
+        }
+          break;
         default:
           break;
       }
@@ -111,6 +119,8 @@ class Opponent extends React.Component {
   }
 
   setGame = (opponentScreenString) => {
+    const { socket: { temp } } = this.props;
+    if (temp.gameOver) return;
     const opponentScreenJSON = JSON.parse(opponentScreenString);
     const canvasOpponent = this.canvasOpponent.current;
     canvasOpponent.style.backgroundColor = 'black';
@@ -200,6 +210,7 @@ Opponent.defaultProps = {
   onReset: null, // callback to main game
   onSetDifficulty: null,
   difficulty: 2,
+  onGameOver: null,
 };
 Opponent.propTypes = {
   socket: PropTypes.objectOf(PropTypes.any),
@@ -208,6 +219,7 @@ Opponent.propTypes = {
   onFloorRaise: PropTypes.func,
   onReset: PropTypes.func,
   onSetDifficulty: PropTypes.func,
+  onGameOver: PropTypes.func,
 };
 
 export default connect(mapStateToProps)(Opponent);

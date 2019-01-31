@@ -14,7 +14,7 @@ const OpponentDescription = ({
   const { temp } = socketState;
   const {
     opponents, invitationFrom, invitationTo, declinedInvitation,
-    acceptedInvitation, gameInProgress,
+    acceptedInvitation, gameInProgress, gameOver,
   } = temp;
   // stage 1 - no logged in opponents in multiplayer mode found
   if (opponents && !opponents.length) {
@@ -125,27 +125,8 @@ const OpponentDescription = ({
     );
   }
   // stage 6 - Game is done back to single player mode
-  if (socketState.temp.status && socketState.temp.status[0] === 'GameOver') {
-    return socketState.temp.status[1]
-      ? ( // to render on game
-        <div className="opponentContainer__opponentDescription">
-          <div className="opponentContainer__opponentDescription__winner">
-            <p>Congratulations</p>
-            <p>You Have Won !!</p>
-          </div>
-        </div>
-      )
-      : ( // to render on game
-        <div className="opponentContainer__opponentDescription">
-          <div className="opponentContainer__opponentDescription__looser">
-            <p>You Have Lost</p>
-            <p>This Game, </p>
-            <p>Better Luck</p>
-            <p>Next Time !!</p>
-          </div>
-        </div>
-      );
-  }
+  if (gameOver) return null;
+
   return ( // to render on loading
     <div className="opponentContainer__opponentDescription">
       <div className="loading" />

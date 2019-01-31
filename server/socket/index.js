@@ -9,7 +9,7 @@ const {
   serverEmit: {
     LOGGED_IN_USERS, SOCKET_ID, SERVER_RESET, OPPONENT_POOL,
     INVITE_SENT, INVITE_RECIEVED, DECLINED_INVITATION, ACCEPTED_INVITATION,
-    GAME_STARTED, OPPONENT_SCREEN,
+    GAME_STARTED, OPPONENT_SCREEN, FINISH_GAME,
   },
 } = CONSTANTS;
 
@@ -69,6 +69,11 @@ const master = (io) => {
       if (returnedData.operation === 'gameinprogress') {
         io.to(returnedData.data.opponentSID)
           .emit(OPPONENT_SCREEN, returnedData.data.clientScreen);
+      }
+      if (returnedData.operation === 'gameFinished') {
+        io.to(returnedData.data.winnerSID)
+          .emit(FINISH_GAME, returnedData.data);
+        socket.emit(FINISH_GAME, returnedData.data);
       }
     });
   });

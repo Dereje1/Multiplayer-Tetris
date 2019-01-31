@@ -21,6 +21,15 @@ import playerMoves from './scripts/player';
 // react Components
 import Controls from '../controls/controls';
 import Opponent from '../oponnent/opponent';
+
+import { socket as socketConstants } from '../../constants/index';
+import { clientEmitter } from '../../sockethandler';
+
+const {
+  clientEmit: {
+    GAME_OVER,
+  },
+} = socketConstants;
 // reads from store
 const mapStateToProps = state => state;
 
@@ -101,10 +110,10 @@ class Game extends React.Component {
     this.canvasContextMinor = canvasMinor.getContext('2d');
   }
 
-  resetBoard = (reStart = true, keepFloor = false, gameover = false) => {
+  resetBoard = (reStart = true, keepFloor = false, gameover = false, opponent = null) => {
     const { game, actions } = this.props;
     if (gameover) {
-      drawGameOver(this.canvasContextMajor, this.canvasContextMinor, game);
+      drawGameOver(this.canvasContextMajor, this.canvasContextMinor, game, opponent);
       actions.gameReset(1);
       return;
     }
@@ -307,30 +316,15 @@ class Game extends React.Component {
     }
   }
 
-  gameOver = (multiPlayerData) => {
-    if (multiPlayerData) console.log('Do nothing Till db setup');
-    /* commented out for single player
-    if (this.state.multiPlayer && multiPlayerData) {
-       upDatedb({ match: multiPlayerData });
-    } else if (!this.state.multiPlayer && this.props.user.authenticated) {
-      const databaseEntry =
-        {
-          multiPlayer: false,
-          players: [
-            {
-              name: this.props.user.displayName,
-              _id: this.props.user._id,
-              score: this.props.game.points.totalLinesCleared * 50,
-            },
-          ],
-        };
-       upDatedb({ match: databaseEntry });
+  gameOver = (message = null) => {
+    const { socket } = this.props;
+    if (socket.temp.gameInProgress) {
+      clientEmitter(GAME_OVER, socket);
     }
-    */
+
     this.setState({
-      multiPlayer: false,
       buttonPause: true,
-    }, () => this.resetBoard(false, false, true));
+    }, () => this.resetBoard(false, false, true, message));
   }
 
   render() {
@@ -367,7 +361,7 @@ class Game extends React.Component {
               <Opponent
                 onReset={reStart => this.resetBoard(reStart)}
                 onFloorRaise={f => this.floorRaise(f)}
-                onGameOver={db => this.gameOver(db)}
+                onGameOver={msg => this.gameOver(msg)}
                 onSetDifficulty={d => this.setState({ difficulty: d })}
                 difficulty={difficulty}
               />

@@ -5,6 +5,7 @@ const {
     LOGGED_IN_USERS, SOCKET_ID, OPPONENT_POOL,
     UNMOUNT_OPPONENT, INVITE_SENT, INVITE_RECIEVED,
     DECLINED_INVITATION, ACCEPTED_INVITATION, GAME_STARTED,
+    FINISH_GAME,
   },
   GAME_COUNTDOWN,
 } = socketConstants;
@@ -86,6 +87,15 @@ const socketReducer = (state = {}, action) => {
       return Object.assign({}, currentState, {
         temp: {
           gameInProgress: action.payload,
+        },
+      });
+    }
+    case FINISH_GAME: {
+      const currentState = Object.assign({}, state);
+      delete currentState.temp;
+      return Object.assign({}, currentState, {
+        temp: {
+          gameOver: action.payload,
         },
       });
     }

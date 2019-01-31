@@ -22,6 +22,7 @@ module.exports = {
       INVITATION_ACCEPTED: 'INVITATION_ACCEPTED',
       START_GAME: 'START_GAME',
       UPDATED_CLIENT_SCREEN: 'UPDATED_CLIENT_SCREEN',
+      GAME_OVER: 'GAME_OVER',
     },
     serverEmit: {
       SERVER_RESET: 'SERVER_RESET',
@@ -35,6 +36,7 @@ module.exports = {
       ACCEPTED_INVITATION: 'ACCEPTED_INVITATION',
       GAME_STARTED: 'GAME_STARTED',
       OPPONENT_SCREEN: 'OPPONENT_SCREEN',
+      FINISH_GAME: 'FINISH_GAME',
     },
     GAME_COUNTDOWN: 'GAME_COUNTDOWN',
     connection: 'http://localhost:5000/',
