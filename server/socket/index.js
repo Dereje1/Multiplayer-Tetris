@@ -67,6 +67,7 @@ const master = (io) => {
           });
       }
       if (returnedData.operation === 'gameinprogress') {
+        if (!returnedData.data) return; // stop residual transmissions on gameover
         io.to(returnedData.data.opponentSID)
           .emit(OPPONENT_SCREEN, returnedData.data.clientScreen);
       }

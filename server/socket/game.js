@@ -109,9 +109,14 @@ const gamePlay = (socket, callback) => {
   });
 
   socket.on(UPDATED_CLIENT_SCREEN, (data) => {
+    // check if user has an opponent before transmitting
+    // avoids resdual transmit on a game win
+    const currentlyLoggedIn = [...utility.getUsers()];
+    const opponentStillActive = currentlyLoggedIn.filter(user => user.socketId === socket.id)[0];
+    const dataToSend = opponentStillActive.oponnentId ? data : null;
     callback(null, {
       operation: 'gameinprogress',
-      data,
+      data: dataToSend,
     });
   });
 
