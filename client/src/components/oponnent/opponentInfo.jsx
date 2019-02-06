@@ -112,12 +112,15 @@ const OpponentDescription = ({
   }
   // stage 5 - Game has started
   if (gameInProgress) {
+    const opponentGame = gameInProgress.opponentScreen
+      ? JSON.parse(gameInProgress.opponentScreen)
+      : 0;
     return ( // to render on game
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription__GamePlay">
-          <p className="writing">{gameInProgress.info.opponnetDisplayname.split(' ')[0]}</p>
+          <p className="writing">{opponentGame ? gameInProgress.info.opponnetDisplayname.split(' ')[0] : null}</p>
           <p className="writing">Lines Cleared</p>
-          <p className="opponentContainer__opponentDescription__GamePlay__linescleared">{gameInProgress.opponentScreen ? gameInProgress.screen.points.totalLinesCleared : null}</p>
+          <p className="opponentContainer__opponentDescription__GamePlay__linescleared">{opponentGame ? opponentGame.points.totalLinesCleared : 0}</p>
           <p className="writing">Games Played</p>
           <p className="opponentContainer__opponentDescription__GamePlay__gamesplayed">?</p>
         </div>
@@ -125,7 +128,17 @@ const OpponentDescription = ({
     );
   }
   // stage 6 - Game is done back to single player mode
-  if (gameOver) return null;
+  if (gameOver) {
+    return (
+      <div className="opponentContainer__opponentDescription">
+        <div className="opponentContainer__opponentDescription__invitation">
+          <p className="writing">Find More</p>
+          <p className="writing">Opponents</p>
+          <button type="submit" className="opponentContainer__opponentDescription__invitation__button-decline-invitation" onClick={() => getPool()}>Back</button>
+        </div>
+      </div>
+    );
+  }
 
   return ( // to render on loading
     <div className="opponentContainer__opponentDescription">

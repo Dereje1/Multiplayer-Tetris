@@ -53,10 +53,11 @@ class Game extends React.Component {
     super(props);
     this.state = { // holds information that the opponent component uses
       multiPlayer: false,
-      disableExit: false,
+      inGameToggle: false,
       difficulty: 2,
       buttonPause: true,
       updateFloor: false,
+      canvasLoaded: false,
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
@@ -71,10 +72,10 @@ class Game extends React.Component {
     if (!Object.keys(prevProps.game).length) return;
     const { game: prevGame, socket: prevSocket } = prevProps;
     const { game, socket } = this.props;
-    const { multiPlayer } = this.state;
+    const { multiPlayer, canvasLoaded } = this.state;
 
     /* load Canvas */
-    if (this.canvasMajor) this.loadCanvas();
+    if (!canvasLoaded && this.canvasMajor) this.loadCanvas();
 
     /* spped up on level up */
     if ((game.points.level !== prevGame.points.level)
@@ -90,7 +91,7 @@ class Game extends React.Component {
     }
 
     /* an Invitation from another client */
-    if (socket.temp) {
+    if (!multiPlayer && socket.temp) {
       if (!prevSocket.temp && socket.temp.invitationFrom) this.setState({ multiPlayer: true });
     }
   }
@@ -108,6 +109,7 @@ class Game extends React.Component {
     // setting context so it can be accesible everywhere in the class , maybe a better way ?
     this.canvasContextMajor = canvasMajor.getContext('2d');
     this.canvasContextMinor = canvasMinor.getContext('2d');
+    this.setState({ canvasLoaded: true });
   }
 
   resetBoard = (reStart = true, keepFloor = false, gameover = false, opponent = null) => {
@@ -317,11 +319,13 @@ class Game extends React.Component {
   }
 
   gameOver = (message = null) => {
+    const { multiPlayer } = this.state;
     const { socket } = this.props;
-    if (socket.temp.gameInProgress) {
+    if (multiPlayer && socket.temp.gameInProgress) {
       clientEmitter(GAME_OVER, socket);
     }
-
+    // disregard first loss signal in multiplayer as another one will come from socket
+    if (multiPlayer && !message) return;
     this.setState({
       buttonPause: true,
     }, () => this.resetBoard(false, false, true, message));
@@ -330,7 +334,7 @@ class Game extends React.Component {
   render() {
     const { game, socket } = this.props;
     const {
-      difficulty, multiPlayer, disableExit, buttonPause,
+      difficulty, multiPlayer, inGameToggle, buttonPause,
     } = this.state;
     if (Object.keys(game).length) {
       return (
@@ -340,7 +344,7 @@ class Game extends React.Component {
             game={game}
             difficulty={difficulty}
             socketId={socket.mySocketId}
-            multiPlayer={[multiPlayer, disableExit]}
+            multiPlayer={[multiPlayer, inGameToggle]}
             pauseButtonState={buttonPause}
             onReset={b => this.resetBoard(b)}
             onhandlePause={() => this.handlePause}
@@ -363,6 +367,7 @@ class Game extends React.Component {
                 onFloorRaise={f => this.floorRaise(f)}
                 onGameOver={msg => this.gameOver(msg)}
                 onSetDifficulty={d => this.setState({ difficulty: d })}
+                toggleMultiplayer={() => this.setState({ inGameToggle: !inGameToggle })}
                 difficulty={difficulty}
               />
             )
