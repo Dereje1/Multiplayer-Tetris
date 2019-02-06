@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import './styles/opponentdescription.css';
 // connect to redux
 import { connect } from 'react-redux';
-import { clientEmitter, socketConnection } from '../../sockethandler';
+import { clientEmitter } from '../../sockethandler';
 import { socket as socketConstants } from '../../constants/index';
 import {
   drawShape,
@@ -24,9 +24,6 @@ const {
     START_GAME,
     UPDATED_CLIENT_SCREEN,
   },
-  serverEmit: {
-    OPPONENT_SCREEN,
-  },
 } = socketConstants;
 
 class Opponent extends React.Component {
@@ -35,26 +32,30 @@ class Opponent extends React.Component {
     super(props);
     this.state = {
       levelsRaised: 0,
+      canvasLoaded: false,
     };
     this.canvasOpponent = React.createRef();
-    this.gamestart = false;
-    socketConnection.on(
-      OPPONENT_SCREEN,
-      screen => this.setGame(screen),
-    );
+    this.feedCount = 0;
   }
 
   componentDidMount() {
     console.log('Opponent Mounted!!');
-    this.countGameover = 0;
     const { socket: { temp } } = this.props;
     if (!temp) clientEmitter(LOOK_FOR_OPPONENTS, null);
   }
 
   componentDidUpdate(prevProps) {
-    const { socket: { temp: prevTemp } } = prevProps;
-    const { socket: { temp } } = this.props;
-    const { game, onReset } = this.props;
+    const { canvasLoaded } = this.state; // needed so that canvas loads only once!
+    const { game: prevGame, socket: { temp: prevTemp } } = prevProps;
+    const {
+      game, onReset, toggleMultiplayer, socket: { temp },
+    } = this.props;
+    /* load Opponent Canvas */
+    if (!canvasLoaded && this.canvasOpponent.current) {
+      this.loadOpponentCanvas();
+      this.setState({ canvasLoaded: true });
+    }
+
     if (temp) {
       const tempKey = Object.keys(temp)[0];
 
@@ -72,11 +73,24 @@ class Opponent extends React.Component {
         }
           break;
         case 'gameInProgress': {
-          const { gameInProgress: { info } } = temp;
-          // this.setGame();
+          const { gameInProgress: { info, opponentScreen } } = temp;
           if (!prevTemp.gameInProgress) { // game started
             onReset();
+            toggleMultiplayer();
           } else { // game running
+            // Important its is not enough to emit every time
+            // component updates, must emit when only the game
+            // actually CHANGES!!, otherwise big performance
+            // degredation if we have other things, like setstate
+            // update the component, meaning a new emit on every component
+            // update!!!
+            const { gameInProgress: { opponentScreen: prevOpponentScreen } } = prevTemp;
+            // set opponent screen on socket data only if there is a difference in the opp game.
+            if (opponentScreen !== prevOpponentScreen) {
+              this.setGame(opponentScreen, prevOpponentScreen);
+            }
+            // emit client data only if there is a difference in client game.
+            if (JSON.stringify(prevGame) === JSON.stringify(game)) return;
             clientEmitter(UPDATED_CLIENT_SCREEN, {
               opponentSID: info.opponentSID,
               clientScreen: JSON.stringify(game),
@@ -89,24 +103,16 @@ class Opponent extends React.Component {
           const message = temp.gameOver.winnerSID === socket.mySocketId
             ? 'You Won !!'
             : 'You Lost !!';
-          if (!prevTemp.gameOver) onGameOver(message);
+          if (!prevTemp.gameOver) {
+            onGameOver(message);
+            toggleMultiplayer();
+          }
         }
           break;
         default:
           break;
       }
     }
-    /*
-    const { gameState, status } = this.state;
-    const { onDisableExit } = this.props;
-
-    if (Object.keys(prevState.gameState).length) {
-      if (prevState.gameState.points.totalLinesCleared
-        !== gameState.points.totalLinesCleared) {
-        this.processFloorRaise();
-      }
-    }
-    */
   }
 
   componentWillUnmount() {
@@ -118,15 +124,24 @@ class Opponent extends React.Component {
     // socket.emit('disconnect', '');
   }
 
-  setGame = (opponentScreenString) => {
-    const { socket: { temp } } = this.props;
-    if (temp.gameOver) return;
-    const opponentScreenJSON = JSON.parse(opponentScreenString);
+  loadOpponentCanvas = () => {
     const canvasOpponent = this.canvasOpponent.current;
     canvasOpponent.style.backgroundColor = 'black';
+    // setting context so it can be accesible everywhere in the class , maybe a better way ?
     this.canvasOpponentContext = canvasOpponent.getContext('2d');
-    opponentScreenJSON.activeShape.unitBlockSize /= 2;
-    drawShape(this.canvasOpponentContext, opponentScreenJSON, true);
+    this.canvasOpponentContext.canvas.hidden = true;
+  }
+
+  setGame = (opponentScreen, prevOpponentScreen) => {
+    if (!opponentScreen) return;
+    const opp = JSON.parse(opponentScreen);
+    // eslint-disable-next-line no-unused-vars
+    const prevOpp = prevOpponentScreen ? JSON.parse(prevOpponentScreen) : null;
+    const { socket: { temp } } = this.props;
+    if (temp.gameOver) return;
+    if (this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = false;
+    opp.activeShape.unitBlockSize /= 2;
+    drawShape(this.canvasOpponentContext, opp, true);
   }
 
   setDifficulty = (val) => {
@@ -176,6 +191,12 @@ class Opponent extends React.Component {
     // onSetDifficulty(status[1][1]);
   }
 
+  resetMultiplayer = () => {
+    const { onReset } = this.props;
+    onReset(false);
+    clientEmitter(LOOK_FOR_OPPONENTS, null);
+    if (!this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = true;
+  }
   /* done sockets */
 
   render() {
@@ -190,7 +211,7 @@ class Opponent extends React.Component {
           requestInvite={sId => this.requestInvite(sId)}
           acceptInvite={() => this.acceptInvite()}
           declineInvite={() => this.declineInvite()}
-          getPool={() => clientEmitter(LOOK_FOR_OPPONENTS, null)}
+          getPool={() => this.resetMultiplayer()}
         />
         <canvas
           ref={this.canvasOpponent}
@@ -211,6 +232,7 @@ Opponent.defaultProps = {
   onSetDifficulty: null,
   difficulty: 2,
   onGameOver: null,
+  toggleMultiplayer: null,
 };
 Opponent.propTypes = {
   socket: PropTypes.objectOf(PropTypes.any),
@@ -220,6 +242,7 @@ Opponent.propTypes = {
   onReset: PropTypes.func,
   onSetDifficulty: PropTypes.func,
   onGameOver: PropTypes.func,
+  toggleMultiplayer: PropTypes.func,
 };
 
 export default connect(mapStateToProps)(Opponent);

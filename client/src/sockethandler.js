@@ -4,7 +4,7 @@ import { socket as socketConstants } from './constants/index';
 import {
   getLoggedInUsers, getClientSocketId, getOpponents, removeOpponents,
   sendInvite, receiveInvite, declinedInvitation, acceptedInvitation,
-  startCountDown, startGame, gameOver,
+  startCountDown, startGame, getOpponentScreen, gameOver,
 } from './redux/actions/socket';
 
 export const socketConnection = io(socketConstants.connection);
@@ -13,7 +13,7 @@ const {
   serverEmit: {
     LOGGED_IN_USERS, SOCKET_ID, SERVER_RESET, OPPONENT_POOL,
     UNMOUNT_OPPONENT, INVITE_SENT, INVITE_RECIEVED, DECLINED_INVITATION,
-    ACCEPTED_INVITATION, GAME_STARTED, FINISH_GAME,
+    ACCEPTED_INVITATION, GAME_STARTED, OPPONENT_SCREEN, FINISH_GAME,
   },
 } = socketConstants;
 
@@ -90,6 +90,11 @@ socketConnection.on(
     await store.dispatch(startGame(opponentData));
     confirmation('Game Start Recieved and dispacthed by Client!!');
   },
+);
+
+socketConnection.on(
+  OPPONENT_SCREEN,
+  screen => store.dispatch(getOpponentScreen(screen)),
 );
 
 socketConnection.on(
