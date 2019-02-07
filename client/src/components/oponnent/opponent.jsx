@@ -134,12 +134,14 @@ class Opponent extends React.Component {
 
   setGame = (opponentScreen, prevOpponentScreen) => {
     if (!opponentScreen) return;
+    const { onCanvasFocus } = this.props;
     const opp = JSON.parse(opponentScreen);
     // eslint-disable-next-line no-unused-vars
     const prevOpp = prevOpponentScreen ? JSON.parse(prevOpponentScreen) : null;
     const { socket: { temp } } = this.props;
     if (temp.gameOver) return;
     if (this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = false;
+    onCanvasFocus();
     opp.activeShape.unitBlockSize /= 2;
     drawShape(this.canvasOpponentContext, opp, true);
   }
@@ -185,7 +187,10 @@ class Opponent extends React.Component {
   };
 
   acceptInvite = () => {
-    const { socket: { temp } } = this.props;
+    const { onReset, socket: { temp } } = this.props;
+    onReset(false);
+    if (this.canvasOpponentContext
+      && !this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = true;
     // const { onSetDifficulty } = this.props;
     clientEmitter(INVITATION_ACCEPTED, temp);
     // onSetDifficulty(status[1][1]);
@@ -233,6 +238,7 @@ Opponent.defaultProps = {
   difficulty: 2,
   onGameOver: null,
   toggleMultiplayer: null,
+  onCanvasFocus: null,
 };
 Opponent.propTypes = {
   socket: PropTypes.objectOf(PropTypes.any),
@@ -243,6 +249,7 @@ Opponent.propTypes = {
   onSetDifficulty: PropTypes.func,
   onGameOver: PropTypes.func,
   toggleMultiplayer: PropTypes.func,
+  onCanvasFocus: PropTypes.func,
 };
 
 export default connect(mapStateToProps)(Opponent);

@@ -109,6 +109,7 @@ class Game extends React.Component {
     // setting context so it can be accesible everywhere in the class , maybe a better way ?
     this.canvasContextMajor = canvasMajor.getContext('2d');
     this.canvasContextMinor = canvasMinor.getContext('2d');
+    this.canvasMajor.current.focus();
     this.setState({ canvasLoaded: true });
   }
 
@@ -366,6 +367,7 @@ class Game extends React.Component {
                 onReset={reStart => this.resetBoard(reStart)}
                 onFloorRaise={f => this.floorRaise(f)}
                 onGameOver={msg => this.gameOver(msg)}
+                onCanvasFocus={() => this.canvasMajor.current.focus()}
                 onSetDifficulty={d => this.setState({ difficulty: d })}
                 toggleMultiplayer={() => this.setState({ inGameToggle: !inGameToggle })}
                 difficulty={difficulty}
