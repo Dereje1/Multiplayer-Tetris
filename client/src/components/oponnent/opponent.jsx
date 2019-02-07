@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { clientEmitter } from '../../sockethandler';
 import { socket as socketConstants } from '../../constants/index';
 import {
-  drawShape,
+  drawShape, drawBoundary,
 } from '../game/scripts/canvas';
 
 // custom components
@@ -135,11 +135,11 @@ class Opponent extends React.Component {
   setGame = (opponentScreen, prevOpponentScreen) => {
     if (!opponentScreen) return;
     const { onCanvasFocus } = this.props;
-    const opp = JSON.parse(opponentScreen);
-    // eslint-disable-next-line no-unused-vars
-    const prevOpp = prevOpponentScreen ? JSON.parse(prevOpponentScreen) : null;
     const { socket: { temp } } = this.props;
+    const opp = JSON.parse(opponentScreen);
+    const prevOpp = prevOpponentScreen ? JSON.parse(prevOpponentScreen) : null;
     if (temp.gameOver) return;
+    if (opp && prevOpp) this.processFloorRaise(opp, prevOpp);
     if (this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = false;
     onCanvasFocus();
     opp.activeShape.unitBlockSize /= 2;
@@ -151,9 +151,37 @@ class Opponent extends React.Component {
     onSetDifficulty(val);
   }
 
-  processFloorRaise = () => {
-    const { gameState, levelsRaised } = this.state;
-    const { difficulty, onFloorRaise } = this.props;
+  processFloorRaise = (currentGame, previousGame) => {
+    const { levelsRaised } = this.state;
+    const {
+      socket:
+        {
+          temp:
+          {
+            gameInProgress:
+            {
+              info: { difficulty },
+            },
+          },
+        }, onFloorRaise,
+    } = this.props;
+    const {
+      points: { totalLinesCleared: previouslyClearedLines },
+      rubble: { boundaryCells: prevBoundryCells },
+    } = previousGame;
+    const {
+      points: { totalLinesCleared },
+      rubble: { boundaryCells },
+    } = currentGame;
+    // draw boundry in opponent screen if floor raise
+    if (boundaryCells.length !== prevBoundryCells.length) {
+      const copyOfGame = JSON.parse(JSON.stringify(currentGame));
+      copyOfGame.activeShape.unitBlockSize /= 2;
+      drawBoundary(this.canvasOpponentContext, copyOfGame, true);
+    }
+    const linesCleared = totalLinesCleared - previouslyClearedLines;
+    // return if no new lines have been cleared
+    if (!linesCleared) return;
     /*
     Difficulty                                 Description
     -----------------------------------------------------------------------------------
@@ -162,15 +190,18 @@ class Opponent extends React.Component {
       3               After player clears 2 rows , floor is raised by 1 row on opponent
       4               After player clears 1 row  , floor is raised by 1 row on opponent
     */
-    const { totalLinesCleared } = gameState.points;
     const difficultyMap = [[4, 1], [3, 2], [2, 3], [1, 4]]; // [[level, ]]
+    // number of floors that needs to be cleared for a single floor raise on opp
     const amountNeededForRaise = difficultyMap.filter(d => d[0] === difficulty)[0][1];
-    const targetRaised = Math.floor(totalLinesCleared * (1 / amountNeededForRaise));
-    const toRaise = targetRaised - levelsRaised;
-    if (toRaise > 0) onFloorRaise(Number(toRaise));
-    this.setState({
-      levelsRaised: levelsRaised + toRaise,
-    });
+    // Includes any surplus from previous lines cleared
+    const totalRaisedByClient = levelsRaised + linesCleared;
+    if (totalRaisedByClient >= amountNeededForRaise) {
+      // Total levels to be raised on opponent
+      const raiseOnOpponent = Math.floor(totalRaisedByClient / amountNeededForRaise);
+      // To store for client if any surplus
+      const storeForClient = totalRaisedByClient - (raiseOnOpponent * amountNeededForRaise);
+      this.setState({ levelsRaised: storeForClient }, () => onFloorRaise(Number(raiseOnOpponent)));
+    } else this.setState({ levelsRaised: totalRaisedByClient });
   }
 
   /* process socket-out-going below */

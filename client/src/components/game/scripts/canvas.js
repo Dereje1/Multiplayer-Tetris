@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import tetrisShapes from './shapes';
 import shapeLocator from './locateShape';
 
@@ -20,8 +21,9 @@ export const getRubbleHeight = (state, opponent) => {
   return getBoundryHeight(state, opponent);
 };
 // clear canvas
+// eslint-disable-next-line no-unused-vars
 export const clearCanvas = (canvasContext, clearHeight, caller) => {
-  if (canvasContext.canvas.clientHeight === 300) console.log(`clearing canvas ${caller} ${clearHeight}`);
+  // if (canvasContext.canvas.clientHeight === 300) console.log(`clearing canvas ${caller} ${clearHeight}`);
   if (clearHeight === 'All') {
     canvasContext.clearRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
     return;
@@ -91,7 +93,7 @@ export const drawRubble = (ctx, state, opponent = false) => {
   });
 };
 
-export const drawBoundary = (ctx, state) => {
+export const drawBoundary = (ctx, state, opponent = false) => {
   // console.log('Drawing Boundry');
   const canvasContext = ctx;
   const b = state.activeShape.unitBlockSize;
@@ -106,11 +108,12 @@ export const drawBoundary = (ctx, state) => {
     canvasContext.fillRect(x * b, y * b, b, b);
     // draw borders for rubble
     canvasContext.beginPath();
-    canvasContext.lineWidth = '4';
+    canvasContext.lineWidth = opponent ? '1' : '4';
     canvasContext.strokeStyle = 'white';
     canvasContext.rect(x * b, y * b, b, b);
     canvasContext.stroke();
   });
+  return opponent ? drawRubble(ctx, state, true) : null;
 };
 
 export const drawShape = (ctx, state, opponent = false) => {
@@ -119,9 +122,9 @@ export const drawShape = (ctx, state, opponent = false) => {
     ? shapeToDraw.boundingBox[3] / 2
     : shapeToDraw.boundingBox[3];
   const borderOffset = opponent ? 33 / 2 : 33;
-  if (opponent) console.log(shapeYDirectionLowerBound);
+  // if (opponent) console.log(shapeYDirectionLowerBound);
   if (getRubbleHeight(state, opponent)) {
-    if (opponent) console.log(`Boundry Height = ${getBoundryHeight(state, opponent)} Rubble Height = ${getRubbleHeight(state, opponent)}`);
+    // if (opponent) console.log(`Boundry Height = ${getBoundryHeight(state, opponent)} Rubble Height = ${getRubbleHeight(state, opponent)}`);
     const distanceBetweenRubble = (getRubbleHeight(state, opponent)) - shapeYDirectionLowerBound;
     if (distanceBetweenRubble > borderOffset) {
       clearCanvas(ctx, shapeYDirectionLowerBound + borderOffset, opponent ? 'drawshape1' : null);
