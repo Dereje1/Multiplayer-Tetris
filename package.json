@@ -5,7 +5,8 @@
   "scripts": {
     "devserver": "nodemon ./bin/www",
     "devclient": "cd client && yarn start",
-    "dev": "concurrently --kill-others-on-fail \"yarn devserver\" \"yarn devclient\""
+    "dev": "concurrently --kill-others-on-fail \"yarn devserver\" \"yarn devclient\"",
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },
   "repository": "https://github.com/Dereje1/Multiplayer-Tetris.git",
   "author": "Dereje Getahun",
@@ -21,6 +22,7 @@
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
+    "path": "^0.12.7",
     "socket.io": "^2.2.0"
   },
   "devDependencies": {

@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
@@ -16,6 +17,8 @@ require('./models/db');
 // configure authentication
 require('./authentication/index')(app);
 
+/* Build and deployment */
+app.use('/', express.static(path.join(__dirname, '../client/build')));
 /* app routes */
 app.get('/', (req, res) => {
   res.redirect('/auth/profile');
@@ -23,6 +26,10 @@ app.get('/', (req, res) => {
 
 app.get('/api/test', (req, res) => {
   res.json({ proxy: 'Working!' });
+});
+/* Build and deployment */
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
