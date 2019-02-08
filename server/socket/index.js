@@ -32,13 +32,27 @@ const master = (io) => {
       socket.emit(SOCKET_ID, socket.id);
     });
     // Handle disconnections and emit new user list length to all clients
-    disconnectedUsers(socket, (err, updatedUsers) => {
+    disconnectedUsers(socket, (err, returnedData) => {
       if (err) throw err;
-      utility.setUsers(updatedUsers);
-      io.emit(LOGGED_IN_USERS, updatedUsers.length);
+      utility.setUsers(returnedData.data);
+      if (returnedData.disconnectionStatus && returnedData.disconnectionStatus.inGame) {
+        io.to(returnedData.disconnectionStatus.connection)
+          .emit(FINISH_GAME, {
+            winnerSID: returnedData.disconnectionStatus.connection,
+            loosingSID: socket.id,
+            disqualified: true,
+          });
+      }
+      if (returnedData.disconnectionStatus && returnedData.disconnectionStatus.pending) {
+        // if pending, i.e. invitation/ countdown just send empty users back to
+        // client and let client search again
+        io.to(returnedData.disconnectionStatus.connection)
+          .emit(OPPONENT_POOL, []);
+      }
+      io.emit(LOGGED_IN_USERS, returnedData.data.length);
       console.log('A User has disconnected', socket.id);
     });
-    // Handle Game Pla
+    // Handle Game Play;
     game(socket, (err, returnedData) => {
       if (err) throw err;
       if (!returnedData) return;

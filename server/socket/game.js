@@ -17,18 +17,7 @@ const { serverEmit: { UNMOUNT_OPPONENT } } = CONSTANTS;
 
 const gamePlay = (socket, callback) => {
   socket.on(LOOK_FOR_OPPONENTS, () => {
-    console.log(`${socket.id} is looking for opponents`);
-    const currentlyLoggedIn = [...utility.getUsers()];
-
-    const opponentPool = currentlyLoggedIn.filter(
-      users => users.socketId !== socket.id && !users.oponnentId,
-    );
-
-    const clientOpponentPool = opponentPool.map((user) => {
-      const { displayname, socketId } = user;
-      return { displayname, socketId };
-    });
-    callback(null, { operation: 'generateOpponentPool', data: clientOpponentPool.slice(0, 4) });
+    callback(null, { operation: 'generateOpponentPool', data: utility.createPool(socket) });
   });
 
   socket.on(OPPONENT_UNMOUNTED, () => {
@@ -37,12 +26,27 @@ const gamePlay = (socket, callback) => {
   });
 
   socket.on(INVITATION_SENT, (data) => {
+    console.log('Invitation Sent', data)
     const currentlyLoggedIn = [...utility.getUsers()];
     const { sentTo, difficulty } = data;
     const invitationSender = currentlyLoggedIn.filter(user => user.socketId === socket.id)[0];
     const invitationReciever = currentlyLoggedIn.filter(user => user.socketId === sentTo)[0];
     const { displayname, socketId } = invitationSender;
     const { displayname: displaynameReciever, socketId: socketIdReciever } = invitationReciever;
+
+    currentlyLoggedIn.forEach(
+      (user) => {
+        // set game pending status
+        if (user.socketId === socketId) {
+          // change status from null on server
+          user.pending = socketIdReciever;
+        }
+        if (user.socketId === socketIdReciever) {
+          user.pending = socketId;
+        }
+      },
+    );
+    utility.setUsers(currentlyLoggedIn);
     callback(null, {
       operation: 'recieveInvite',
       data: {
@@ -54,6 +58,19 @@ const gamePlay = (socket, callback) => {
 
   socket.on(INVITATION_DECLINED, (data) => {
     const { invitationFrom: { socketId: invitationSenderId } } = data;
+    const currentlyLoggedIn = [...utility.getUsers()];
+    currentlyLoggedIn.forEach(
+      (user) => {
+        // set game pending status
+        if (user.socketId === socket.id) {
+          // change status from null on server
+          user.pending = null;
+        }
+        if (user.socketId === invitationSenderId) {
+          user.pending = null;
+        }
+      },
+    );
     callback(null, {
       operation: 'declinedInvite',
       data: {
@@ -73,7 +90,7 @@ const gamePlay = (socket, callback) => {
       (user) => {
         const { displayname } = user;
         // send opponent data to respective players.
-        if (user.socketId === invitationSenderId) { // user that sent the invite
+        if (user.socketId === invitationSenderId) { // user that sent the invite;
           // change status from null on server
           user.oponnentId = socket.id;
           // for client usage
@@ -82,6 +99,7 @@ const gamePlay = (socket, callback) => {
         }
         if (user.socketId === socket.id) { // user that accepted the invite
           user.oponnentId = invitationSenderId;
+          // for client usage
           sender.opponnetDisplayname = displayname;
           reciever.opponentSID = invitationSenderId;
         }
@@ -98,7 +116,21 @@ const gamePlay = (socket, callback) => {
   });
 
   socket.on(START_GAME, (data) => {
+    const currentlyLoggedIn = [...utility.getUsers()];
     const { opponentInfo, clientScreen } = data;
+    currentlyLoggedIn.forEach(
+      (user) => {
+        // remove game pending status
+        if (user.socketId === socket.id) {
+          // change pending status to null on server
+          user.pending = null;
+        }
+        if (user.socketId === opponentInfo.opponentSID) {
+          user.pending = null;
+        }
+      },
+    );
+    utility.setUsers(currentlyLoggedIn);
     callback(null, {
       operation: 'gamestart',
       data: {
@@ -110,10 +142,10 @@ const gamePlay = (socket, callback) => {
 
   socket.on(UPDATED_CLIENT_SCREEN, (data) => {
     // check if user has an opponent before transmitting
-    // avoids resdual transmit on a game win
+    // avoids resdual transmit on a game win or a disconnect
     const currentlyLoggedIn = [...utility.getUsers()];
     const opponentStillActive = currentlyLoggedIn.filter(user => user.socketId === socket.id)[0];
-    const dataToSend = opponentStillActive.oponnentId ? data : null;
+    const dataToSend = opponentStillActive && opponentStillActive.oponnentId ? data : null;
     callback(null, {
       operation: 'gameinprogress',
       data: dataToSend,
