@@ -116,6 +116,7 @@ class Game extends React.Component {
 
   resetBoard = (reStart = true, keepFloor = false, gameover = false, opponent = null) => {
     const { game, actions } = this.props;
+    this.setState({ floorsRaised: 0 });
     if (gameover) {
       drawGameOver(this.canvasContextMajor, this.canvasContextMinor, game, opponent);
       actions.gameReset(1);
@@ -328,7 +329,11 @@ class Game extends React.Component {
     }
     // disregard first loss signal in multiplayer as another one will come from socket
     if (multiPlayer && !message) return;
-    const multiplayerMessage = message ? { message, floors: floorsRaised } : null;
+    console.log(message);
+    let multiplayerMessage;
+    if (message && message.disqualified) {
+      multiplayerMessage = { message: message.message, floors: 'Opponent \n Disqualified' };
+    } else multiplayerMessage = message ? { message, floors: `        ${floorsRaised} Floors Raised` } : null;
     this.setState({
       buttonPause: true,
     }, () => this.resetBoard(false, false, true, multiplayerMessage));

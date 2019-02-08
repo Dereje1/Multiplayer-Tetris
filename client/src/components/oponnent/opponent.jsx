@@ -48,7 +48,8 @@ class Opponent extends React.Component {
     const { canvasLoaded } = this.state; // needed so that canvas loads only once!
     const { game: prevGame, socket: { temp: prevTemp } } = prevProps;
     const {
-      game, onReset, toggleMultiplayer, socket: { temp }, onSetDifficulty,
+      game, onReset, toggleMultiplayer, onCanvasFocus,
+      socket: { temp }, onSetDifficulty,
     } = this.props;
     /* load Opponent Canvas */
     if (!canvasLoaded && this.canvasOpponent.current) {
@@ -76,6 +77,7 @@ class Opponent extends React.Component {
         case 'gameInProgress': {
           const { gameInProgress: { info, opponentScreen } } = temp;
           if (!prevTemp.gameInProgress) { // game started
+            onCanvasFocus();
             onReset();
             toggleMultiplayer();
           } else { // game running
@@ -101,9 +103,15 @@ class Opponent extends React.Component {
           break;
         case 'gameOver': {
           const { socket, onGameOver } = this.props;
-          const message = temp.gameOver.winnerSID === socket.mySocketId
-            ? 'You Won !!'
-            : 'You Lost !!';
+          let message;
+          if (temp.gameOver.winnerSID === socket.mySocketId) { // client is the winner
+            message = 'You Won !!';
+            if (socket.temp.gameOver.disqualified) { // opponent disqualified
+              message = { message, disqualified: true };
+            }
+          } else { // opponent is the winner
+            message = 'You Lost !!';
+          }
           if (!prevTemp.gameOver) {
             onGameOver(message);
             toggleMultiplayer();
@@ -135,14 +143,12 @@ class Opponent extends React.Component {
 
   setGame = (opponentScreen, prevOpponentScreen) => {
     if (!opponentScreen) return;
-    const { onCanvasFocus } = this.props;
     const { socket: { temp } } = this.props;
     const opp = JSON.parse(opponentScreen);
     const prevOpp = prevOpponentScreen ? JSON.parse(prevOpponentScreen) : null;
     if (temp.gameOver) return;
     if (opp && prevOpp) this.processFloorRaise(opp, prevOpp);
     if (this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = false;
-    onCanvasFocus();
     opp.activeShape.unitBlockSize /= 2;
     drawShape(this.canvasOpponentContext, opp, true);
   }

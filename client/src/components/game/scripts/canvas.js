@@ -232,8 +232,8 @@ export const drawGameOver = (ctx, ctxMinor, state, opponent) => {
   canvasContext.fillStyle = 'white';
   canvasContext.fillText(opponent ? opponent.message : 'Game Over', 14, 100);
   const textB = `${state.points.totalLinesCleared} Lines Cleared`;
-  const textC = opponent ? `${opponent.floors} Floors Raised` : `Reached Level ${state.points.level}`;
+  const textC = opponent ? `${opponent.floors}` : `     Reached Level ${state.points.level}`;
   canvasContext.font = '30px serif';
   canvasContext.fillText(textB, 55, 300);
-  canvasContext.fillText(textC, 55, 450);
+  canvasContext.fillText(textC, 5, 450);
 };
