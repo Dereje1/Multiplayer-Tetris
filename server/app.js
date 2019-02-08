@@ -6,7 +6,16 @@ const cookieSession = require('cookie-session');
 
 const app = express();
 // load root level middleware
+/* testing for heroku https redirect */
+
 app.use(logger('dev'));
+/* redirect for heoku to https */
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production'
+    && req.header('x-forwarded-proto') !== 'https') {
+    res.redirect(`https://${req.header('host')}${req.url}`);
+  } else next();
+});
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieSession({
   maxAge: 21 * 24 * 60 * 60 * 1000,
@@ -19,6 +28,8 @@ require('./authentication/index')(app);
 
 /* Build and deployment */
 app.use('/', express.static(path.join(__dirname, '../client/build')));
+
+
 /* app routes */
 app.get('/', (req, res) => {
   res.redirect('/auth/profile');
