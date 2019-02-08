@@ -26,12 +26,12 @@
           align-items: center;
   -ms-flex-pack: distribute;
       justify-content: space-around;
-  background: #c0bfbf;
+  background: #e9eae7;
   font-size: 15px;
   padding: 0;
   word-break: break-all;
   word-wrap: break-word;
-  border: 3px solid #8776e4;
+  border: 3px solid #85809c;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
 }
@@ -59,7 +59,7 @@
 .opponentContainer__opponentDescription_diffButtons_dot {
   height: 25px;
   width: 25px;
-  background-color: #f3f0f0;
+  background-color: #a9a7a7;
   border-radius: 50%;
   text-align: center;
   line-height: 25px;
@@ -86,7 +86,7 @@
   font-size: 14px;
   font-weight: bold;
   margin: 0 auto;
-  background: #99eee0;
+  background: #abbebb;
   text-transform: uppercase;
   cursor: pointer;
   border-radius: 6px;
@@ -117,27 +117,26 @@
   -ms-flex-pack: distribute;
       justify-content: space-around;
   height: 100%;
+  width: 100%;
 }
 
-.opponentContainer__opponentDescription__invitation__button-accept-invitation {
-  width: 80%;
+.opponentContainer__opponentDescription__invitation .opponentContainer__opponentDescription__invitation__buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  width: 100%;
+  font-size: 35px;
+  cursor: pointer;
+}
+
+.opponentContainer__opponentDescription__invitation .opponentContainer__opponentDescription__invitation__buttons .opponentContainer__opponentDescription__invitation__button-accept-invitation {
   color: #1b8517;
-  font-weight: 900;
-  font-size: 18px;
-  border-radius: 5px;
-  cursor: pointer;
-  outline: none;
 }
 
-.opponentContainer__opponentDescription__invitation__button-decline-invitation {
-  width: 80%;
+.opponentContainer__opponentDescription__invitation .opponentContainer__opponentDescription__invitation__buttons .opponentContainer__opponentDescription__invitation__button-decline-invitation {
   color: #e20404;
-  font-weight: 900;
-  font-size: 18px;
-  margin-bottom: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-  outline: none;
 }
 
 /* Pre Game */
@@ -157,7 +156,6 @@
           align-items: center;
   width: 100%;
   height: 100%;
-  background: #f5f3a1;
 }
 
 /* Game Play */
@@ -192,72 +190,12 @@
 }
 
 /* Game Over */
-.opponentContainer__opponentDescription__winner {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: space-evenly;
-      -ms-flex-pack: space-evenly;
-          justify-content: space-evenly;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  width: 100%;
-  height: 100%;
-  font-size: 18 px;
-  font-weight: 900;
-  color: white;
-  background: #17a51e;
-  -webkit-animation-name: flash;
-          animation-name: flash;
-  -webkit-animation-duration: 1s;
-          animation-duration: 1s;
-  -webkit-animation-timing-function: linear;
-          animation-timing-function: linear;
-  -webkit-animation-iteration-count: infinite;
-          animation-iteration-count: infinite;
-}
-
-.opponentContainer__opponentDescription__looser {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: space-evenly;
-      -ms-flex-pack: space-evenly;
-          justify-content: space-evenly;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  width: 100%;
-  height: 100%;
-  font-size: 18 px;
-  font-weight: 900;
-  color: white;
-  background: #d40a0a;
-  -webkit-animation-name: flash;
-          animation-name: flash;
-  -webkit-animation-duration: 1s;
-          animation-duration: 1s;
-  -webkit-animation-timing-function: linear;
-          animation-timing-function: linear;
-  -webkit-animation-iteration-count: infinite;
-          animation-iteration-count: infinite;
-}
-
 /* Misc shared*/
 .loading {
   margin: 0 auto;
-  width: 50px;
-  height: 50px;
-  border: 20px solid black;
+  width: 25px;
+  height: 25px;
+  border: 10px solid black;
   border-top-color: #1a6aed;
   border-bottom-color: #f49b42;
   border-radius: 50%;
@@ -272,16 +210,37 @@
 }
 
 .writing {
-  color: darkred;
+  color: #652222;
   font-weight: 900;
   font-size: 18px;
 }
 
 .timercountdown {
-  color: darkred;
+  color: #652222;
   font-weight: 900;
   font-size: 14px;
   text-transform: uppercase;
+}
+
+.opponentContainer__opponentDescription__invitation_reload {
+  color: #58580e;
+  font-size: 50px;
+  cursor: pointer;
+}
+
+.opponentContainer__opponentDescription__invitation_reload:hover {
+  -webkit-transition: all 1s;
+  transition: all 1s;
+  -webkit-transform: scale(1.15);
+          transform: scale(1.15);
+}
+
+.opponentContainer__opponentDescription__invitation__button-accept-invitation:hover,
+.opponentContainer__opponentDescription__invitation__button-decline-invitation:hover {
+  -webkit-transition: all 1s;
+  transition: all 1s;
+  -webkit-transform: scale(1.5);
+          transform: scale(1.5);
 }
 
 @-webkit-keyframes picloading {
@@ -311,18 +270,6 @@
   100% {
     -webkit-transform: rotate(720deg) scale(1);
             transform: rotate(720deg) scale(1);
-  }
-}
-
-@-webkit-keyframes flash {
-  50% {
-    background: white;
-  }
-}
-
-@keyframes flash {
-  50% {
-    background: white;
   }
 }
 /*# sourceMappingURL=opponentdescription.css.map */

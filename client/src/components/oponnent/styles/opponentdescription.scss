@@ -14,12 +14,13 @@
     align-items: center;
     justify-content: space-around;
     
-    background: rgb(192, 191, 191);
+    
+    background: #e9eae7;
     font-size: 15px;
     padding: 0;
     word-break: break-all;
     word-wrap: break-word;
-    border: 3px solid rgb(135, 118, 228);
+    border: 3px solid rgb(133, 128, 156);
     box-sizing: border-box;
 }
 
@@ -39,7 +40,7 @@
 .opponentContainer__opponentDescription_diffButtons_dot {
     height: 25px;
     width: 25px;
-    background-color: rgb(243, 240, 240);
+    background-color: #a9a7a7;
     border-radius: 50%;
     text-align: center;
     line-height: 25px;
@@ -64,7 +65,7 @@
     font-size: 14px;
     font-weight: bold;
     margin:0 auto;
-    background:rgb(153, 238, 224);
+    background:#abbebb;
     text-transform: uppercase;
     cursor: pointer;
     border-radius: 6px;
@@ -83,26 +84,22 @@
     align-items: center;
     justify-content: space-around;
     height: 100%;
-}
-.opponentContainer__opponentDescription__invitation__button-accept-invitation{
-    width:80%;
-    color: rgb(27, 133, 23);
-    font-weight: 900;
-    font-size: 18px;
-    border-radius: 5px;
-    cursor: pointer;
-    outline: none;
-}
+    width: 100%;
 
-.opponentContainer__opponentDescription__invitation__button-decline-invitation{
-    width:80%;
-    color: rgb(226, 4, 4);
-    font-weight: 900;
-    font-size: 18px;
-    margin-bottom: 5px;
-    border-radius: 5px;
+.opponentContainer__opponentDescription__invitation__buttons{
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    font-size: 35px;
     cursor: pointer;
-    outline: none;
+    .opponentContainer__opponentDescription__invitation__button-accept-invitation{
+        color: rgb(27, 133, 23);
+    }
+    
+    .opponentContainer__opponentDescription__invitation__button-decline-invitation{
+        color: rgb(226, 4, 4);
+    }
+  }
 }
 /* Pre Game */
 .opponentContainer__opponentDescription__Timer{
@@ -112,7 +109,6 @@
     align-items: center;
     width: 100%;
     height: 100%;
-    background: rgb(245, 243, 161);
 }
 
 /* Game Play */
@@ -135,46 +131,13 @@
     font-size: 18px;
 }
 
-/* Game Over */
-.opponentContainer__opponentDescription__winner{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    font-size:18 px;
-    font-weight: 900;
-    color:white;
-    background: rgb(23, 165, 30);
-    animation-name: flash;
-    animation-duration: 1s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-}
-
-.opponentContainer__opponentDescription__looser{
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    font-size:18 px;
-    font-weight: 900;
-    color:white;
-    background:  rgb(212, 10, 10);
-    animation-name: flash;
-    animation-duration: 1s;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-}
+/* Game Over */ 
 /* Misc shared*/ 
 .loading{
     margin:0 auto;
-    width:50px;
-    height: 50px;
-    border: 20px solid black;
+    width: 25px;
+    height: 25px;
+    border: 10px solid black;
     border-top-color: #1a6aed;
     border-bottom-color: #f49b42;
     border-radius: 50%;
@@ -185,16 +148,31 @@
 }
 
 .writing{
-    color: darkred;
+    color: #652222;
     font-weight: 900;
     font-size: 18px;
 }
 
 .timercountdown{
-    color: darkred;
+    color: #652222;
     font-weight: 900;
     font-size: 14px;
     text-transform: uppercase;
+}
+
+.opponentContainer__opponentDescription__invitation_reload{
+    color: #58580e;
+    font-size: 50px;
+    cursor: pointer;
+  }
+.opponentContainer__opponentDescription__invitation_reload:hover,{
+    transition: all 1s;
+    transform: scale(1.15);
+}
+.opponentContainer__opponentDescription__invitation__button-accept-invitation:hover,
+.opponentContainer__opponentDescription__invitation__button-decline-invitation:hover{
+    transition: all 1s;
+    transform: scale(1.5);
 }
 @keyframes picloading {
     0%{
@@ -205,11 +183,5 @@
     }
     100%{
       transform: rotate(720deg) scale(1);
-    }
-  }
-
-  @keyframes flash {
-    50%{
-      background: white;
     }
   }

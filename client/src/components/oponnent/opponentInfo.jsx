@@ -1,6 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+/* font awesome */
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faSyncAlt, faThumbsUp, faThumbsDown,
+} from '@fortawesome/free-solid-svg-icons';
 import './styles/opponentdescription.css';
+
 /* opponent top part of component */
 const OpponentDescription = ({
   socketState,
@@ -20,13 +26,12 @@ const OpponentDescription = ({
   if (opponents && !opponents.length) {
     return (
       <div className="opponentContainer__opponentDescription">
-        <div className="opponentContainer__opponentDescription">
-          <p className="writing">No opponents  </p>
-          <p className="writing">avalilable at</p>
-          <p className="writing">the moment,</p>
-          <p className="writing">check back</p>
-          <p className="writing">later !!</p>
-        </div>
+        <p className="writing">No opponents  </p>
+        <FontAwesomeIcon
+          className="opponentContainer__opponentDescription__invitation_reload"
+          icon={faSyncAlt}
+          onClick={() => getPool()}
+        />
       </div>
     );
   }
@@ -66,8 +71,18 @@ const OpponentDescription = ({
           <p className="writing">Invite from</p>
           <p className="writing">{socketState.temp.invitationFrom.displayname.split(' ')[0]}</p>
           <p className="writing">{`Difficulty = ${socketState.temp.invitationFrom.difficulty}`}</p>
-          <button type="submit" className="opponentContainer__opponentDescription__invitation__button-accept-invitation" onClick={() => acceptInvite()}>Accept</button>
-          <button type="submit" className="opponentContainer__opponentDescription__invitation__button-decline-invitation" onClick={() => declineInvite()}>Decline</button>
+          <div className="opponentContainer__opponentDescription__invitation__buttons">
+            <FontAwesomeIcon
+              className="opponentContainer__opponentDescription__invitation__button-accept-invitation"
+              icon={faThumbsUp}
+              onClick={() => acceptInvite()}
+            />
+            <FontAwesomeIcon
+              className="opponentContainer__opponentDescription__invitation__button-decline-invitation"
+              icon={faThumbsDown}
+              onClick={() => declineInvite()}
+            />
+          </div>
         </div>
       </div>
     );
@@ -92,7 +107,11 @@ const OpponentDescription = ({
         <div className="opponentContainer__opponentDescription__invitation">
           <p className="writing">Invitation</p>
           <p className="writing">Declined</p>
-          <button type="submit" className="opponentContainer__opponentDescription__invitation__button-decline-invitation" onClick={() => getPool()}>Back</button>
+          <FontAwesomeIcon
+            className="opponentContainer__opponentDescription__invitation_reload"
+            icon={faSyncAlt}
+            onClick={() => getPool()}
+          />
         </div>
       </div>
     );
@@ -132,9 +151,11 @@ const OpponentDescription = ({
     return (
       <div className="opponentContainer__opponentDescription">
         <div className="opponentContainer__opponentDescription__invitation">
-          <p className="writing">Find More</p>
-          <p className="writing">Opponents</p>
-          <button type="submit" className="opponentContainer__opponentDescription__invitation__button-decline-invitation" onClick={() => getPool()}>Back</button>
+          <FontAwesomeIcon
+            className="opponentContainer__opponentDescription__invitation_reload"
+            icon={faSyncAlt}
+            onClick={() => getPool()}
+          />
         </div>
       </div>
     );
