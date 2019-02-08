@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Multiplayer tetris built with the MERN stack",
   "scripts": {
+    "start": "nodemon server/index.js",
     "devserver": "nodemon ./bin/www",
     "devclient": "cd client && yarn start",
     "dev": "concurrently --kill-others-on-fail \"yarn devserver\" \"yarn devclient\"",
