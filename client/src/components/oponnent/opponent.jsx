@@ -48,7 +48,7 @@ class Opponent extends React.Component {
     const { canvasLoaded } = this.state; // needed so that canvas loads only once!
     const { game: prevGame, socket: { temp: prevTemp } } = prevProps;
     const {
-      game, onReset, toggleMultiplayer, socket: { temp },
+      game, onReset, toggleMultiplayer, socket: { temp }, onSetDifficulty,
     } = this.props;
     /* load Opponent Canvas */
     if (!canvasLoaded && this.canvasOpponent.current) {
@@ -63,12 +63,13 @@ class Opponent extends React.Component {
         case 'acceptedInvitation': {
           if (!prevTemp.acceptedInvitation) break;
           const { acceptedInvitation: { countdown: prevCountdown } } = prevTemp;
-          const { acceptedInvitation: { countdown } } = temp;
+          const { acceptedInvitation: { countdown, difficulty } } = temp;
           if (prevCountdown === 1 && countdown === 0) {
             clientEmitter(START_GAME, {
               opponentInfo: temp[tempKey],
               clientScreen: JSON.stringify(game),
             });
+            onSetDifficulty(difficulty);
           }
         }
           break;
@@ -163,7 +164,7 @@ class Opponent extends React.Component {
               info: { difficulty },
             },
           },
-        }, onFloorRaise,
+        }, onFloorRaise, floorsRaisedOnOpp,
     } = this.props;
     const {
       points: { totalLinesCleared: previouslyClearedLines },
@@ -178,6 +179,7 @@ class Opponent extends React.Component {
       const copyOfGame = JSON.parse(JSON.stringify(currentGame));
       copyOfGame.activeShape.unitBlockSize /= 2;
       drawBoundary(this.canvasOpponentContext, copyOfGame, true);
+      floorsRaisedOnOpp((boundaryCells.length - prevBoundryCells.length) / 10);
     }
     const linesCleared = totalLinesCleared - previouslyClearedLines;
     // return if no new lines have been cleared
@@ -208,7 +210,6 @@ class Opponent extends React.Component {
   requestInvite = (sentTo) => {
     const { difficulty } = this.props;
     clientEmitter(INVITATION_SENT, { sentTo, difficulty });
-    // socket.emit('INVITATION_SENT', { hostSocketId: p, difficulty: this.props.difficulty });
   }
 
   declineInvite = () => {
@@ -218,13 +219,13 @@ class Opponent extends React.Component {
   };
 
   acceptInvite = () => {
-    const { onReset, socket: { temp } } = this.props;
+    const {
+      onReset, socket: { temp },
+    } = this.props;
     onReset(false);
     if (this.canvasOpponentContext
       && !this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = true;
-    // const { onSetDifficulty } = this.props;
     clientEmitter(INVITATION_ACCEPTED, temp);
-    // onSetDifficulty(status[1][1]);
   }
 
   resetMultiplayer = () => {
@@ -270,6 +271,7 @@ Opponent.defaultProps = {
   onGameOver: null,
   toggleMultiplayer: null,
   onCanvasFocus: null,
+  floorsRaisedOnOpp: null,
 };
 Opponent.propTypes = {
   socket: PropTypes.objectOf(PropTypes.any),
@@ -281,6 +283,7 @@ Opponent.propTypes = {
   onGameOver: PropTypes.func,
   toggleMultiplayer: PropTypes.func,
   onCanvasFocus: PropTypes.func,
+  floorsRaisedOnOpp: PropTypes.func,
 };
 
 export default connect(mapStateToProps)(Opponent);

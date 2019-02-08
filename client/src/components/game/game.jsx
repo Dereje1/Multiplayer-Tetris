@@ -58,6 +58,7 @@ class Game extends React.Component {
       buttonPause: true,
       updateFloor: false,
       canvasLoaded: false,
+      floorsRaised: 0,
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
@@ -320,22 +321,23 @@ class Game extends React.Component {
   }
 
   gameOver = (message = null) => {
-    const { multiPlayer } = this.state;
+    const { multiPlayer, floorsRaised } = this.state;
     const { socket } = this.props;
     if (multiPlayer && socket.temp.gameInProgress) {
       clientEmitter(GAME_OVER, socket);
     }
     // disregard first loss signal in multiplayer as another one will come from socket
     if (multiPlayer && !message) return;
+    const multiplayerMessage = message ? { message, floors: floorsRaised } : null;
     this.setState({
       buttonPause: true,
-    }, () => this.resetBoard(false, false, true, message));
+    }, () => this.resetBoard(false, false, true, multiplayerMessage));
   }
 
   render() {
     const { game, socket } = this.props;
     const {
-      difficulty, multiPlayer, inGameToggle, buttonPause,
+      difficulty, multiPlayer, inGameToggle, buttonPause, floorsRaised,
     } = this.state;
     if (Object.keys(game).length) {
       return (
@@ -371,6 +373,7 @@ class Game extends React.Component {
                 onSetDifficulty={d => this.setState({ difficulty: d })}
                 toggleMultiplayer={() => this.setState({ inGameToggle: !inGameToggle })}
                 difficulty={difficulty}
+                floorsRaisedOnOpp={f => this.setState({ floorsRaised: floorsRaised + f })}
               />
             )
             : null
