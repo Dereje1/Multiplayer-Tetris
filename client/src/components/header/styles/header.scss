@@ -40,6 +40,11 @@
         color: rgb(119, 93, 23);
         font-weight: bold;
         cursor: pointer;
+        @media only screen and (max-width: 550px)  {
+            padding-right: 10px;
+            margin-left: 10px;
+            font-size: .75em;
+        }
     }
 }
 

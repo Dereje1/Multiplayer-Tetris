@@ -58,6 +58,7 @@ class Game extends React.Component {
       buttonPause: true, // single player only
       updateFloor: false, // builds floor on next tick if true
       canvasLoaded: false, // loads only once per mount
+      windowTooSmall: null,
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
@@ -66,6 +67,8 @@ class Game extends React.Component {
   componentDidMount() {
     const { actions } = this.props;
     actions.gameReset(1); // initialize canvas width/height
+    this.checkWindowSize();
+    window.addEventListener('resize', () => this.checkWindowSize());
   }
 
   componentDidUpdate(prevProps) {
@@ -73,7 +76,8 @@ class Game extends React.Component {
     if (!Object.keys(prevProps.game).length) return;
     const { game: prevGame, socket: prevSocket } = prevProps;
     const { game, socket } = this.props;
-    const { multiPlayer, canvasLoaded } = this.state;
+    const { multiPlayer, canvasLoaded, windowTooSmall } = this.state;
+    if (windowTooSmall) return;
 
     /* load Canvas */
     if (!canvasLoaded && this.canvasMajor) this.loadCanvas();
@@ -99,6 +103,7 @@ class Game extends React.Component {
 
   componentWillUnmount() {
     this.endTick(true, 'componentWillUnmount');
+    window.removeEventListener('resize', () => {});
   }
 
   loadCanvas = () => {
@@ -338,12 +343,25 @@ class Game extends React.Component {
     }, () => this.resetBoard(false, false, true, multiplayerMessage));
   }
 
+  checkWindowSize = () => {
+    const { multiPlayer } = this.state;
+    const minHeight = 800;
+    const minWidthSP = 585;
+    const minWidthMP = 800;
+    if (
+      (multiPlayer && window.innerWidth < minWidthMP)
+        || (!multiPlayer && window.innerWidth < minWidthSP)
+        || (window.innerHeight < minHeight)
+    ) this.setState({ windowTooSmall: true });
+    else this.setState({ windowTooSmall: null }, () => this.loadCanvas());
+  }
+
   render() {
     const { game, socket } = this.props;
     const {
-      difficulty, multiPlayer, inGameToggle, buttonPause, floorsRaised,
+      difficulty, multiPlayer, inGameToggle, buttonPause, floorsRaised, windowTooSmall,
     } = this.state;
-    if (Object.keys(game).length) {
+    if (Object.keys(game).length && !windowTooSmall) {
       return (
         <div className="democontainer">
           <Controls
@@ -385,7 +403,7 @@ class Game extends React.Component {
         </div>
       );
     }
-
+    if (windowTooSmall) return <div id="smallwindow" />;
     return null;
   }
 

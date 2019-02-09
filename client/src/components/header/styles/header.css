@@ -57,6 +57,14 @@
   cursor: pointer;
 }
 
+@media only screen and (max-width: 550px) {
+  #header #users {
+    padding-right: 10px;
+    margin-left: 10px;
+    font-size: .75em;
+  }
+}
+
 *:focus {
   outline: none;
 }
