@@ -1,11 +1,21 @@
 const express = require('express');
+const path = require('path');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 
 const app = express();
 // load root level middleware
+/* testing for heroku https redirect */
+
 app.use(logger('dev'));
+/* redirection for heoku to https */
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production'
+    && req.header('x-forwarded-proto') !== 'https') {
+    res.redirect(`https://${req.header('host')}${req.url}`);
+  } else next();
+});
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieSession({
   maxAge: 21 * 24 * 60 * 60 * 1000,
@@ -14,7 +24,11 @@ app.use(cookieSession({
 // connect to db
 require('./models/db');
 // configure authentication
-require('./authnetication/index')(app);
+require('./authentication/index')(app);
+
+/* Build and deployment */
+app.use('/', express.static(path.join(__dirname, '../client/build')));
+
 
 /* app routes */
 app.get('/', (req, res) => {
@@ -23,6 +37,10 @@ app.get('/', (req, res) => {
 
 app.get('/api/test', (req, res) => {
   res.json({ proxy: 'Working!' });
+});
+/* Build and deployment */
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

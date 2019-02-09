@@ -1,27 +1,29 @@
+/* eslint-disable max-len */
 import tetrisShapes from './shapes';
 import shapeLocator from './locateShape';
 
-export const getBoundryHeight = (state) => {
+export const getBoundryHeight = (state, opponent = false) => {
   const yBoundary = state.rubble.boundaryCells.map(c => Number(c.split('-')[1]));
   const boundaryHeight = (Array.from(new Set(yBoundary)).length - 1)
    * state.activeShape.unitBlockSize;
-  return 600 - boundaryHeight;
+  return opponent ? 300 - boundaryHeight : 600 - boundaryHeight;
 };
-export const getRubbleHeight = (state) => {
+export const getRubbleHeight = (state, opponent) => {
   // since rubble height is inclusive of floor height, return
   // floor height if no rubble.
   if (state.rubble) {
     const yBoundary = state.rubble.occupiedCells.map(c => Number(c[0].split('-')[1]));
     const rubbleHeight = yBoundary.length
       ? Math.min.apply(null, yBoundary) * state.activeShape.unitBlockSize
-      : getBoundryHeight(state);
+      : getBoundryHeight(state, opponent);
     return rubbleHeight;
   }
-  return getBoundryHeight(state);
+  return getBoundryHeight(state, opponent);
 };
 // clear canvas
+// eslint-disable-next-line no-unused-vars
 export const clearCanvas = (canvasContext, clearHeight, caller) => {
-  console.log(`clearing canvas ${caller} ${clearHeight}`);
+  // if (canvasContext.canvas.clientHeight === 300) console.log(`clearing canvas ${caller} ${clearHeight}`);
   if (clearHeight === 'All') {
     canvasContext.clearRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
     return;
@@ -69,8 +71,8 @@ export const drawGridSpecial = (x, y, occupied, b, ctx) => {
 };
 
 export const drawRubble = (ctx, state, opponent = false) => {
-  console.log('Drawing rubble');
-  clearCanvas(ctx, getBoundryHeight(state), 'drawRubble');
+  if (opponent) console.log('Opponent Drawing rubble');
+  clearCanvas(ctx, getBoundryHeight(state, opponent), 'drawRubble');
   const canvasContext = ctx;
   const b = state.activeShape.unitBlockSize;
   state.rubble.occupiedCells.forEach((cell) => {
@@ -91,48 +93,58 @@ export const drawRubble = (ctx, state, opponent = false) => {
   });
 };
 
-export const drawBoundary = (ctx, state) => {
-  console.log('Drawing Boundry');
+export const drawBoundary = (ctx, state, opponent = false) => {
+  // console.log('Drawing Boundry');
+  const canvasContext = ctx;
   const b = state.activeShape.unitBlockSize;
-  ctx.clearRect(0, getRubbleHeight(state), ctx.canvas.width, ctx.canvas.height);
+  canvasContext.clearRect(0, getRubbleHeight(state),
+    canvasContext.canvas.width, canvasContext.canvas.height);
   state.rubble.boundaryCells.forEach((cell) => {
     const x = Number(cell.split('-')[0]);
     const y = Number(cell.split('-')[1]);
     // filled rects
 
-    ctx.fillStyle = 'rgba(93, 149, 221, 0.403921568627451)';
-    ctx.fillRect(x * b, y * b, b, b);
+    canvasContext.fillStyle = 'rgba(93, 149, 221, 0.403921568627451)';
+    canvasContext.fillRect(x * b, y * b, b, b);
     // draw borders for rubble
-    ctx.beginPath();
-    ctx.lineWidth = '4';
-    ctx.strokeStyle = 'white';
-    ctx.rect(x * b, y * b, b, b);
-    ctx.stroke();
+    canvasContext.beginPath();
+    canvasContext.lineWidth = opponent ? '1' : '4';
+    canvasContext.strokeStyle = 'white';
+    canvasContext.rect(x * b, y * b, b, b);
+    canvasContext.stroke();
   });
+  return opponent ? drawRubble(ctx, state, true) : null;
 };
 
-export const drawShape = (ctx, shapeToDraw, state) => {
-  if (getRubbleHeight(state)) {
-    console.log(`Boundry Height = ${getBoundryHeight(state)} Rubble Height = ${getRubbleHeight(state)}`);
-    const distanceBetweenRubble = (getRubbleHeight(state)) - shapeToDraw.boundingBox[3];
-    if (distanceBetweenRubble > 33) {
-      clearCanvas(ctx, shapeToDraw.boundingBox[3] + 33, 'drawshape1');
+export const drawShape = (ctx, state, opponent = false) => {
+  const shapeToDraw = state.activeShape;
+  const shapeYDirectionLowerBound = opponent
+    ? shapeToDraw.boundingBox[3] / 2
+    : shapeToDraw.boundingBox[3];
+  const borderOffset = opponent ? 33 / 2 : 33;
+  // if (opponent) console.log(shapeYDirectionLowerBound);
+  if (getRubbleHeight(state, opponent)) {
+    // if (opponent) console.log(`Boundry Height = ${getBoundryHeight(state, opponent)} Rubble Height = ${getRubbleHeight(state, opponent)}`);
+    const distanceBetweenRubble = (getRubbleHeight(state, opponent)) - shapeYDirectionLowerBound;
+    if (distanceBetweenRubble > borderOffset) {
+      clearCanvas(ctx, shapeYDirectionLowerBound + borderOffset, opponent ? 'drawshape1' : null);
     } else {
-      drawRubble(ctx, state);
+      drawRubble(ctx, state, opponent);
     }
-  } else clearCanvas(ctx, shapeToDraw.boundingBox[3] + 33, 'drawshape3');
+  } else clearCanvas(ctx, shapeYDirectionLowerBound + borderOffset, opponent ? 'drawshape3' : null);
 
-  const canvasContext = ctx;
-  canvasContext.beginPath();
-  canvasContext.fillStyle = tetrisShapes[shapeToDraw.name].color;
-  canvasContext.moveTo(shapeToDraw.xPosition, shapeToDraw.yPosition);
-  shapeToDraw.absoluteVertices.forEach((v) => {
-    canvasContext.lineTo(v[0], v[1]);
-  });
-  canvasContext.lineTo(shapeToDraw.xPosition, shapeToDraw.yPosition);
-  canvasContext.fill();
-
-  drawCells(ctx, shapeToDraw);
+  if (!opponent) {
+    const canvasContext = ctx;
+    canvasContext.beginPath();
+    canvasContext.fillStyle = tetrisShapes[shapeToDraw.name].color;
+    canvasContext.moveTo(shapeToDraw.xPosition, shapeToDraw.yPosition);
+    shapeToDraw.absoluteVertices.forEach((v) => {
+      canvasContext.lineTo(v[0], v[1]);
+    });
+    canvasContext.lineTo(shapeToDraw.xPosition, shapeToDraw.yPosition);
+    canvasContext.fill();
+  }
+  drawCells(ctx, shapeToDraw, opponent);
 };
 
 export const drawNextShape = (ctx, newShape, state) => {
@@ -212,15 +224,16 @@ export const winRubble = (ctx, state, winners) => {
   });
 };
 
-export const drawGameOver = (ctx, ctxMinor, state) => {
+export const drawGameOver = (ctx, ctxMinor, state, opponent) => {
+  const canvasContext = ctx;
   clearCanvas(ctx, 'All', 'draw game over Major');
   clearCanvas(ctxMinor, 'All', 'draw game over Minor');
-  ctx.font = '60px serif';
-  ctx.fillStyle = 'white';
-  ctx.fillText('Game Over', 14, 100);
+  canvasContext.font = '60px serif';
+  canvasContext.fillStyle = 'white';
+  canvasContext.fillText(opponent ? opponent.message : 'Game Over', 14, 100);
   const textB = `${state.points.totalLinesCleared} Lines Cleared`;
-  const textC = `Reached Level ${state.points.level}`;
-  ctx.font = '30px serif';
-  ctx.fillText(textB, 55, 300);
-  ctx.fillText(textC, 55, 450);
+  const textC = opponent ? `${opponent.floors}` : `     Reached Level ${state.points.level}`;
+  canvasContext.font = '30px serif';
+  canvasContext.fillText(textB, 55, 300);
+  canvasContext.fillText(textC, 5, 450);
 };

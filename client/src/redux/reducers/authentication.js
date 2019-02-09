@@ -1,5 +1,6 @@
-import { GET_LOGIN_STATUS } from '../../constants/index';
+import { auth } from '../../constants/index';
 
+const { GET_LOGIN_STATUS } = auth;
 const authReducer = (state = {}, action) => {
   switch (action.type) {
     case GET_LOGIN_STATUS:

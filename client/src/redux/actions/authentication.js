@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { GET_LOGIN_STATUS } from '../../constants/index';
+import { auth } from '../../constants/index';
+
+const { GET_LOGIN_STATUS } = auth;
 
 const getUser = () => dispatch => (
   axios.get('/auth/profile').then(({ data }) => {

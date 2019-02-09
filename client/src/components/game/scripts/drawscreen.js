@@ -15,11 +15,9 @@ import {
 
 const drawScreen = (
   updatedShape,
-  floor,
   canvasContextMajor,
   endTick,
   startTick,
-  drawFloor,
   gameOver,
 ) => {
   const { game } = store.getState();
@@ -41,16 +39,6 @@ const drawScreen = (
   const collisionResult = runCollisionTest(game, locatedShape);
   if (collisionResult && !collisionResult.length) {
     endTick(true, 'collision check - game done');
-    // By Nature of the game, looser is the one that will send this signal
-    /* commented out for single player
-      if (this.state.multiPlayer && this.state.opponentSocketId) {
-        this.setState({
-          opponentSocketId: '',
-          selfSocketId: '',
-        }, () => socket.emit('GAME_OVER', ''));
-        return;
-      }
-      */
     return gameOver();
   } if (collisionResult && collisionResult.length) {
     if (collisionResult[1]) { // winner found
@@ -82,18 +70,8 @@ const drawScreen = (
       paused: false,
     };
     store.dispatch(updateScreen(data));
-    if (floor) drawFloor();
-    drawShape(canvasContextMajor, locatedShape, store.getState().game);
+    drawShape(canvasContextMajor, store.getState().game);
   }
-  // if (this.state.multiPlayer) socket.emit(SIMULATE_GAMEPLAY, JSON.stringify(this.props.game));
-  /* commented out for single player
-    if (this.state.opponentSocketId) {
-      socket.emit(
-        SIMULATE_GAMEPLAY,
-        { gameState: JSON.stringify(this.props.game), socketId: this.state.opponentSocketId },
-      );
-    }
-    */
   return null;
 };
 

@@ -14,8 +14,8 @@ const strategy = new GoogleStrategy({
       google: {
         id: profile.id,
         token,
-        displayName: profile.emails[0].value,
-        email: profile.displayName,
+        displayName: profile.displayName,
+        email: profile.emails[0].value,
       },
     });
     newUser.save((saveErr) => {
