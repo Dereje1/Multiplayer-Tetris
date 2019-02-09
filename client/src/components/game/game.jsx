@@ -9,7 +9,7 @@ import {
   collide, speedUp, pause, getFloorRaiseBoundry,
 } from '../../redux/actions/tetris';
 
-// custom functions
+// custom functions and scripts
 import tetrisShapes from './scripts/shapes';
 import shapeLocator from './scripts/locateShape';
 import { runCollisionTest } from './scripts/collision';
@@ -18,10 +18,10 @@ import {
 } from './scripts/canvas';
 import drawScreen from './scripts/drawscreen';
 import playerMoves from './scripts/player';
-// react Components
+// custom react Components
 import Controls from '../controls/controls';
 import Opponent from '../oponnent/opponent';
-
+// socket
 import { socket as socketConstants } from '../../constants/index';
 import { clientEmitter } from '../../sockethandler';
 
@@ -29,7 +29,7 @@ const {
   clientEmit: {
     GAME_OVER,
   },
-} = socketConstants;
+} = socketConstants; // the only emit component makes
 // reads from store
 const mapStateToProps = state => state;
 
@@ -46,19 +46,18 @@ const mapDispatchToProps = dispatch => ({
   }, dispatch),
 });
 
-// end redux
 class Game extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { // holds information that the opponent component uses
-      multiPlayer: false,
-      inGameToggle: false,
-      difficulty: 2,
-      buttonPause: true,
-      updateFloor: false,
-      canvasLoaded: false,
-      floorsRaised: 0,
+    this.state = {
+      multiPlayer: false, // True if in multiplayer mode
+      inGameToggle: false, // disallows unmounting of a game in progress in multiplayer
+      difficulty: 2, // level transmitted to a guest opponent upon invitation
+      floorsRaised: 0, // captures floors raised on opponent
+      buttonPause: true, // single player only
+      updateFloor: false, // builds floor on next tick if true
+      canvasLoaded: false, // loads only once per mount
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
@@ -66,10 +65,11 @@ class Game extends React.Component {
 
   componentDidMount() {
     const { actions } = this.props;
-    actions.gameReset(1); // need to initialize canvas width/height
+    actions.gameReset(1); // initialize canvas width/height
   }
 
   componentDidUpdate(prevProps) {
+    // all optimizations go here
     if (!Object.keys(prevProps.game).length) return;
     const { game: prevGame, socket: prevSocket } = prevProps;
     const { game, socket } = this.props;
@@ -102,19 +102,24 @@ class Game extends React.Component {
   }
 
   loadCanvas = () => {
+    // loads canvas once on game mount
     const canvasMajor = this.canvasMajor.current;
     const canvasMinor = this.canvasMinor.current;
     canvasMajor.focus();
     canvasMajor.style.backgroundColor = 'black';
     canvasMinor.style.backgroundColor = 'black';
-    // setting context so it can be accesible everywhere in the class , maybe a better way ?
     this.canvasContextMajor = canvasMajor.getContext('2d');
     this.canvasContextMinor = canvasMinor.getContext('2d');
     this.canvasMajor.current.focus();
     this.setState({ canvasLoaded: true });
   }
 
-  resetBoard = (reStart = true, keepFloor = false, gameover = false, opponent = null) => {
+  resetBoard = (
+    reStart = true, // if false will not start with a new shape/ tick
+    keepFloor = false, // used to set floor height in sp mode
+    gameover = false,
+    opponent = null, // opponent info needed for canvas
+  ) => {
     const { game, actions } = this.props;
     this.setState({ floorsRaised: 0 });
     if (gameover) {
@@ -139,24 +144,16 @@ class Game extends React.Component {
 
   startTick = (makeNewShape = true) => {
     this.abortCounter = 0;
-    if (!this.tickCounter && this.tickCounter !== 0) this.tickCounter = 0;
     if (this.downInterval)clearInterval(this.downInterval);
     if (makeNewShape) this.newShape();
     this.downInterval = setInterval(() => {
       const { updateFloor } = this.state;
       // eslint-disable-next-line react/destructuring-assignment
       if (this.props.game.paused) clearInterval(this.downInterval);
-      this.tickCounter = this.tickCounter + 1;
-      if (this.tickCounter === 4) {
-        this.tickCounter = 0;
-        // this.floorRaise(1);
-      }
       if (updateFloor) { // drawFloor needs to happen before tick
         this.drawFloor();
         this.setState({ updateFloor: false }, () => this.tick());
       } else this.tick();
-
-
     // eslint-disable-next-line react/destructuring-assignment
     }, this.props.game.timerInterval);
   }
@@ -164,7 +161,7 @@ class Game extends React.Component {
   tick = () => {
     const { game: { paused } } = this.props;
     if (paused) return;
-    // handle y direction movements
+    // test for collision or free fall happens below
     drawScreen(
       this.positionForecast(),
       this.canvasContextMajor,
@@ -187,10 +184,10 @@ class Game extends React.Component {
     }
   }
 
+  // get the next shape ypos
   positionForecast = () => {
     const { game } = this.props;
     const copyOfActiveShape = Object.assign({}, game.activeShape);
-    // console.log(`bbox @ tick ${this.props.game.activeShape.boundingBox}`)
     copyOfActiveShape.yPosition += game.activeShape.unitBlockSize;
     return copyOfActiveShape;
   }
@@ -278,6 +275,7 @@ class Game extends React.Component {
     const collisionResult = runCollisionTest(game, locatedShape, newFloor);
     this.canvasMajor.current.focus();
     if (collisionResult) {
+      // right now can not raise floor and collide simultaneously
       console.log('Unable to move floor', collisionResult);
     } else {
       actions.raiseFloor(game.rubble, f);
@@ -304,7 +302,9 @@ class Game extends React.Component {
   }
 
   arrowKeyLag = (e) => {
-    if (e.keyCode === 40) this.startTick(false);
+    if (e.keyCode === 40) {
+      this.startTick(false);
+    }
   }
 
   /* opponent component Callbacks */
@@ -313,11 +313,11 @@ class Game extends React.Component {
     const { multiPlayer } = this.state;
 
     if (user.profile.authenticated) {
-      clearCanvas(this.canvasContextMajor, 'All', 'Multi'); // clear canvasMajor
-      clearCanvas(this.canvasContextMinor, 'All', 'Multi'); // clear canvasMajor
+      clearCanvas(this.canvasContextMajor, 'All', 'Multi');
+      clearCanvas(this.canvasContextMinor, 'All', 'Multi');
       this.setState({
         multiPlayer: !multiPlayer,
-      }, () => this.resetBoard(false));// don't forget to add reset board call back here
+      }, () => this.resetBoard(false));
     }
   }
 
@@ -327,9 +327,8 @@ class Game extends React.Component {
     if (multiPlayer && socket.temp.gameInProgress) {
       clientEmitter(GAME_OVER, socket);
     }
-    // disregard first loss signal in multiplayer as another one will come from socket
+    // disregard first local loss signal in multiplayer as another one will come from socket
     if (multiPlayer && !message) return;
-    console.log(message);
     let multiplayerMessage;
     if (message && message.disqualified) {
       multiplayerMessage = { message: message.message, floors: 'Opponent \n Disqualified' };

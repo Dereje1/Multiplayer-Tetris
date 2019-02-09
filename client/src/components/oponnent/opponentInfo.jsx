@@ -146,7 +146,7 @@ const OpponentDescription = ({
       </div>
     );
   }
-  // stage 6 - Game is done back to single player mode
+  // stage 6 - Game is done
   if (gameOver) {
     return (
       <div className="opponentContainer__opponentDescription">

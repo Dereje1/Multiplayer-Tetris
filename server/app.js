@@ -9,7 +9,7 @@ const app = express();
 /* testing for heroku https redirect */
 
 app.use(logger('dev'));
-/* redirect for heoku to https */
+/* redirection for heoku to https */
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === 'production'
     && req.header('x-forwarded-proto') !== 'https') {

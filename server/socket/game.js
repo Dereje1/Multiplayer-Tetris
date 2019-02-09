@@ -26,7 +26,7 @@ const gamePlay = (socket, callback) => {
   });
 
   socket.on(INVITATION_SENT, (data) => {
-    console.log('Invitation Sent', data)
+    console.log('Invitation Sent', data);
     const currentlyLoggedIn = [...utility.getUsers()];
     const { sentTo, difficulty } = data;
     const invitationSender = currentlyLoggedIn.filter(user => user.socketId === socket.id)[0];
@@ -82,7 +82,7 @@ const gamePlay = (socket, callback) => {
   socket.on(INVITATION_ACCEPTED, (data) => {
     const currentlyLoggedIn = [...utility.getUsers()];
     const { invitationFrom: { socketId: invitationSenderId } } = data;
-    const timeToGameStart = 2;
+    const timeToGameStart = 10;
     // Initialize the game information objects
     const sender = { countdown: timeToGameStart, difficulty: data.invitationFrom.difficulty };
     const reciever = { countdown: timeToGameStart, difficulty: data.invitationFrom.difficulty };

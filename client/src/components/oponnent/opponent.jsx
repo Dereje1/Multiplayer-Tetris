@@ -1,18 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './styles/opponentdescription.css';
-// connect to redux
+// connect to redux for store read onlny
 import { connect } from 'react-redux';
 import { clientEmitter } from '../../sockethandler';
 import { socket as socketConstants } from '../../constants/index';
-import {
-  drawShape, drawBoundary,
-} from '../game/scripts/canvas';
-
+import { drawShape, drawBoundary } from '../game/scripts/canvas';
 // custom components
 import OpponentDescription from './opponentInfo';
+import './styles/opponentdescription.css';
 
-// reads from store
+// read from store
 const mapStateToProps = state => state;
 const {
   clientEmit: {
@@ -31,11 +28,10 @@ class Opponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      levelsRaised: 0,
-      canvasLoaded: false,
+      levelsRaised: 0, // storage for surplus floor levels by opponent
+      canvasLoaded: false, // load canvas only once
     };
     this.canvasOpponent = React.createRef();
-    this.feedCount = 0;
   }
 
   componentDidMount() {
@@ -56,10 +52,9 @@ class Opponent extends React.Component {
       this.loadOpponentCanvas();
       this.setState({ canvasLoaded: true });
     }
-
+    /* handle game phases here */
     if (temp) {
       const tempKey = Object.keys(temp)[0];
-
       switch (tempKey) {
         case 'acceptedInvitation': {
           if (!prevTemp.acceptedInvitation) break;
@@ -81,12 +76,14 @@ class Opponent extends React.Component {
             onReset();
             toggleMultiplayer();
           } else { // game running
-            // Important its is not enough to emit every time
-            // component updates, must emit when only the game
-            // actually CHANGES!!, otherwise big performance
-            // degredation if we have other things, like setstate
-            // update the component, meaning a new emit on every component
-            // update!!!
+            /* Important
+            It's is not enough to emit every time
+            component updates, must emit when only the game
+            actually CHANGES!!, otherwise big performance
+            degredation if we have other things, like setstate
+            update the component, meaning a new emit on every component
+            update!
+            */
             const { gameInProgress: { opponentScreen: prevOpponentScreen } } = prevTemp;
             // set opponent screen on socket data only if there is a difference in the opp game.
             if (opponentScreen !== prevOpponentScreen) {
@@ -126,27 +123,27 @@ class Opponent extends React.Component {
 
   componentWillUnmount() {
     const { socket: { temp } } = this.props;
-    // if a person leaves component in the middle of an invitation
+    // if a person unmounts in the middle of an invitation
     if (temp.invitationFrom) clientEmitter(INVITATION_DECLINED, temp);
     clientEmitter(OPPONENT_UNMOUNTED, null);
-    // socket.emit('COMPONENT_UNMOUNTED', 'opponent');
-    // socket.emit('disconnect', '');
   }
 
   loadOpponentCanvas = () => {
+    // load only once
     const canvasOpponent = this.canvasOpponent.current;
     canvasOpponent.style.backgroundColor = 'black';
-    // setting context so it can be accesible everywhere in the class , maybe a better way ?
     this.canvasOpponentContext = canvasOpponent.getContext('2d');
     this.canvasOpponentContext.canvas.hidden = true;
   }
 
+  // called on every game object change
   setGame = (opponentScreen, prevOpponentScreen) => {
     if (!opponentScreen) return;
     const { socket: { temp } } = this.props;
     const opp = JSON.parse(opponentScreen);
     const prevOpp = prevOpponentScreen ? JSON.parse(prevOpponentScreen) : null;
     if (temp.gameOver) return;
+    // test if a floor raise is warranted
     if (opp && prevOpp) this.processFloorRaise(opp, prevOpp);
     if (this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = false;
     opp.activeShape.unitBlockSize /= 2;
@@ -158,6 +155,7 @@ class Opponent extends React.Component {
     onSetDifficulty(val);
   }
 
+  // test if a floor raise is warranted
   processFloorRaise = (currentGame, previousGame) => {
     const { levelsRaised } = this.state;
     const {
@@ -202,14 +200,14 @@ class Opponent extends React.Component {
     // number of floors that needs to be cleared for a single floor raise on opp
     const amountNeededForRaise = difficultyMap.filter(d => d[0] === difficulty)[0][1];
     // Includes any surplus from previous lines cleared
-    const totalRaisedByClient = levelsRaised + linesCleared;
-    if (totalRaisedByClient >= amountNeededForRaise) {
+    const totalRaisedByOpponent = levelsRaised + linesCleared;
+    if (totalRaisedByOpponent >= amountNeededForRaise) {
       // Total levels to be raised on opponent
-      const raiseOnOpponent = Math.floor(totalRaisedByClient / amountNeededForRaise);
+      const raiseOnClient = Math.floor(totalRaisedByOpponent / amountNeededForRaise);
       // To store for client if any surplus
-      const storeForClient = totalRaisedByClient - (raiseOnOpponent * amountNeededForRaise);
-      this.setState({ levelsRaised: storeForClient }, () => onFloorRaise(Number(raiseOnOpponent)));
-    } else this.setState({ levelsRaised: totalRaisedByClient });
+      const storeForOpponent = totalRaisedByOpponent - (raiseOnClient * amountNeededForRaise);
+      this.setState({ levelsRaised: storeForOpponent }, () => onFloorRaise(Number(raiseOnClient)));
+    } else this.setState({ levelsRaised: totalRaisedByOpponent });
   }
 
   /* process socket-out-going below */

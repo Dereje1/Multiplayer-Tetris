@@ -70,7 +70,7 @@ class Header extends React.Component {
         </div>
       );
     }
-    return null;
+    return <div id="header" />;
   }
 
 }

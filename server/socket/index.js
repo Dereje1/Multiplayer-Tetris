@@ -26,7 +26,7 @@ const master = (io) => {
     connectedUsers(socket, (err, updatedUsers) => {
       if (err) throw err;
       utility.setUsers(updatedUsers);
-      // send back to client the number of logged in users.
+      // send back to client the number of logged in users
       io.emit(LOGGED_IN_USERS, updatedUsers.length);
       // send back to specific client ONLY it's socket ID
       socket.emit(SOCKET_ID, socket.id);
@@ -35,6 +35,7 @@ const master = (io) => {
     disconnectedUsers(socket, (err, returnedData) => {
       if (err) throw err;
       utility.setUsers(returnedData.data);
+      // disqualify player if disconneted while in a game
       if (returnedData.disconnectionStatus && returnedData.disconnectionStatus.inGame) {
         io.to(returnedData.disconnectionStatus.connection)
           .emit(FINISH_GAME, {
@@ -43,16 +44,15 @@ const master = (io) => {
             disqualified: true,
           });
       }
+      // if pending, i.e. invitation/ countdown just send empty users back to client
       if (returnedData.disconnectionStatus && returnedData.disconnectionStatus.pending) {
-        // if pending, i.e. invitation/ countdown just send empty users back to
-        // client and let client search again
         io.to(returnedData.disconnectionStatus.connection)
           .emit(OPPONENT_POOL, []);
       }
       io.emit(LOGGED_IN_USERS, returnedData.data.length);
       console.log('A User has disconnected', socket.id);
     });
-    // Handle Game Play;
+    // Handles Game Play;
     game(socket, (err, returnedData) => {
       if (err) throw err;
       if (!returnedData) return;

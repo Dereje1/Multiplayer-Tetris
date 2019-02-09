@@ -9,7 +9,7 @@ const Footer = () => (
     <FontAwesomeIcon
       id="github"
       icon={faGithub}
-      onClick={() => window.open('https://github.com/Dereje1')}
+      onClick={() => window.open('https://github.com/Dereje1/Multiplayer-Tetris')}
     />
   </div>
 );
