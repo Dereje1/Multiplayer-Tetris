@@ -72,7 +72,7 @@ The Browser should now open up with the application in development mode.
 ## History
 * [Canvas Concept](https://codepen.io/Dee73/pen/KeRYqV)
 * [Game Concept](https://github.com/Dereje1/React-Canvas-Playground/tree/master/client)
-* [Game First Version](https://github.com/Dereje1/Bears-Team-05)
+* [Game First Version](https://github.com/Dereje1/Bears-Team-05/tree/Cleanup_And_Deployment)
 
 
 ## License
