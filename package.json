@@ -4,11 +4,9 @@
   "description": "Multiplayer tetris built with the MERN stack",
   "scripts": {
     "start": "node ./bin/www",
-    "server": "node ./bin/www",
     "devserver": "nodemon ./bin/www",
     "devclient": "cd client && yarn start",
     "dev": "concurrently --kill-others-on-fail \"yarn devserver\" \"yarn devclient\"",
-    "run": "concurrently --kill-others-on-fail \"npm run server\" \"cd client && npm start\"",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build"
   },
   "repository": "https://github.com/Dereje1/Multiplayer-Tetris.git",

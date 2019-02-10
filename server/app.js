@@ -6,10 +6,8 @@ const cookieSession = require('cookie-session');
 
 const app = express();
 // load root level middleware
-/* testing for heroku https redirect */
-
 app.use(logger('dev'));
-/* redirection for heoku to https */
+/* redirection for heroku to https from http */
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === 'production'
     && req.header('x-forwarded-proto') !== 'https') {
@@ -21,20 +19,14 @@ app.use(cookieSession({
   maxAge: 21 * 24 * 60 * 60 * 1000,
   keys: [process.env.COOKIE_KEY],
 }));
+/* Build and deployment */
+app.use('/', express.static(path.join(__dirname, '../client/build')));
 // connect to db
 require('./models/db');
 // configure authentication
 require('./authentication/index')(app);
 
-/* Build and deployment */
-app.use('/', express.static(path.join(__dirname, '../client/build')));
-
-
 /* app routes */
-app.get('/', (req, res) => {
-  res.redirect('/auth/profile');
-});
-
 app.get('/api/test', (req, res) => {
   res.json({ proxy: 'Working!' });
 });
