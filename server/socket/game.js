@@ -156,13 +156,24 @@ const gamePlay = (socket, callback) => {
     const currentlyLoggedIn = [...utility.getUsers()];
     const winnerSID = data.temp.gameInProgress.info.opponentSID;
     const loosingSID = data.mySocketId;
+    let winnerGoogleID = '';
+    let looserGoogleID = '';
     currentlyLoggedIn.forEach((user) => {
-      if ((user.socketId === winnerSID) || (user.socketId === loosingSID)) user.oponnentId = null;
+      if (user.socketId === winnerSID) {
+        winnerGoogleID = user.username;
+        user.oponnentId = null;
+      }
+      if (user.socketId === loosingSID) {
+        looserGoogleID = user.username;
+        user.oponnentId = null;
+      }
     });
     utility.setUsers(currentlyLoggedIn);
     callback(null, {
       operation: 'gameFinished',
-      data: { winnerSID, loosingSID },
+      data: {
+        winnerSID, loosingSID, winnerGoogleID, looserGoogleID,
+      },
     });
   });
 };

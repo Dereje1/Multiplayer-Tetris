@@ -41,6 +41,8 @@ const master = (io) => {
           .emit(FINISH_GAME, {
             winnerSID: returnedData.disconnectionStatus.connection,
             loosingSID: socket.id,
+            looserGoogleID: returnedData.disconnectionStatus.looserGoogleID,
+            winnerGoogleID: returnedData.disconnectionStatus.winnerGoogleID,
             disqualified: true,
           });
       }

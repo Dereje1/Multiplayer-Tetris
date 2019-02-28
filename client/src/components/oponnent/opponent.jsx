@@ -29,6 +29,7 @@ class Opponent extends React.Component {
     super(props);
     this.state = {
       levelsRaised: 0, // storage for surplus floor levels by opponent
+      opponentLinesCleared: 0,
       canvasLoaded: false, // load canvas only once
     };
     this.canvasOpponent = React.createRef();
@@ -41,7 +42,7 @@ class Opponent extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { canvasLoaded } = this.state; // needed so that canvas loads only once!
+    const { canvasLoaded, opponentLinesCleared } = this.state;
     const { game: prevGame, socket: { temp: prevTemp } } = prevProps;
     const {
       game, onReset, toggleMultiplayer, onCanvasFocus,
@@ -66,6 +67,7 @@ class Opponent extends React.Component {
               clientScreen: JSON.stringify(game),
             });
             onSetDifficulty(difficulty);
+            this.setState({ levelsRaised: 0, opponentLinesCleared: 0 });
           }
         }
           break;
@@ -99,18 +101,9 @@ class Opponent extends React.Component {
         }
           break;
         case 'gameOver': {
-          const { socket, onGameOver } = this.props;
-          let message;
-          if (temp.gameOver.winnerSID === socket.mySocketId) { // client is the winner
-            message = 'You Won !!';
-            if (socket.temp.gameOver.disqualified) { // opponent disqualified
-              message = { message, disqualified: true };
-            }
-          } else { // opponent is the winner
-            message = 'You Lost !!';
-          }
+          const { onGameOver } = this.props;
           if (!prevTemp.gameOver) {
-            onGameOver(message);
+            onGameOver([opponentLinesCleared]);
             toggleMultiplayer();
           }
         }
@@ -188,6 +181,7 @@ class Opponent extends React.Component {
     const linesCleared = totalLinesCleared - previouslyClearedLines;
     // return if no new lines have been cleared
     if (!linesCleared) return;
+    this.setState({ opponentLinesCleared: totalLinesCleared });
     /*
     Difficulty                                 Description
     -----------------------------------------------------------------------------------

@@ -326,21 +326,82 @@ class Game extends React.Component {
     }
   }
 
-  gameOver = (message = null) => {
-    const { multiPlayer, floorsRaised } = this.state;
+  // message wiil only come in from opponent component
+  gameOver = (opponentInfo = null) => {
+    const { multiPlayer } = this.state;
     const { socket } = this.props;
+    // Whoever looses first will emit game over while in multiplayer mode
     if (multiPlayer && socket.temp.gameInProgress) {
       clientEmitter(GAME_OVER, socket);
     }
     // disregard first local loss signal in multiplayer as another one will come from socket
-    if (multiPlayer && !message) return;
-    let multiplayerMessage;
-    if (message && message.disqualified) {
-      multiplayerMessage = { message: message.message, floors: 'Opponent \n Disqualified' };
-    } else multiplayerMessage = message ? { message, floors: `        ${floorsRaised} Floors Raised` } : null;
+    if (multiPlayer && !opponentInfo) return;
+
     this.setState({
       buttonPause: true,
-    }, () => this.resetBoard(false, false, true, multiplayerMessage));
+    }, () => this.resetBoard(
+      false, false, true, opponentInfo
+        ? this.processMatch(opponentInfo[0])
+        : this.processSinglePlayer(),
+    ));
+  }
+
+  processMatch = (oppLinesCleared) => {
+    const { floorsRaised, difficulty } = this.state;
+    const {
+      socket: {
+        temp: {
+          gameOver,
+        },
+      }, user, game,
+    } = this.props;
+    // test if client is winner
+    const iAmWinner = gameOver.winnerGoogleID === user.profile.username;
+    // get floor level of processing client
+    const floorLevel = game.rubble.boundaryCells.length > 10
+      ? Math.floor((game.rubble.boundaryCells.length - 10) / 10)
+      : 0;
+    // message for canvas display
+    let multiplayerMessage;
+    // prepare match object for db, only winner will send results
+    if (iAmWinner || gameOver.disqualified) {
+      const matchObject = {
+        winnerGoogleId: gameOver.winnerGoogleID,
+        looserGoogleId: gameOver.looserGoogleID,
+        difficulty,
+        winnerLinesCleared: game.points.totalLinesCleared,
+        winnerFloorsRaised: floorsRaised,
+        looserLinesCleared: oppLinesCleared,
+        looserFloorsRaised: floorLevel,
+        looserDisqualified: gameOver.disqualified || false,
+      };
+      console.log(matchObject);
+    }
+    // prepare message for canvas
+    if (iAmWinner || gameOver.disqualified) {
+      multiplayerMessage = {
+        message: 'You Won!',
+        floors: '  Opponent Disqualified',
+      };
+    } else {
+      multiplayerMessage = {
+        message: iAmWinner ? 'You Won!' : 'You Lost!',
+        floors: `        ${floorsRaised} Floors Raised`,
+      };
+    }
+    return multiplayerMessage;
+  }
+
+  processSinglePlayer = () => {
+    const { game, user } = this.props;
+    if (!user.profile.authenticated) return null;
+    const singlePlayerObject = {
+      googleId: user.profile.username,
+      linesCleared: game.points.totalLinesCleared,
+      levelReached: game.points.level,
+    };
+    console.log(singlePlayerObject);
+    return null;
   }
 
   checkWindowSize = () => {
