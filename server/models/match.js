@@ -1,15 +1,16 @@
 const mongoose = require('mongoose');
 
 const matchSchema = mongoose.Schema({
-  googleId: { type: String, required: true },
-  opponentGoogleId: { type: String, required: true },
+  winnerGoogleId: { type: String, required: true },
+  looserGoogleId: { type: String, required: true },
   difficulty: {
     type: Number, required: true, min: 1, max: 4,
   },
-  linesCleared: { type: Number, required: true },
-  floorsRaised: { type: Number, required: true },
-  won: { type: Boolean, required: true },
-  disqualified: { type: Boolean, required: true },
+  winnerLinesCleared: { type: Number, required: true },
+  winnerFloorsRaised: { type: Number, required: true },
+  looserLinesCleared: { type: Number, required: true },
+  looserFloorsRaised: { type: Number, required: true },
+  looserDisqualified: { type: Boolean, required: true },
 }, { timestamps: true });
 
 const multiPlayer = mongoose.model('Multi', matchSchema);
