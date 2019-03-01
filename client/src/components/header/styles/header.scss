@@ -3,12 +3,8 @@
     height: 80px;
     background: rgb(207, 214, 207);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    #profile{
-        width: 20%;
-        background: green;
-    }
     #authbutton{
             margin-top: 25px;
             width: auto;
@@ -22,19 +18,12 @@
             cursor: pointer;
             outline: none;
         }
-        #logout{
-            width: 232px;
-            height: 70%;
-            font-size: 1.2em;
-            cursor: pointer;
-            outline: none;
-        }
     }
 
     #users{
-        width: 20%;
-        display: flex;
-        justify-content: flex-end;
+        position: absolute;
+        right: 0;
+        width: auto;
         padding-right: 50px;
         font-size: 1em;
         color: rgb(119, 93, 23);

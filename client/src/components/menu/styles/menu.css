@@ -1,0 +1,148 @@
+#menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 225px;
+  min-height: 100vh;
+  background: #436e59bb;
+}
+
+#menu .close {
+  font-size: 30px;
+  text-align: right;
+  position: absolute;
+  right: 0;
+  margin: 10px;
+  cursor: pointer;
+}
+
+#menu.show {
+  -webkit-animation-name: slideout;
+          animation-name: slideout;
+  -webkit-animation-duration: .5s;
+          animation-duration: .5s;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+  -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+}
+
+#menu.hide {
+  -webkit-animation-name: slidein;
+          animation-name: slidein;
+  -webkit-animation-duration: .5s;
+          animation-duration: .5s;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+  -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+}
+
+#menu #items {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  margin-top: 50%;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#menu #items .menuitems {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-family: 'Raleway', sans-serif;
+  color: #f0ecec;
+  font-size: 1.5em;
+  font-weight: bold;
+  cursor: pointer;
+  width: 200px;
+}
+
+#menu #items :hover {
+  color: #bb9bf1;
+}
+
+.burger {
+  position: absolute;
+  top: 20px;
+  left: 0;
+  font-size: 40px;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+@-webkit-keyframes slideout {
+  0% {
+    -webkit-transform: translateX(-225px);
+            transform: translateX(-225px);
+  }
+  50% {
+    -webkit-transform: translateX(-100px);
+            transform: translateX(-100px);
+  }
+  100% {
+    -webkit-transform: translateX(0px);
+            transform: translateX(0px);
+  }
+}
+
+@keyframes slideout {
+  0% {
+    -webkit-transform: translateX(-225px);
+            transform: translateX(-225px);
+  }
+  50% {
+    -webkit-transform: translateX(-100px);
+            transform: translateX(-100px);
+  }
+  100% {
+    -webkit-transform: translateX(0px);
+            transform: translateX(0px);
+  }
+}
+
+@-webkit-keyframes slidein {
+  0% {
+    -webkit-transform: translateX(0px);
+            transform: translateX(0px);
+  }
+  50% {
+    -webkit-transform: translateX(-100px);
+            transform: translateX(-100px);
+  }
+  100% {
+    -webkit-transform: translateX(-225px);
+            transform: translateX(-225px);
+  }
+}
+
+@keyframes slidein {
+  0% {
+    -webkit-transform: translateX(0px);
+            transform: translateX(0px);
+  }
+  50% {
+    -webkit-transform: translateX(-100px);
+            transform: translateX(-100px);
+  }
+  100% {
+    -webkit-transform: translateX(-225px);
+            transform: translateX(-225px);
+  }
+}
+/*# sourceMappingURL=menu.css.map */
