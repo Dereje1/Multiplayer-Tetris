@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 /* font awesome */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faBars, faTimes, faSignOutAlt, faUser,
+  faBars, faTimes, faSignOutAlt, faUser, faGamepad,
 } from '@fortawesome/free-solid-svg-icons';
 import './styles/menu.css';
 
@@ -85,7 +85,7 @@ class Menu extends React.Component {
           </div>
           <div
             className="menuitems"
-            onClick={() => {}}
+            onClick={() => window.location.assign('/profile')}
             onKeyDown={() => {}}
             role="menuitem"
             tabIndex={-1}
@@ -94,6 +94,18 @@ class Menu extends React.Component {
               icon={faUser}
             />
             <p>Profile</p>
+          </div>
+          <div
+            className="menuitems"
+            onClick={() => window.location.assign('/')}
+            onKeyDown={() => {}}
+            role="menuitem"
+            tabIndex={-1}
+          >
+            <FontAwesomeIcon
+              icon={faGamepad}
+            />
+            <p>Game</p>
           </div>
         </div>
       </div>);
