@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import getUser from '../../redux/actions/authentication';
 import { clientEmitter } from '../../sockethandler';
 import { socket as socketConstants } from '../../constants/index';
-
+import Menu from '../menu/menu';
 import './styles/header.css';
 
 const mapStateToProps = state => state;
@@ -52,10 +52,9 @@ class Header extends React.Component {
       const { user: { profile: { authenticated } } } = this.props;
       return (
         <div id="header">
-          <div id="profile" />
           {
             authenticated
-              ? <div id="authbutton"><button id="logout" type="submit" onClick={this.logOutUser}>Logout</button></div>
+              ? <Menu onLogOut={this.logOutUser} />
               : <div id="authbutton"><button id="login" type="submit" onClick={() => window.location.assign('/auth/google')} /></div>
           }
           <div
