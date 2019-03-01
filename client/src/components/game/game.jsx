@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import './styles/game.css';
 // connect to redux and get action creators
 import { connect } from 'react-redux';
@@ -375,10 +376,12 @@ class Game extends React.Component {
         looserFloorsRaised: floorLevel,
         looserDisqualified: gameOver.disqualified || false,
       };
-      console.log(matchObject);
+      axios.post('/api/multiplayer', matchObject)
+        .then(() => {})
+        .catch(e => console.log(e));
     }
     // prepare message for canvas
-    if (iAmWinner || gameOver.disqualified) {
+    if (iAmWinner && gameOver.disqualified) {
       multiplayerMessage = {
         message: 'You Won!',
         floors: '  Opponent Disqualified',
@@ -400,7 +403,10 @@ class Game extends React.Component {
       linesCleared: game.points.totalLinesCleared,
       levelReached: game.points.level,
     };
-    console.log(singlePlayerObject);
+    axios.post('/api/single', singlePlayerObject)
+      .then(() => {})
+      .catch(e => console.log(e));
+
     return null;
   }
 

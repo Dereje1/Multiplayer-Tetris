@@ -13,6 +13,6 @@ const matchSchema = mongoose.Schema({
   looserDisqualified: { type: Boolean, required: true },
 }, { timestamps: true });
 
-const multiPlayer = mongoose.model('Multi', matchSchema);
+const multiPlayer = mongoose.model('Match', matchSchema);
 
 module.exports = multiPlayer;

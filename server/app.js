@@ -14,6 +14,7 @@ app.use((req, res, next) => {
     res.redirect(`https://${req.header('host')}${req.url}`);
   } else next();
 });
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieSession({
   maxAge: 21 * 24 * 60 * 60 * 1000,
@@ -26,10 +27,8 @@ require('./models/db');
 // configure authentication
 require('./authentication/index')(app);
 
-/* app routes */
-app.get('/api/test', (req, res) => {
-  res.json({ proxy: 'Working!' });
-});
+// use crud routes
+app.use(require('./routes/crud'));
 /* Build and deployment */
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
