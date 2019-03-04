@@ -378,7 +378,7 @@ class Game extends React.Component {
       };
       axios.post('/api/multiplayer', matchObject)
         .then(() => {})
-        .catch(e => console.log(e));
+        .catch(e => console.log(e.response));
     }
     // prepare message for canvas
     if (iAmWinner && gameOver.disqualified) {
@@ -405,7 +405,7 @@ class Game extends React.Component {
     };
     axios.post('/api/single', singlePlayerObject)
       .then(() => {})
-      .catch(e => console.log(e));
+      .catch(e => console.log(e.response));
 
     return null;
   }

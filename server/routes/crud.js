@@ -46,18 +46,16 @@ const getMatchStats = googleId => new Promise((resolve, reject) => {
 /* Add single player result to db */
 router.post('/api/single', isLoggedIn, (req, res) => {
   const newSingle = req.body;
-  Single.create(newSingle, (err, data) => {
-    if (err) throw err;
-    res.json(data);
-  });
+  Single.create(newSingle)
+    .then(data => res.json(data))
+    .catch(err => res.status(400).send(err));
 });
 /* Add match result to db */
 router.post('/api/multiplayer', isLoggedIn, (req, res) => {
   const newMatch = req.body;
-  Match.create(newMatch, (err, data) => {
-    if (err) throw err;
-    res.json(data);
-  });
+  Match.create(newMatch)
+    .then(data => res.json(data))
+    .catch(err => res.status(400).send(err));
 });
 /* Get user data for client profile page consumption */
 router.get('/api/user', isLoggedIn, async (req, res) => {
@@ -68,7 +66,7 @@ router.get('/api/user', isLoggedIn, async (req, res) => {
     const opponentNames = await getOpponentNames(googleId, matchStats);
     res.json({ singleStats, matchStats, opponentNames });
   } catch (err) {
-    res.json({ err });
+    res.status(400).send(err);
   }
 });
 
