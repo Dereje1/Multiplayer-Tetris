@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { NavLink, withRouter } from 'react-router-dom';
 /* font awesome */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -21,8 +22,15 @@ class Menu extends React.Component {
     window.addEventListener('click', () => this.closeMenu());
   }
 
+  componentDidUpdate(prevprops) {
+    const { location: { pathname: currentPath } } = this.props;
+    const { location: { pathname: prevPath } } = prevprops;
+    if (prevPath !== currentPath) this.closeMenu();
+  }
+
   componentWillUnmount() {
     window.removeEventListener('click');
+    clearTimeout(this.closeId);
   }
 
   openMenu = (e) => {
@@ -35,10 +43,10 @@ class Menu extends React.Component {
     if (!showMenu) return;
     // added delay so slide out css effect can be seen
     this.setState({ delay: true }, () => {
-      const closeId = setTimeout(() => {
-        clearTimeout(closeId);
+      this.closeId = setTimeout(() => {
+        clearTimeout(this.closeId);
         this.setState({ showMenu: false, delay: false });
-      }, 500);
+      }, 475);
     });
   }
 
@@ -83,29 +91,19 @@ class Menu extends React.Component {
             />
             <p>Logout</p>
           </div>
-          <div
-            className="menuitems"
-            onClick={() => window.location.assign('/profile')}
-            onKeyDown={() => {}}
-            role="menuitem"
-            tabIndex={-1}
-          >
+          <NavLink className="menuitems" exact to="/profile">
             <FontAwesomeIcon
               icon={faUser}
             />
             <p>Profile</p>
-          </div>
-          <div
-            className="menuitems"
-            onClick={() => window.location.assign('/')}
-            onKeyDown={() => {}}
-            role="menuitem"
-            tabIndex={-1}
-          >
-            <FontAwesomeIcon
-              icon={faGamepad}
-            />
-            <p>Game</p>
+          </NavLink>
+          <div>
+            <NavLink className="menuitems" exact to="/">
+              <FontAwesomeIcon
+                icon={faGamepad}
+              />
+              <p>Game</p>
+            </NavLink>
           </div>
         </div>
       </div>);
@@ -113,8 +111,11 @@ class Menu extends React.Component {
 
 }
 
-export default Menu;
+export default withRouter(Menu);
 
 Menu.propTypes = {
   onLogOut: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    pathname: PropTypes.string.isRequired,
+  }).isRequired,
 };

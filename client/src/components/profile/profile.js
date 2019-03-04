@@ -24,10 +24,18 @@ class Profile extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const { user } = this.props;
+    // check if redux store has updated user before rendering takes over for a router mount
+    if (Object.keys(user).length) {
+      this.fetchUserStats(user.profile.username);
+    }
+  }
+
   componentDidUpdate(prevProps) {
     const { user } = this.props;
     const { user: prevUser } = prevProps;
-    // check if redux store has updated user before rendering takes over
+    // check if redux store has updated user before rendering takes over for a fresh mount
     if (!Object.keys(prevUser).length && Object.keys(user).length) {
       this.fetchUserStats(user.profile.username);
     }
