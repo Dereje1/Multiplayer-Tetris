@@ -3,21 +3,147 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background:#5d95dd67;
     #card{
-        width: 50%;
+        width: 700px;
         height: 60%;
         display: flex;
         flex-direction: column;
         align-items: center;
-        background: #5d95dd67;
-        box-shadow: 10px 10px;
+        background: black;
+        box-shadow: 7px -7px 0px 1px #8b9097;
         border-radius: 10px;
+        font-family: 'Fugaz One', cursive;
+        animation: fadeprofile 1s linear 1;
         #name{
-            font-family: 'Raleway', sans-serif;
             font-size: 2em;
             margin-top: 20px;
             font-weight: bold;
+            color: #7ffff5eb;
+        }
+        #detail{
+            display: flex;
+            font-size: 1em;
+            width: 100%;
+            height: 100%;
+            border-top: 2px dashed #a29e9e;
+            color: #df3a3a;
+            #match{
+                width:50%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                border-right: 2px dashed #a29e9e;
+                .head{
+                    color: #d075d0;
+                    font-size: 1.2em;
+                }
+                .recentmatches{
+                    border-top: 1px dotted #a29e9e;
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    width: 100%;
+                    justify-content: space-around;
+                    font-size:0.8em;
+                    .recentDescriptionHeader{
+                        align-self: center;
+                        color: #d075d0;
+                    }
+                    .recentDescription{
+                        margin-left: 20px;
+                        color: #bebfc8;
+                    }
+                    .info{
+                        cursor: pointer;
+                        &.Won{
+                            color: #2af92a
+                        }
+                        &.Lost{
+                            color: red;
+                        }
+                    }
+                }
+            }
+            #Single{
+                width:50%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                .head{
+                    color: #eba03e;
+                    font-size: 1.2em;
+                }
+                .recentgames{
+                    border-top: 1px dotted #a29e9e;
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    width: 100%;
+                    justify-content: space-around;
+                    font-size:0.8em;
+                    .recentDescriptionHeader{
+                        align-self: center;
+                        color: #eba03e;
+                    }
+                    .recentDescription{
+                        margin-right: 20px;
+                        color: #bebfc8;
+                        align-self: flex-end;
+                    }
+                    .info{
+                        cursor: pointer;
+                        color: #4ef0ff;
+                    }
+                }
+            }
         }
 
+    }
+    #gameDetail{
+        width: 400px;
+        height: 60%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background:black;
+        border-radius: 10px;
+        font-family: 'Fugaz One', cursive;
+        color: #29f729;
+        animation: fadedetail 1s linear 1;
+        .action{
+            font-size: 30px;
+            align-self: flex-end;
+            margin: 10px;
+            cursor: pointer;
+            &.tweet{
+                align-self: flex-end;
+                color: #fafeff;
+                margin-top: auto;
+            }
+        }
+        .detailitems{
+            align-self: flex-start;
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+    }
+}
+
+@keyframes fadedetail {
+    0%{
+      opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+  }
+
+@keyframes fadeprofile {
+    0%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
     }
 }

@@ -9,10 +9,11 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  background: #5d95dd67;
 }
 
 #profile #card {
-  width: 50%;
+  width: 700px;
   height: 60%;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -24,16 +25,223 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  background: #5d95dd67;
-  -webkit-box-shadow: 10px 10px;
-          box-shadow: 10px 10px;
+  background: black;
+  -webkit-box-shadow: 7px -7px 0px 1px #8b9097;
+          box-shadow: 7px -7px 0px 1px #8b9097;
   border-radius: 10px;
+  font-family: 'Fugaz One', cursive;
+  -webkit-animation: fadeprofile 1s linear 1;
+          animation: fadeprofile 1s linear 1;
 }
 
 #profile #card #name {
-  font-family: 'Raleway', sans-serif;
   font-size: 2em;
   margin-top: 20px;
   font-weight: bold;
+  color: #7ffff5eb;
+}
+
+#profile #card #detail {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  font-size: 1em;
+  width: 100%;
+  height: 100%;
+  border-top: 2px dashed #a29e9e;
+  color: #df3a3a;
+}
+
+#profile #card #detail #match {
+  width: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border-right: 2px dashed #a29e9e;
+}
+
+#profile #card #detail #match .head {
+  color: #d075d0;
+  font-size: 1.2em;
+}
+
+#profile #card #detail #match .recentmatches {
+  border-top: 1px dotted #a29e9e;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 100%;
+  width: 100%;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  font-size: 0.8em;
+}
+
+#profile #card #detail #match .recentmatches .recentDescriptionHeader {
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+  color: #d075d0;
+}
+
+#profile #card #detail #match .recentmatches .recentDescription {
+  margin-left: 20px;
+  color: #bebfc8;
+}
+
+#profile #card #detail #match .recentmatches .info {
+  cursor: pointer;
+}
+
+#profile #card #detail #match .recentmatches .info.Won {
+  color: #2af92a;
+}
+
+#profile #card #detail #match .recentmatches .info.Lost {
+  color: red;
+}
+
+#profile #card #detail #Single {
+  width: 50%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+#profile #card #detail #Single .head {
+  color: #eba03e;
+  font-size: 1.2em;
+}
+
+#profile #card #detail #Single .recentgames {
+  border-top: 1px dotted #a29e9e;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  height: 100%;
+  width: 100%;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  font-size: 0.8em;
+}
+
+#profile #card #detail #Single .recentgames .recentDescriptionHeader {
+  -ms-flex-item-align: center;
+      -ms-grid-row-align: center;
+      align-self: center;
+  color: #eba03e;
+}
+
+#profile #card #detail #Single .recentgames .recentDescription {
+  margin-right: 20px;
+  color: #bebfc8;
+  -ms-flex-item-align: end;
+      align-self: flex-end;
+}
+
+#profile #card #detail #Single .recentgames .info {
+  cursor: pointer;
+  color: #4ef0ff;
+}
+
+#profile #gameDetail {
+  width: 400px;
+  height: 60%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background: black;
+  border-radius: 10px;
+  font-family: 'Fugaz One', cursive;
+  color: #29f729;
+  -webkit-animation: fadedetail 1s linear 1;
+          animation: fadedetail 1s linear 1;
+}
+
+#profile #gameDetail .action {
+  font-size: 30px;
+  -ms-flex-item-align: end;
+      align-self: flex-end;
+  margin: 10px;
+  cursor: pointer;
+}
+
+#profile #gameDetail .action.tweet {
+  -ms-flex-item-align: end;
+      align-self: flex-end;
+  color: #fafeff;
+  margin-top: auto;
+}
+
+#profile #gameDetail .detailitems {
+  -ms-flex-item-align: start;
+      align-self: flex-start;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+
+@-webkit-keyframes fadedetail {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadedetail {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeprofile {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeprofile {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 /*# sourceMappingURL=profile.css.map */
