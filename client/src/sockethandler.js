@@ -87,15 +87,23 @@ socketConnection.on(
 // triggered by: START_GAME
 socketConnection.on(
   GAME_STARTED,
-  async (opponentData, confirmation) => {
-    await store.dispatch(startGame(opponentData));
+  (opponentData, confirmation) => {
+    store.dispatch(startGame(opponentData));
     confirmation('Game Start Recieved and dispacthed by Client!!');
   },
 );
 // triggered by: UPDATED_CLIENT_SCREEN
 socketConnection.on(
   OPPONENT_SCREEN,
-  screen => store.dispatch(getOpponentScreen(screen)),
+  (screen) => {
+    // Note must only emit opponent screen if redux store is in
+    // 'gameInProgress' phase, otherwise critical bug when game start is not synchronized
+    // for example with background timer throttling of the countdown if page is on
+    // a different tab
+    if (Object.keys(store.getState().socket.temp)[0] === 'gameInProgress') {
+      store.dispatch(getOpponentScreen(screen));
+    }
+  },
 );
 // triggered by: GAME_OVER
 socketConnection.on(
