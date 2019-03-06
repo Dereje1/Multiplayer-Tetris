@@ -35,6 +35,42 @@
             font-size: .75em;
         }
     }
+    #invitation{
+        width: 400px;
+        height: auto;
+        padding-top: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background:#07328c;
+        color: white;
+        #invbuttons{
+            display: flex;
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            justify-content: space-around;
+            .inv{
+                border: none;
+                padding: 6px 30px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                color: white;
+                cursor: pointer;
+                &.inv:hover {
+                    transform: translateY(-2px);
+                }
+                &.accept{
+                    background-color: #4CAF50;
+                }
+                &.decline{
+                    background-color: rgb(241, 36, 36);
+                }
+            }
+        }
+    }
 }
 
 *:focus{

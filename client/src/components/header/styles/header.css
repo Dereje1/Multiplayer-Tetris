@@ -48,6 +48,59 @@
   }
 }
 
+#header #invitation {
+  width: 400px;
+  height: auto;
+  padding-top: 5px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background: #07328c;
+  color: white;
+}
+
+#header #invitation #invbuttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+#header #invitation #invbuttons .inv {
+  border: none;
+  padding: 6px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+}
+
+#header #invitation #invbuttons .inv.inv:hover {
+  -webkit-transform: translateY(-2px);
+          transform: translateY(-2px);
+}
+
+#header #invitation #invbuttons .inv.accept {
+  background-color: #4CAF50;
+}
+
+#header #invitation #invbuttons .inv.decline {
+  background-color: #f12424;
+}
+
 *:focus {
   outline: none;
 }

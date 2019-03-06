@@ -4,7 +4,7 @@
   left: 0;
   width: 225px;
   min-height: 100vh;
-  background: #436e59bb;
+  background: rgba(67, 110, 89, 0.93);
 }
 
 #menu .close {
@@ -71,10 +71,16 @@
   font-weight: bold;
   cursor: pointer;
   width: 200px;
+  text-decoration: none;
+}
+
+#menu #items .menuitems.active {
+  color: #ffd283;
+  font-weight: bold;
 }
 
 #menu #items :hover {
-  color: #bb9bf1;
+  color: #ffd283;
 }
 
 .burger {
