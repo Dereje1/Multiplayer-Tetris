@@ -96,10 +96,10 @@ socketConnection.on(
 socketConnection.on(
   OPPONENT_SCREEN,
   (screen) => {
-    // Note must only emit opponent screen if redux store is in
+    // Must only emit opponent screen if redux store is in
     // 'gameInProgress' phase, otherwise critical bug when game start is not synchronized
     // for example with background timer throttling of the countdown if page is on
-    // a different tab
+    // a different tab and redux store temp state recieves multiple phases
     if (Object.keys(store.getState().socket.temp)[0] === 'gameInProgress') {
       store.dispatch(getOpponentScreen(screen));
     }

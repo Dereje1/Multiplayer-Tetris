@@ -76,8 +76,8 @@ const master = (io) => {
       if (returnedData.operation === 'gamestart') {
         socket.emit(GAME_STARTED,
           { info: returnedData.data.opponentInfo },
-          async (confirmation) => {
-            await console.log(confirmation);
+          (confirmation) => {
+            console.log(confirmation);
             io.to(returnedData.data.opponentInfo.opponentSID)
               .emit(OPPONENT_SCREEN, returnedData.data.clientScreen);
           });
