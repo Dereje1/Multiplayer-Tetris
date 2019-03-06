@@ -60,16 +60,18 @@ class Game extends React.Component {
       updateFloor: false, // builds floor on next tick if true
       canvasLoaded: false, // loads only once per mount
       windowTooSmall: null,
+      nowPlaying: false,
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
   }
 
   componentDidMount() {
-    const { actions } = this.props;
+    const { actions, socket } = this.props;
     actions.gameReset(1); // initialize canvas width/height
     this.checkWindowSize();
     window.addEventListener('resize', () => this.checkWindowSize());
+    if (socket.temp && socket.temp.invitationFrom) this.setState({ multiPlayer: true });
   }
 
   componentDidUpdate(prevProps) {
@@ -77,7 +79,9 @@ class Game extends React.Component {
     if (!Object.keys(prevProps.game).length) return;
     const { game: prevGame, socket: prevSocket } = prevProps;
     const { game, socket } = this.props;
-    const { multiPlayer, canvasLoaded, windowTooSmall } = this.state;
+    const {
+      multiPlayer, canvasLoaded, windowTooSmall, nowPlaying,
+    } = this.state;
     if (windowTooSmall) return;
 
     /* load Canvas */
@@ -98,7 +102,9 @@ class Game extends React.Component {
 
     /* an Invitation from another client */
     if (!multiPlayer && socket.temp) {
-      if (!prevSocket.temp && socket.temp.invitationFrom) this.setState({ multiPlayer: true });
+      if (!prevSocket.temp
+          && socket.temp.invitationFrom
+          && !nowPlaying) this.setState({ multiPlayer: true });
     }
   }
 
@@ -129,18 +135,21 @@ class Game extends React.Component {
     const { game, actions } = this.props;
     this.setState({ floorsRaised: 0 });
     if (gameover) {
-      drawGameOver(this.canvasContextMajor, this.canvasContextMinor, game, opponent);
-      actions.gameReset(1);
+      this.setState({ nowPlaying: false }, () => {
+        drawGameOver(this.canvasContextMajor, this.canvasContextMinor, game, opponent);
+        actions.gameReset(1);
+      });
       return;
     }
     const floorHeight = game.rubble && keepFloor ? game.rubble.boundaryCells.length / 10 : 1;
     actions.gameReset(floorHeight);
     if (this.downInterval) this.endTick(false, 'reset Board');
     if (reStart) { // fresh game
-      this.startTick();
+      this.setState({ nowPlaying: true }, () => this.startTick());
     } else {
       this.setState({
         buttonPause: true,
+        nowPlaying: false,
       }, () => {
         clearCanvas(this.canvasContextMajor, 'All', 'reset'); // clear canvasMajor
         clearCanvas(this.canvasContextMinor, 'All', 'reset'); // clear canvasMajor
