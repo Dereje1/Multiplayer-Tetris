@@ -43,11 +43,15 @@ class Menu extends React.Component {
     if (!showMenu) return;
     // added delay so slide out css effect can be seen
     this.setState({ delay: true }, () => {
-      this.closeId = setTimeout(() => {
-        clearTimeout(this.closeId);
+      setTimeout(() => {
         this.setState({ showMenu: false, delay: false });
       }, 475);
     });
+  }
+
+  testCurrentPath = (path) => {
+    const { location: { pathname: currentPath } } = this.props;
+    if (path === currentPath) this.closeMenu();
   }
 
   render() {
@@ -91,14 +95,14 @@ class Menu extends React.Component {
             />
             <p>Logout</p>
           </div>
-          <NavLink className="menuitems" exact to="/profile">
+          <NavLink className="menuitems" exact to="/profile" onClick={() => this.testCurrentPath('/profile')}>
             <FontAwesomeIcon
               icon={faUser}
             />
             <p>Profile</p>
           </NavLink>
           <div>
-            <NavLink className="menuitems" exact to="/">
+            <NavLink className="menuitems" exact to="/" onClick={() => this.testCurrentPath('/')}>
               <FontAwesomeIcon
                 icon={faGamepad}
               />

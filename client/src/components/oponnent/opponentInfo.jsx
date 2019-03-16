@@ -114,8 +114,6 @@ const OpponentDescription = ({
           <p className="writing">{opponentGame ? gameInProgress.info.opponnetDisplayname.split(' ')[0] : null}</p>
           <p className="writing">Lines Cleared</p>
           <p className="opponentContainer__opponentDescription__GamePlay__linescleared">{opponentGame ? opponentGame.points.totalLinesCleared : 0}</p>
-          <p className="writing">Games Played</p>
-          <p className="opponentContainer__opponentDescription__GamePlay__gamesplayed">?</p>
         </div>
       </div>
     );

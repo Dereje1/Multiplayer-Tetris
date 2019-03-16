@@ -75,12 +75,12 @@
 }
 
 #menu #items .menuitems.active {
-  color: #ffd283;
+  color: #2aff00;
   font-weight: bold;
 }
 
 #menu #items :hover {
-  color: #ffd283;
+  color: #2aff00;
 }
 
 .burger {
