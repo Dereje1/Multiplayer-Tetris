@@ -28,30 +28,29 @@ class Header extends React.Component {
       inviteReceived: null,
       inviteAccepted: null,
     };
+    this.audio = React.createRef();
   }
 
   componentDidMount() {
     this.loadUser();
   }
 
-  componentDidUpdate(prevProps) {
-    const { inviteAccepted } = this.state;
-    const { socket: prevSocket } = prevProps;
+  componentDidUpdate() {
+    if (!this.audio) return;
+    if (!this.audio.current) return;
+    const { inviteAccepted, inviteReceived } = this.state;
     const { socket } = this.props;
     if (Object.keys(socket).includes('temp')) {
-      if (!prevSocket.temp && socket.temp.invitationFrom) {
-        this.setState({ inviteReceived: socket.temp.invitationFrom.displayname.split(' ')[0] });
-        this.audio.play();
+      if (Object.keys(socket.temp).includes('invitationFrom') && !inviteReceived) {
+        const { displayname, difficulty } = socket.temp.invitationFrom;
+        this.setState({ inviteReceived: [displayname.split(' ')[0], difficulty] });
+        this.audio.current.play();
       }
-      if (prevSocket.temp && !prevSocket.temp.invitationFrom && socket.temp.invitationFrom) {
-        this.setState({ inviteReceived: socket.temp.invitationFrom.displayname.split(' ')[0] });
-        this.audio.play();
-      }
-      if (prevSocket.temp && prevSocket.temp.invitationFrom && !socket.temp.invitationFrom) {
+      if (!Object.keys(socket.temp).includes('invitationFrom') && inviteReceived) {
         this.setState({ inviteReceived: null });
       }
-    }
-    if (inviteAccepted) this.setState({ inviteAccepted: null });
+      if (inviteAccepted) this.setState({ inviteAccepted: null });
+    } else if (inviteReceived) this.setState({ inviteReceived: null });
   }
 
   loadUser = async () => {
@@ -86,7 +85,7 @@ class Header extends React.Component {
   }
 
   audioPlayer = () => (
-    <audio ref={(input) => { this.audio = input; }} src={soundFile}>
+    <audio ref={this.audio} src={soundFile}>
       <track kind="captions" />
     </audio>
   )
@@ -106,17 +105,11 @@ class Header extends React.Component {
               ? (
                 <React.Fragment>
                   <Menu onLogOut={this.logOutUser} />
-                  {
-                    inviteReceived
-                      ? (
-                        <Invitation
-                          name={inviteReceived}
-                          onDeclineInvite={this.declineInvite}
-                          onAcceptInvite={this.acceptInvite}
-                        />
-                      )
-                      : null
-                  }
+                  <Invitation
+                    invite={inviteReceived}
+                    onDeclineInvite={this.declineInvite}
+                    onAcceptInvite={this.acceptInvite}
+                  />
                   {
                     inviteAccepted
                       ? <Redirect to="/" />

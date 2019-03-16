@@ -9,7 +9,8 @@ import {
   gameReset, nextShape, updateScreen, raiseFloor,
   collide, speedUp, pause, getFloorRaiseBoundry,
 } from '../../redux/actions/tetris';
-
+import looserSoundFile from './styles/Looser.wav';
+import winnerSoundFile from './styles/Winner.wav';
 // custom functions and scripts
 import tetrisShapes from './scripts/shapes';
 import shapeLocator from './scripts/locateShape';
@@ -60,10 +61,11 @@ class Game extends React.Component {
       updateFloor: false, // builds floor on next tick if true
       canvasLoaded: false, // loads only once per mount
       windowTooSmall: null,
-      nowPlaying: false,
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
+    this.winnerAudio = React.createRef();
+    this.looserAudio = React.createRef();
   }
 
   componentDidMount() {
@@ -80,7 +82,7 @@ class Game extends React.Component {
     const { game: prevGame, socket: prevSocket } = prevProps;
     const { game, socket } = this.props;
     const {
-      multiPlayer, canvasLoaded, windowTooSmall, nowPlaying,
+      multiPlayer, canvasLoaded, windowTooSmall,
     } = this.state;
     if (windowTooSmall) return;
 
@@ -100,11 +102,12 @@ class Game extends React.Component {
       else this.setState({ updateFloor: true });
     }
 
-    /* an Invitation from another client */
+    /* an Invitation from another client has been accepted */
     if (!multiPlayer && socket.temp) {
-      if (!prevSocket.temp
-          && socket.temp.invitationFrom
-          && !nowPlaying) this.setState({ multiPlayer: true });
+      if (prevSocket.temp && !prevSocket.temp.acceptedInvitation
+          && socket.temp.acceptedInvitation) {
+        this.setState({ multiPlayer: true }, () => this.resetBoard(false));
+      }
     }
   }
 
@@ -135,21 +138,18 @@ class Game extends React.Component {
     const { game, actions } = this.props;
     this.setState({ floorsRaised: 0 });
     if (gameover) {
-      this.setState({ nowPlaying: false }, () => {
-        drawGameOver(this.canvasContextMajor, this.canvasContextMinor, game, opponent);
-        actions.gameReset(1);
-      });
+      drawGameOver(this.canvasContextMajor, this.canvasContextMinor, game, opponent);
+      actions.gameReset(1);
       return;
     }
     const floorHeight = game.rubble && keepFloor ? game.rubble.boundaryCells.length / 10 : 1;
     actions.gameReset(floorHeight);
     if (this.downInterval) this.endTick(false, 'reset Board');
     if (reStart) { // fresh game
-      this.setState({ nowPlaying: true }, () => this.startTick());
+      this.startTick();
     } else {
       this.setState({
         buttonPause: true,
-        nowPlaying: false,
       }, () => {
         clearCanvas(this.canvasContextMajor, 'All', 'reset'); // clear canvasMajor
         clearCanvas(this.canvasContextMinor, 'All', 'reset'); // clear canvasMajor
@@ -343,6 +343,7 @@ class Game extends React.Component {
     // Whoever looses first will emit game over while in multiplayer mode
     if (multiPlayer && socket.temp.gameInProgress) {
       clientEmitter(GAME_OVER, socket);
+      this.looserAudio.current.play();
     }
     // disregard first local loss signal in multiplayer as another one will come from socket
     if (multiPlayer && !opponentInfo) return;
@@ -375,6 +376,7 @@ class Game extends React.Component {
     let multiplayerMessage;
     // prepare match object for db, only winner will send results
     if (iAmWinner || gameOver.disqualified) {
+      this.winnerAudio.current.play();
       const matchObject = {
         winnerGoogleId: gameOver.winnerGoogleID,
         looserGoogleId: gameOver.looserGoogleID,
@@ -476,6 +478,12 @@ class Game extends React.Component {
             )
             : null
           }
+          <audio ref={this.winnerAudio} src={winnerSoundFile}>
+            <track kind="captions" />
+          </audio>
+          <audio ref={this.looserAudio} src={looserSoundFile}>
+            <track kind="captions" />
+          </audio>
         </div>
       );
     }
