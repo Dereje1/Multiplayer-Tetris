@@ -9,7 +9,7 @@ const {
   serverEmit: {
     LOGGED_IN_USERS, SOCKET_ID, SERVER_RESET, OPPONENT_POOL,
     INVITE_SENT, INVITE_RECIEVED, DECLINED_INVITATION, ACCEPTED_INVITATION,
-    GAME_STARTED, OPPONENT_SCREEN, FINISH_GAME,
+    GAME_STARTED, OPPONENT_SCREEN, FINISH_GAME, UNMOUNT_OPPONENT,
   },
 } = CONSTANTS;
 
@@ -91,6 +91,11 @@ const master = (io) => {
         io.to(returnedData.data.winnerSID)
           .emit(FINISH_GAME, returnedData.data);
         socket.emit(FINISH_GAME, returnedData.data);
+      }
+      if (returnedData.operation === 'revokeInvite') {
+        io.to(returnedData.recieverId)
+          .emit(UNMOUNT_OPPONENT, null);
+        socket.emit(UNMOUNT_OPPONENT, null);
       }
     });
   });

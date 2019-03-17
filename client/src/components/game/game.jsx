@@ -109,6 +109,10 @@ class Game extends React.Component {
         this.setState({ multiPlayer: true }, () => this.resetBoard(false));
       }
     }
+    /* Opponent has unmounted after accepting invitation but no game started */
+    if (prevSocket && prevSocket.temp && !socket.temp) {
+      this.setState({ multiPlayer: false }, () => this.resetBoard(false));
+    }
   }
 
   componentWillUnmount() {

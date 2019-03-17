@@ -127,8 +127,8 @@ class Opponent extends React.Component {
   componentWillUnmount() {
     const { socket: { temp } } = this.props;
     // if a person unmounts in the middle of an invitation
-    if (temp.invitationFrom) clientEmitter(INVITATION_DECLINED, temp);
-    clientEmitter(OPPONENT_UNMOUNTED, null);
+    if (temp && temp.invitationFrom) clientEmitter(INVITATION_DECLINED, temp);
+    clientEmitter(OPPONENT_UNMOUNTED, temp);
   }
 
   loadOpponentCanvas = () => {

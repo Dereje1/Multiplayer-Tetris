@@ -69,16 +69,18 @@ const socketReducer = (state = {}, action) => {
     }
     case GAME_COUNTDOWN: {
       let currentState = Object.assign({}, state);
-      currentState = {
-        ...state,
-        temp: {
-          ...state.temp,
-          acceptedInvitation: {
-            ...state.temp.acceptedInvitation,
-            countdown: action.payload,
+      if (currentState.temp && currentState.temp.acceptedInvitation) {
+        currentState = {
+          ...state,
+          temp: {
+            ...state.temp,
+            acceptedInvitation: {
+              ...state.temp.acceptedInvitation,
+              countdown: action.payload,
+            },
           },
-        },
-      };
+        };
+      }
       return currentState;
     }
     case GAME_STARTED: {

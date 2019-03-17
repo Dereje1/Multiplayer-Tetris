@@ -20,9 +20,33 @@ const gamePlay = (socket, callback) => {
     callback(null, { operation: 'generateOpponentPool', data: utility.createPool(socket) });
   });
 
-  socket.on(OPPONENT_UNMOUNTED, () => {
+  socket.on(OPPONENT_UNMOUNTED, (data) => {
+    if (!data) {
+      socket.emit(UNMOUNT_OPPONENT, null);
+      return callback(null, null);
+    }
+    if (Object.keys(data).includes('invitationTo')
+        || Object.keys(data).includes('acceptedInvitation')) {
+      const otherPartyId = data.invitationTo
+        ? data.invitationTo.socketIdReciever
+        : data.acceptedInvitation.opponentSID;
+      const currentlyLoggedIn = [...utility.getUsers()];
+      currentlyLoggedIn.forEach((u, idx) => {
+        const invitedPending = u.pending === otherPartyId;
+        const senderPending = u.pending === socket.id;
+        if (invitedPending || senderPending) {
+          currentlyLoggedIn[idx].pending = null;
+          currentlyLoggedIn[idx].oponnentId = null;
+        }
+      });
+      utility.setUsers(currentlyLoggedIn);
+      return callback(null, {
+        operation: 'revokeInvite',
+        recieverId: otherPartyId,
+      });
+    }
     socket.emit(UNMOUNT_OPPONENT, null);
-    callback(null, null);
+    return callback(null, null);
   });
 
   socket.on(INVITATION_SENT, (data) => {
