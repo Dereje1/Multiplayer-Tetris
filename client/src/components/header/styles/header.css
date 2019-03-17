@@ -51,9 +51,8 @@
 #header #invitation {
   position: fixed;
   width: 400px;
-  height: 115px;
+  height: 80px;
   visibility: hidden;
-  padding-top: 5px;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -64,8 +63,9 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  background: #07328c;
-  color: white;
+  background: rgba(67, 110, 89, 0.93);
+  font-family: 'Raleway', sans-serif;
+  color: #f0ecec;
 }
 
 #header #invitation.show {
@@ -92,7 +92,7 @@
 }
 
 #header #invitation .desc {
-  margin-top: 13px;
+  margin-top: 6px;
 }
 
 #header #invitation #invbuttons {
