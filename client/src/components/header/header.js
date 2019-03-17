@@ -25,7 +25,7 @@ class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      inviteReceived: null,
+      inviteReceived: [],
       inviteAccepted: null,
     };
     this.audio = React.createRef();
@@ -41,16 +41,20 @@ class Header extends React.Component {
     const { inviteAccepted, inviteReceived } = this.state;
     const { socket } = this.props;
     if (Object.keys(socket).includes('temp')) {
-      if (Object.keys(socket.temp).includes('invitationFrom') && !inviteReceived) {
+      if (Object.keys(socket.temp).includes('invitationFrom') && (!inviteReceived || !inviteReceived.length)) {
         const { displayname, difficulty } = socket.temp.invitationFrom;
         this.setState({ inviteReceived: [displayname.split(' ')[0], difficulty] });
-        this.audio.current.play();
+        this.audio.current.play()
+          .then(() => {
+            console.log('Played Audio');
+          })
+          .catch(e => console.log(`error in audio ${e}`));
       }
-      if (!Object.keys(socket.temp).includes('invitationFrom') && inviteReceived) {
+      if (!Object.keys(socket.temp).includes('invitationFrom') && inviteReceived && inviteReceived.length) {
         this.setState({ inviteReceived: null });
       }
       if (inviteAccepted) this.setState({ inviteAccepted: null });
-    } else if (inviteReceived) this.setState({ inviteReceived: null });
+    } else if (inviteReceived && inviteReceived.length) this.setState({ inviteReceived: null });
   }
 
   loadUser = async () => {
