@@ -61,6 +61,7 @@ class Game extends React.Component {
       updateFloor: false, // builds floor on next tick if true
       canvasLoaded: false, // loads only once per mount
       windowTooSmall: null,
+      disableDown: false, // disable down key on new shape
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
@@ -218,6 +219,8 @@ class Game extends React.Component {
 
   newShape = () => {
     const { game, actions } = this.props;
+    // disable down tick on a new shape (for a game already started)
+    if (game.nextShape) this.setState({ disableDown: true });
     const randomShape = game.nextShape
       ? this.initializeShape(game.nextShape)
       : this.initializeShape(tetrisShapes.getRandShapeName());
@@ -303,12 +306,14 @@ class Game extends React.Component {
 
   gamePlay = (e) => {
     const { game } = this.props;
-    const ans = (playerMoves(e, game, this.canvasContextMajor));
+    const { disableDown } = this.state;
+    const ans = (playerMoves(e, game, this.canvasContextMajor, disableDown));
     if (ans) {
-      if (ans === 'tick') {
+      if (ans === 'forcedown') {
         this.endTick(false, 'Down Key');
         this.tick();
       } else {
+        if (disableDown) this.setState({ disableDown: false });
         drawScreen(
           ans,
           this.canvasContextMajor,
@@ -321,7 +326,9 @@ class Game extends React.Component {
   }
 
   arrowKeyLag = (e) => {
+    const { disableDown } = this.state;
     if (e.keyCode === 40) {
+      if (disableDown) this.setState({ disableDown: false });
       this.startTick(false);
     }
   }

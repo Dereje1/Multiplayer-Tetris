@@ -38,7 +38,7 @@ const rotation = (state, ctx) => {
   return null;
 };
 
-const playerMoves = (e, state, ctx) => {
+const playerMoves = (e, state, ctx, newShape) => {
   if (state.paused) return null;
   const left = e.keyCode === 37;
   const right = e.keyCode === 39;
@@ -64,7 +64,9 @@ const playerMoves = (e, state, ctx) => {
     if (getSideBlock('R', state)) return null;
     copyOfActiveShape.xPosition += state.activeShape.unitBlockSize;
     return copyOfActiveShape;
-  } if (down) return 'tick';
+  } if (down) {
+    return newShape ? null : 'forcedown';
+  }
 
   return rotation(state, ctx);
 };
