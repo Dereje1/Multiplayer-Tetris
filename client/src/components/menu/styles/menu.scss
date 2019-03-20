@@ -85,3 +85,9 @@
         transform: translateX(-225px);
     }
 }
+
+@media only screen and (max-width: 585px) {
+    .burger, #menu {
+        visibility: hidden;
+    }
+}

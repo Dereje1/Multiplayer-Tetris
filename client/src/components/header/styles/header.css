@@ -197,4 +197,10 @@
     visibility: hidden;
   }
 }
+
+@media only screen and (max-width: 585px) {
+  #header #users, #header #authbutton {
+    visibility: hidden;
+  }
+}
 /*# sourceMappingURL=header.css.map */
