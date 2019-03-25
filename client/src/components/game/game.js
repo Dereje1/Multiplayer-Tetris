@@ -16,7 +16,7 @@ import tetrisShapes from './scripts/shapes';
 import shapeLocator from './scripts/locateShape';
 import { runCollisionTest } from './scripts/collision';
 import {
-  clearCanvas, drawRubble, drawNextShape, drawBoundary, drawGameOver,
+  clearCanvas, drawRubble, drawNextShape, drawBoundary, drawGameOver, drawShape,
 } from './scripts/canvas';
 import drawScreen from './scripts/drawscreen';
 import playerMoves from './scripts/player';
@@ -99,7 +99,7 @@ class Game extends React.Component {
     /* draws floor or sets state to do so before the next tick */
     if (game.rubble.boundaryCells.length > 10
        && prevGame.rubble.boundaryCells.length !== game.rubble.boundaryCells.length) {
-      if (!game.activeShape.cells.length) this.drawFloor();
+      if (!game.activeShape.cells.length || game.paused) this.drawFloor();
       else this.setState({ updateFloor: true });
     }
 
@@ -271,6 +271,7 @@ class Game extends React.Component {
     const { game } = this.props;
     drawBoundary(this.canvasContextMajor, game);
     drawRubble(this.canvasContextMajor, game);
+    drawShape(this.canvasContextMajor, game);
   }
 
   /* Handle Player Events Below */
