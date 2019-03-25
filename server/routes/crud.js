@@ -46,20 +46,30 @@ const getMatchStats = googleId => new Promise((resolve, reject) => {
 /* Add single player result to db */
 router.post('/api/single', isLoggedIn, (req, res) => {
   const newSingle = req.body;
-  Single.create(newSingle)
-    .then(data => res.json(data))
-    .catch(err => res.status(400).send(err));
+  const { id: googleId } = req.user.google;
+  if (googleId !== newSingle.googleId) {
+    res.json({ error: 'Unable to match Ids, Data not saved!!' });
+  } else {
+    Single.create(newSingle)
+      .then(data => res.json(data))
+      .catch(err => res.status(400).send(err));
+  }
 });
 /* Add match result to db */
 router.post('/api/multiplayer', isLoggedIn, (req, res) => {
   const newMatch = req.body;
-  Match.create(newMatch)
-    .then(data => res.json(data))
-    .catch(err => res.status(400).send(err));
+  const { id: googleId } = req.user.google;
+  if (googleId !== newMatch.winnerGoogleId && googleId !== newMatch.looserGoogleId) {
+    res.json({ error: 'Unable to match Ids, Data not saved!!' });
+  } else {
+    Match.create(newMatch)
+      .then(data => res.json(data))
+      .catch(err => res.status(400).send(err));
+  }
 });
 /* Get user data for client profile page consumption */
 router.get('/api/user', isLoggedIn, async (req, res) => {
-  const { googleId } = req.query;
+  const { id: googleId } = req.user.google;
   try {
     const singleStats = await getSingleStats(googleId);
     const matchStats = await getMatchStats(googleId);

@@ -28,7 +28,7 @@ class Profile extends React.Component {
     const { user } = this.props;
     // check if redux store has updated user before rendering takes over for a router mount
     if (Object.keys(user).length) {
-      this.fetchUserStats(user.profile.username);
+      this.fetchUserStats();
     }
   }
 
@@ -37,14 +37,14 @@ class Profile extends React.Component {
     const { user: prevUser } = prevProps;
     // check if redux store has updated user before rendering takes over for a fresh mount
     if (!Object.keys(prevUser).length && Object.keys(user).length) {
-      this.fetchUserStats(user.profile.username);
+      this.fetchUserStats();
     }
   }
 
-  fetchUserStats = async (googleId) => {
+  fetchUserStats = async () => {
     try {
       // get data
-      const { data: userData } = await axios.get(`/api/user?googleId=${googleId}`);
+      const { data: userData } = await axios.get('/api/user');
       // compute data
       this.crunchData(userData);
     } catch {
