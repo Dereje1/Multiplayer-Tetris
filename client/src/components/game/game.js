@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+
 import './styles/game.css';
 // connect to redux and get action creators
 import { connect } from 'react-redux';
@@ -16,10 +16,11 @@ import tetrisShapes from './scripts/shapes';
 import shapeLocator from './scripts/locateShape';
 import { runCollisionTest } from './scripts/collision';
 import {
-  clearCanvas, drawRubble, drawNextShape, drawBoundary, drawGameOver, drawShape,
+  clearCanvas, drawNextShape, drawGameOver, drawFloor,
 } from './scripts/canvas';
 import drawScreen from './scripts/drawscreen';
 import playerMoves from './scripts/player';
+import { processMatch, processSinglePlayer } from './scripts/dbinteraction';
 // custom react Components
 import Controls from '../controls/controls';
 import Opponent from '../oponnent/opponent';
@@ -81,7 +82,7 @@ class Game extends React.Component {
     // all optimizations go here
     if (!Object.keys(prevProps.game).length) return;
     const { game: prevGame, socket: prevSocket } = prevProps;
-    const { game, socket } = this.props;
+    const { game, socket, actions } = this.props;
     const {
       multiPlayer, canvasLoaded, windowTooSmall,
     } = this.state;
@@ -94,12 +95,12 @@ class Game extends React.Component {
     if ((game.points.level !== prevGame.points.level)
           && (game.timerInterval > 250)
           && (!multiPlayer)
-    ) this.speedUp();
+    ) actions.speedUp();
 
     /* draws floor or sets state to do so before the next tick */
     if (game.rubble.boundaryCells.length > 10
        && prevGame.rubble.boundaryCells.length !== game.rubble.boundaryCells.length) {
-      if (!game.activeShape.cells.length || game.paused) this.drawFloor();
+      if (!game.activeShape.cells.length || game.paused) drawFloor(game, this.canvasContextMajor);
       else this.setState({ updateFloor: true });
     }
 
@@ -171,7 +172,8 @@ class Game extends React.Component {
       // eslint-disable-next-line react/destructuring-assignment
       if (this.props.game.paused) clearInterval(this.downInterval);
       if (updateFloor) { // drawFloor needs to happen before tick
-        this.drawFloor();
+        // eslint-disable-next-line react/destructuring-assignment
+        drawFloor(this.props.game, this.canvasContextMajor);
         this.setState({ updateFloor: false }, () => this.tick());
       } else this.tick();
     // eslint-disable-next-line react/destructuring-assignment
@@ -212,20 +214,11 @@ class Game extends React.Component {
     return copyOfActiveShape;
   }
 
-  speedUp = () => {
-    const { actions } = this.props;
-    actions.speedUp();
-  }
-
   newShape = () => {
     const { game, actions } = this.props;
     // disable down tick on a new shape (for a game already started)
     if (game.nextShape) this.setState({ disableDown: true });
-    const randomShape = game.nextShape
-      ? this.initializeShape(game.nextShape)
-      : this.initializeShape(tetrisShapes.getRandShapeName());
-    const newShapeName = tetrisShapes.getRandShapeName();
-    const nextShapeInfo = this.initializeShape(newShapeName);
+    const { randomShape, newShapeName, nextShapeInfo } = tetrisShapes.createNewShape(game);
     actions.nextShape(newShapeName);
     drawNextShape(this.canvasContextMinor, nextShapeInfo, game);
     drawScreen(
@@ -237,51 +230,14 @@ class Game extends React.Component {
     );
   }
 
-  initializeShape = (shapeName) => {
-    const { game } = this.props;
-    // finding intital y bound so it does not get cutoff
-    const x = (shapeName !== 'shapeI' && shapeName !== 'shapeO')
-      ? (game.canvas.canvasMajor.width / 2)
-      + (game.activeShape.unitBlockSize / 2)
-      : game.canvas.canvasMajor.width / 2;
-
-    const initialAbsoluteVertices = tetrisShapes.getAbsoluteVertices(
-      game.activeShape.unitBlockSize,
-      x,
-      0,
-      tetrisShapes[shapeName].vertices,
-    );
-
-    const initialBoundingBox = tetrisShapes.onBoundingBox(initialAbsoluteVertices);
-    const activeShape = {
-      name: shapeName,
-      unitBlockSize: 30,
-      xPosition: x,
-      yPosition: -1 * initialBoundingBox[2],
-      unitVertices: tetrisShapes[shapeName].vertices,
-      absoluteVertices: initialAbsoluteVertices,
-      boundingBox: initialBoundingBox,
-      rotationStage: 0,
-      cells: [],
-    };
-    return activeShape;
-  }
-
-  drawFloor = () => {
-    const { game } = this.props;
-    drawBoundary(this.canvasContextMajor, game);
-    drawRubble(this.canvasContextMajor, game);
-    drawShape(this.canvasContextMajor, game);
-  }
-
   /* Handle Player Events Below */
-  handlePause = (val) => {
+  handlePause = () => {
     this.setState(prevState => ({ buttonPause: !prevState.buttonPause }));
+    const { buttonPause } = this.state;
     const { game, actions } = this.props;
-    const toDO = typeof (val) === 'object' ? !game.paused : val;
     this.canvasMajor.current.focus();
-    actions.pause(toDO);
-    if (!toDO) this.startTick(false);
+    actions.pause(!buttonPause);
+    if (buttonPause) this.startTick(false);
     if (!game.activeShape.boundingBox.length) this.resetBoard(true, true);
   }
 
@@ -348,10 +304,9 @@ class Game extends React.Component {
     }
   }
 
-  // message wiil only come in from opponent component
   gameOver = (opponentInfo = null) => {
     const { multiPlayer } = this.state;
-    const { socket } = this.props;
+    const { game, user, socket } = this.props;
     // Whoever looses first will emit game over while in multiplayer mode
     if (multiPlayer && socket.temp.gameInProgress) {
       clientEmitter(GAME_OVER, socket);
@@ -360,77 +315,15 @@ class Game extends React.Component {
     // disregard first local loss signal in multiplayer as another one will come from socket
     if (multiPlayer && !opponentInfo) return;
 
+    const opponent = opponentInfo
+      ? processMatch(opponentInfo[0], this.state, this.props, this.winnerAudio)
+      : processSinglePlayer({ game, user });
+
     this.setState({
       buttonPause: true,
     }, () => this.resetBoard(
-      false, false, true, opponentInfo
-        ? this.processMatch(opponentInfo[0])
-        : this.processSinglePlayer(),
+      false, false, true, opponent,
     ));
-  }
-
-  processMatch = (oppLinesCleared) => {
-    const { floorsRaised, difficulty } = this.state;
-    const {
-      socket: {
-        temp: {
-          gameOver,
-        },
-      }, user, game,
-    } = this.props;
-    // test if client is winner
-    const iAmWinner = gameOver.winnerGoogleID === user.profile.username;
-    // get floor level of processing client
-    const floorLevel = game.rubble.boundaryCells.length > 10
-      ? Math.floor((game.rubble.boundaryCells.length - 10) / 10)
-      : 0;
-    // message for canvas display
-    let multiplayerMessage;
-    // prepare match object for db, only winner will send results
-    if (iAmWinner || gameOver.disqualified) {
-      this.winnerAudio.current.play();
-      const matchObject = {
-        winnerGoogleId: gameOver.winnerGoogleID,
-        looserGoogleId: gameOver.looserGoogleID,
-        difficulty,
-        winnerLinesCleared: game.points.totalLinesCleared,
-        winnerFloorsRaised: floorsRaised,
-        looserLinesCleared: oppLinesCleared,
-        looserFloorsRaised: floorLevel,
-        looserDisqualified: gameOver.disqualified || false,
-      };
-      axios.post('/api/multiplayer', matchObject)
-        .then(() => {})
-        .catch(e => console.log(e.response));
-    }
-    // prepare message for canvas
-    if (iAmWinner && gameOver.disqualified) {
-      multiplayerMessage = {
-        message: 'You Won!',
-        floors: '  Opponent Disqualified',
-      };
-    } else {
-      multiplayerMessage = {
-        message: iAmWinner ? 'You Won!' : 'You Lost!',
-        floors: `        ${floorsRaised} Floors Raised`,
-      };
-    }
-    return multiplayerMessage;
-  }
-
-  processSinglePlayer = () => {
-    const { game, user } = this.props;
-    if (!user.profile.authenticated) return null;
-    const singlePlayerObject = {
-      googleId: user.profile.username,
-      linesCleared: game.points.totalLinesCleared,
-      levelReached: game.points.level,
-    };
-    axios.post('/api/single', singlePlayerObject)
-      .then(() => {})
-      .catch(e => console.log(e.response));
-
-    return null;
   }
 
   checkWindowSize = () => {
@@ -449,7 +342,8 @@ class Game extends React.Component {
   render() {
     const { game, socket } = this.props;
     const {
-      difficulty, multiPlayer, inGameToggle, buttonPause, floorsRaised, windowTooSmall,
+      difficulty, multiPlayer, inGameToggle,
+      buttonPause, floorsRaised, windowTooSmall,
     } = this.state;
     if (Object.keys(game).length && !windowTooSmall) {
       return (
