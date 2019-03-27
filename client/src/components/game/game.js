@@ -63,6 +63,7 @@ class Game extends React.Component {
       canvasLoaded: false, // loads only once per mount
       windowTooSmall: null,
       disableDown: false, // disable down key on new shape
+      lastRefresh: 0,
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
@@ -165,19 +166,23 @@ class Game extends React.Component {
 
   startTick = (makeNewShape = true) => {
     this.abortCounter = 0;
-    if (this.downInterval)clearInterval(this.downInterval);
+    if (this.downInterval) window.cancelAnimationFrame(this.downInterval);
     if (makeNewShape) this.newShape();
-    this.downInterval = setInterval(() => {
-      const { updateFloor } = this.state;
-      // eslint-disable-next-line react/destructuring-assignment
-      if (this.props.game.paused) clearInterval(this.downInterval);
-      if (updateFloor) { // drawFloor needs to happen before tick
-        // eslint-disable-next-line react/destructuring-assignment
-        drawFloor(this.props.game, this.canvasContextMajor);
-        this.setState({ updateFloor: false }, () => this.tick());
-      } else this.tick();
-    // eslint-disable-next-line react/destructuring-assignment
-    }, this.props.game.timerInterval);
+
+    const onTick = (timeStamp) => {
+      const { updateFloor, lastRefresh } = this.state;
+      const { game } = this.props;
+      if (!lastRefresh || (timeStamp - lastRefresh) >= game.timerInterval) {
+        // drawFloor needs to happen before tick
+        if (updateFloor) drawFloor(game, this.canvasContextMajor);
+        this.setState({
+          lastRefresh: timeStamp,
+          updateFloor: false,
+        }, () => this.tick());
+      }
+      this.downInterval = window.requestAnimationFrame(onTick);
+    };
+    onTick();
   }
 
   tick = () => {
@@ -198,7 +203,7 @@ class Game extends React.Component {
     this.abortCounter += 1;
     console.log(`Called by ${comments} , attempts = ${this.abortCounter}`);
     if (this.downInterval) {
-      clearInterval(this.downInterval);
+      window.cancelAnimationFrame(this.downInterval);
       actions.pause(true);
       if (gameOver) {
         clearCanvas(this.canvasContextMajor, 'All', 'gameover');
