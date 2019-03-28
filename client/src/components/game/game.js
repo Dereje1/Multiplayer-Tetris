@@ -71,12 +71,21 @@ class Game extends React.Component {
     this.looserAudio = React.createRef();
   }
 
+
   componentDidMount() {
     const { actions, socket } = this.props;
     actions.gameReset(1); // initialize canvas width/height
     this.checkWindowSize();
     window.addEventListener('resize', () => this.checkWindowSize());
     if (socket.temp && socket.temp.invitationFrom) this.setState({ multiPlayer: true });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const { lastRefresh } = this.state;
+    // component already updates on redux prop change of y-movement for new tick
+    // prevent an unnecessary update on last refresh being changed in the state.
+    if (nextState.lastRefresh !== lastRefresh) return false;
+    return true;
   }
 
   componentDidUpdate(prevProps) {
@@ -151,7 +160,7 @@ class Game extends React.Component {
     }
     const floorHeight = game.rubble && keepFloor ? game.rubble.boundaryCells.length / 10 : 1;
     actions.gameReset(floorHeight);
-    if (this.downInterval) this.endTick(false, 'reset Board');
+    if (this.animationId) this.endTick(false, 'reset Board');
     if (reStart) { // fresh game
       this.startTick();
     } else {
@@ -166,13 +175,14 @@ class Game extends React.Component {
 
   startTick = (makeNewShape = true) => {
     this.abortCounter = 0;
-    if (this.downInterval) window.cancelAnimationFrame(this.downInterval);
-    if (makeNewShape) this.newShape();
-
+    // cancelAnimationFrame(this.animationId);
     const onTick = (timeStamp) => {
       const { updateFloor, lastRefresh } = this.state;
       const { game } = this.props;
-      if (!lastRefresh || (timeStamp - lastRefresh) >= game.timerInterval) {
+      console.log(timeStamp);
+      if ((timeStamp - lastRefresh) >= game.timerInterval) {
+        window.cancelAnimationFrame(this.animationId);
+        if (game.paused) return;
         // drawFloor needs to happen before tick
         if (updateFloor) drawFloor(game, this.canvasContextMajor);
         this.setState({
@@ -180,17 +190,15 @@ class Game extends React.Component {
           updateFloor: false,
         }, () => this.tick());
       }
-      this.downInterval = window.requestAnimationFrame(onTick);
+      this.animationId = requestAnimationFrame(onTick);
     };
-    onTick();
+    if (makeNewShape) this.newShape();
+    else onTick();
   }
 
-  tick = () => {
-    const { game: { paused } } = this.props;
-    if (paused) return;
-    // test for collision or free fall happens below
+  tick = (shape = this.positionForecast()) => {
     drawScreen(
-      this.positionForecast(),
+      shape,
       this.canvasContextMajor,
       this.endTick,
       this.startTick,
@@ -202,8 +210,7 @@ class Game extends React.Component {
     const { actions } = this.props;
     this.abortCounter += 1;
     console.log(`Called by ${comments} , attempts = ${this.abortCounter}`);
-    if (this.downInterval) {
-      window.cancelAnimationFrame(this.downInterval);
+    if (this.animationId) {
       actions.pause(true);
       if (gameOver) {
         clearCanvas(this.canvasContextMajor, 'All', 'gameover');
@@ -226,20 +233,14 @@ class Game extends React.Component {
     const { randomShape, newShapeName, nextShapeInfo } = tetrisShapes.createNewShape(game);
     actions.nextShape(newShapeName);
     drawNextShape(this.canvasContextMinor, nextShapeInfo, game);
-    drawScreen(
-      randomShape,
-      this.canvasContextMajor,
-      this.endTick,
-      this.startTick,
-      this.gameOver,
-    );
+    this.tick(randomShape);
   }
 
   /* Handle Player Events Below */
   handlePause = () => {
-    this.setState(prevState => ({ buttonPause: !prevState.buttonPause }));
     const { buttonPause } = this.state;
     const { game, actions } = this.props;
+    this.setState(prevState => ({ buttonPause: !prevState.buttonPause }));
     this.canvasMajor.current.focus();
     actions.pause(!buttonPause);
     if (buttonPause) this.startTick(false);
@@ -276,13 +277,7 @@ class Game extends React.Component {
         this.tick();
       } else {
         if (disableDown) this.setState({ disableDown: false });
-        drawScreen(
-          ans,
-          this.canvasContextMajor,
-          this.endTick,
-          this.startTick,
-          this.gameOver,
-        );
+        this.tick(ans);
       }
     }
   }
