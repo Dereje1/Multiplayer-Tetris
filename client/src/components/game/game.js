@@ -102,8 +102,8 @@ class Game extends React.Component {
     if (!canvasLoaded && this.canvasMajor) this.loadCanvas();
 
     /* spped up on level up */
-    if ((game.points.level !== prevGame.points.level)
-          && (game.timerInterval > 250)
+    if ((game.points.level > prevGame.points.level)
+          && (game.timerInterval > 100)
           && (!multiPlayer)
     ) actions.speedUp();
 
@@ -166,11 +166,11 @@ class Game extends React.Component {
     } else {
       this.setState({
         buttonPause: true,
-      }, () => {
-        clearCanvas(this.canvasContextMajor, 'All', 'reset'); // clear canvasMajor
-        clearCanvas(this.canvasContextMinor, 'All', 'reset'); // clear canvasMajor
       });
     }
+    clearCanvas(this.canvasContextMajor, 'All', 'reset'); // clear canvasMajor
+    if (reStart) drawFloor(game, this.canvasContextMajor);
+    clearCanvas(this.canvasContextMinor, 'All', 'reset'); // clear canvasMajor
   }
 
   startTick = async (makeNewShape = true) => {
@@ -189,11 +189,15 @@ class Game extends React.Component {
   }
 
   tick = (timeStamp) => {
-    const { lastRefresh, requestAnimation } = this.state;
+    const { lastRefresh, requestAnimation, updateFloor } = this.state;
     const { game } = this.props;
     // console.log(timeStamp);
     if ((timeStamp - lastRefresh) >= game.timerInterval) {
-      this.setState({ lastRefresh: timeStamp });
+      if (updateFloor) drawFloor(game, this.canvasContextMajor);
+      this.setState({
+        lastRefresh: timeStamp,
+        updateFloor: false,
+      });
       this.moveShape();
     }
     if (requestAnimation) this.animationId = requestAnimationFrame(this.tick);
@@ -250,7 +254,7 @@ class Game extends React.Component {
     actions.pause(!buttonPause);
     if (game.paused) {
       if (game.activeShape.cells.length) this.startTick(false);
-      else this.startTick();
+      else this.resetBoard();
     } else this.endTick('Manual Pause');
   }
 
