@@ -38,7 +38,7 @@ const rotation = (state, ctx) => {
   return null;
 };
 
-const playerMoves = (e, state, ctx, newShape) => {
+const playerMoves = (e, state, ctx) => {
   if (state.paused) return null;
   const left = e.keyCode === 37;
   const right = e.keyCode === 39;
@@ -65,7 +65,19 @@ const playerMoves = (e, state, ctx, newShape) => {
     copyOfActiveShape.xPosition += state.activeShape.unitBlockSize;
     return copyOfActiveShape;
   } if (down) {
-    return newShape ? null : 'forcedown';
+    // if next down is a collision then return null as dual processing
+    // of collision with drawscreen produces problems
+    copyOfActiveShape.yPosition += state.activeShape.unitBlockSize;
+    [copyOfActiveShape.boundingBox,
+      copyOfActiveShape.absoluteVertices] = tetrisShapes.getDims(copyOfActiveShape);
+    const locatedShape = shapeLocator(
+      ctx,
+      state.canvas.canvasMajor.width,
+      state.canvas.canvasMajor.height,
+      copyOfActiveShape, false,
+    );
+
+    return runCollisionTest(state, locatedShape) ? null : 'forcedown';
   }
 
   return rotation(state, ctx);
