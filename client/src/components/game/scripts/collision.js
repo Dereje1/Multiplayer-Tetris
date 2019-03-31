@@ -99,7 +99,7 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
     ? testedShape.filter(c => (floorTest[1].includes(c)))
     : testedShape.filter(c => (state.rubble.boundaryCells.includes(c)));
   // upperBoundary ocupied cells
-  const isUpperBoundary = shapeTested.cells.filter(c => c[1] === 0);
+  const isUpperBoundary = shapeTested.cells.filter(c => c[1] === 1);
   if (isOccupied.length || isLowerBoundary.length) { // collision detected
     if (isUpperBoundary.length) return [];// game over
     let collisionData;

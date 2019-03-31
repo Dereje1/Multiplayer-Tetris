@@ -16,7 +16,7 @@ import tetrisShapes from './scripts/shapes';
 import shapeLocator from './scripts/locateShape';
 import { runCollisionTest } from './scripts/collision';
 import {
-  clearCanvas, drawNextShape, drawGameOver, drawFloor,
+  clearCanvas, drawNextShape, drawGameOver, drawFloor, drawShape,
 } from './scripts/canvas';
 import drawScreen from './scripts/drawscreen';
 import playerMoves from './scripts/player';
@@ -62,7 +62,8 @@ class Game extends React.Component {
       updateFloor: false, // builds floor on next tick if true
       canvasLoaded: false, // loads only once per mount
       windowTooSmall: null,
-      disableDown: false, // disable down key on new shape
+      lastRefresh: 0,
+      requestAnimation: true,
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
@@ -70,12 +71,21 @@ class Game extends React.Component {
     this.looserAudio = React.createRef();
   }
 
+
   componentDidMount() {
     const { actions, socket } = this.props;
     actions.gameReset(1); // initialize canvas width/height
     this.checkWindowSize();
     window.addEventListener('resize', () => this.checkWindowSize());
     if (socket.temp && socket.temp.invitationFrom) this.setState({ multiPlayer: true });
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const { lastRefresh } = this.state;
+    // component already updates on redux prop change of y-movement for new tick
+    // prevent an unnecessary update on last refresh being changed in the state.
+    if (nextState.lastRefresh !== lastRefresh) return false;
+    return true;
   }
 
   componentDidUpdate(prevProps) {
@@ -92,8 +102,8 @@ class Game extends React.Component {
     if (!canvasLoaded && this.canvasMajor) this.loadCanvas();
 
     /* spped up on level up */
-    if ((game.points.level !== prevGame.points.level)
-          && (game.timerInterval > 250)
+    if ((game.points.level > prevGame.points.level)
+          && (game.timerInterval > 100)
           && (!multiPlayer)
     ) actions.speedUp();
 
@@ -118,7 +128,7 @@ class Game extends React.Component {
   }
 
   componentWillUnmount() {
-    this.endTick(true, 'componentWillUnmount');
+    this.endTick('componentWillUnmount');
     window.removeEventListener('resize', () => {});
   }
 
@@ -150,60 +160,53 @@ class Game extends React.Component {
     }
     const floorHeight = game.rubble && keepFloor ? game.rubble.boundaryCells.length / 10 : 1;
     actions.gameReset(floorHeight);
-    if (this.downInterval) this.endTick(false, 'reset Board');
+    if (this.animationId) this.endTick('reset Board');
     if (reStart) { // fresh game
       this.startTick();
     } else {
       this.setState({
         buttonPause: true,
-      }, () => {
-        clearCanvas(this.canvasContextMajor, 'All', 'reset'); // clear canvasMajor
-        clearCanvas(this.canvasContextMinor, 'All', 'reset'); // clear canvasMajor
       });
     }
+    clearCanvas(this.canvasContextMajor, 'All', 'reset'); // clear canvasMajor
+    if (reStart) drawFloor(game, this.canvasContextMajor);
+    clearCanvas(this.canvasContextMinor, 'All', 'reset'); // clear canvasMajor
   }
 
-  startTick = (makeNewShape = true) => {
-    this.abortCounter = 0;
-    if (this.downInterval)clearInterval(this.downInterval);
-    if (makeNewShape) this.newShape();
-    this.downInterval = setInterval(() => {
-      const { updateFloor } = this.state;
-      // eslint-disable-next-line react/destructuring-assignment
-      if (this.props.game.paused) clearInterval(this.downInterval);
-      if (updateFloor) { // drawFloor needs to happen before tick
-        // eslint-disable-next-line react/destructuring-assignment
-        drawFloor(this.props.game, this.canvasContextMajor);
-        this.setState({ updateFloor: false }, () => this.tick());
-      } else this.tick();
-    // eslint-disable-next-line react/destructuring-assignment
-    }, this.props.game.timerInterval);
-  }
-
-  tick = () => {
-    const { game: { paused } } = this.props;
-    if (paused) return;
-    // test for collision or free fall happens below
-    drawScreen(
-      this.positionForecast(),
-      this.canvasContextMajor,
-      this.endTick,
-      this.startTick,
-      this.gameOver,
-    );
-  }
-
-  endTick = (gameOver, comments) => {
+  startTick = async (makeNewShape = true) => {
     const { actions } = this.props;
-    this.abortCounter += 1;
-    console.log(`Called by ${comments} , attempts = ${this.abortCounter}`);
-    if (this.downInterval) {
-      clearInterval(this.downInterval);
-      actions.pause(true);
-      if (gameOver) {
-        clearCanvas(this.canvasContextMajor, 'All', 'gameover');
-      }
+    if (makeNewShape) {
+      const data = this.newShape();
+      await actions.updateScreen(data);
+      // eslint-disable-next-line react/destructuring-assignment
+      drawShape(this.canvasContextMajor, this.props.game);
     }
+    // setTimeout so not too immediately start the animation
+    setTimeout(() => {
+      this.setState({ requestAnimation: true });
+      this.animationId = requestAnimationFrame(this.tick);
+    }, 50);
+  }
+
+  tick = (timeStamp) => {
+    const { lastRefresh, requestAnimation, updateFloor } = this.state;
+    const { game } = this.props;
+    // console.log(timeStamp);
+    if ((timeStamp - lastRefresh) >= game.timerInterval) {
+      if (updateFloor) drawFloor(game, this.canvasContextMajor);
+      this.setState({
+        lastRefresh: timeStamp,
+        updateFloor: false,
+      });
+      this.moveShape();
+    }
+    if (requestAnimation) this.animationId = requestAnimationFrame(this.tick);
+  }
+
+  endTick = (sentBy) => {
+    console.log(sentBy);
+    this.setState({ requestAnimation: false });
+    cancelAnimationFrame(this.animationId);
   }
 
   // get the next shape ypos
@@ -217,28 +220,42 @@ class Game extends React.Component {
   newShape = () => {
     const { game, actions } = this.props;
     // disable down tick on a new shape (for a game already started)
-    if (game.nextShape) this.setState({ disableDown: true });
     const { randomShape, newShapeName, nextShapeInfo } = tetrisShapes.createNewShape(game);
     actions.nextShape(newShapeName);
     drawNextShape(this.canvasContextMinor, nextShapeInfo, game);
-    drawScreen(
-      randomShape,
+    [randomShape.boundingBox, randomShape.absoluteVertices] = tetrisShapes.getDims(randomShape);
+    const locatedShape = shapeLocator(
       this.canvasContextMajor,
-      this.endTick,
-      this.startTick,
-      this.gameOver,
+      game.canvas.canvasMajor.width,
+      game.canvas.canvasMajor.height,
+      randomShape, false,
     );
+    const data = {
+      activeShape: locatedShape,
+      rubble: game.rubble,
+    };
+    return data;
   }
+
+  moveShape = (newPosition = this.positionForecast()) => drawScreen(
+    newPosition,
+    this.canvasContextMajor,
+    this.endTick,
+    this.startTick,
+    this.gameOver,
+  );
 
   /* Handle Player Events Below */
   handlePause = () => {
-    this.setState(prevState => ({ buttonPause: !prevState.buttonPause }));
     const { buttonPause } = this.state;
-    const { game, actions } = this.props;
+    const { actions, game } = this.props;
+    this.setState(prevState => ({ buttonPause: !prevState.buttonPause }));
     this.canvasMajor.current.focus();
     actions.pause(!buttonPause);
-    if (buttonPause) this.startTick(false);
-    if (!game.activeShape.boundingBox.length) this.resetBoard(true, true);
+    if (game.paused) {
+      if (game.activeShape.cells.length) this.startTick(false);
+      else this.resetBoard();
+    } else this.endTick('Manual Pause');
   }
 
   floorRaise = (f) => {
@@ -263,29 +280,19 @@ class Game extends React.Component {
 
   gamePlay = (e) => {
     const { game } = this.props;
-    const { disableDown } = this.state;
-    const ans = (playerMoves(e, game, this.canvasContextMajor, disableDown));
+    const ans = (playerMoves(e, game, this.canvasContextMajor));
     if (ans) {
       if (ans === 'forcedown') {
-        this.endTick(false, 'Down Key');
-        this.tick();
+        this.endTick('Down Key');
+        this.moveShape();
       } else {
-        if (disableDown) this.setState({ disableDown: false });
-        drawScreen(
-          ans,
-          this.canvasContextMajor,
-          this.endTick,
-          this.startTick,
-          this.gameOver,
-        );
+        this.moveShape(ans);
       }
     }
   }
 
   arrowKeyLag = (e) => {
-    const { disableDown } = this.state;
     if (e.keyCode === 40) {
-      if (disableDown) this.setState({ disableDown: false });
       this.startTick(false);
     }
   }
