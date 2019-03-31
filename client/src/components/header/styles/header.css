@@ -5,17 +5,12 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-}
-
-#header #profile {
-  width: 20%;
-  background: green;
 }
 
 #header #authbutton {
@@ -34,22 +29,10 @@
   outline: none;
 }
 
-#header #authbutton #logout {
-  width: 232px;
-  height: 70%;
-  font-size: 1.2em;
-  cursor: pointer;
-  outline: none;
-}
-
 #header #users {
-  width: 20%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: end;
-      -ms-flex-pack: end;
-          justify-content: flex-end;
+  position: absolute;
+  right: 0;
+  width: auto;
   padding-right: 50px;
   font-size: 1em;
   color: #775d17;
@@ -57,7 +40,167 @@
   cursor: pointer;
 }
 
+@media only screen and (max-width: 550px) {
+  #header #users {
+    padding-right: 10px;
+    margin-left: 10px;
+    font-size: .75em;
+  }
+}
+
+#header #invitation {
+  position: fixed;
+  width: 400px;
+  height: 80px;
+  visibility: hidden;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background: rgba(67, 110, 89, 0.93);
+  font-family: 'Raleway', sans-serif;
+  color: #f0ecec;
+}
+
+#header #invitation.show {
+  visibility: visible;
+  -webkit-animation-name: slidedown;
+          animation-name: slidedown;
+  -webkit-animation-duration: 1s;
+          animation-duration: 1s;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+  -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+}
+
+#header #invitation.hide {
+  -webkit-animation-name: slideup;
+          animation-name: slideup;
+  -webkit-animation-duration: .5s;
+          animation-duration: .5s;
+  -webkit-animation-timing-function: linear;
+          animation-timing-function: linear;
+  -webkit-animation-iteration-count: 1;
+          animation-iteration-count: 1;
+}
+
+#header #invitation .desc {
+  margin-top: 6px;
+}
+
+#header #invitation #invbuttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+}
+
+#header #invitation #invbuttons .inv {
+  border: none;
+  padding: 6px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  color: white;
+  cursor: pointer;
+}
+
+#header #invitation #invbuttons .inv.inv:hover {
+  -webkit-transform: translateY(-2px);
+          transform: translateY(-2px);
+}
+
+#header #invitation #invbuttons .inv.accept {
+  background-color: #4CAF50;
+}
+
+#header #invitation #invbuttons .inv.decline {
+  background-color: #f12424;
+}
+
 *:focus {
   outline: none;
+}
+
+@-webkit-keyframes slidedown {
+  0% {
+    -webkit-transform: translateY(-120px);
+            transform: translateY(-120px);
+  }
+  50% {
+    -webkit-transform: translateY(-50px);
+            transform: translateY(-50px);
+  }
+  100% {
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px);
+  }
+}
+
+@keyframes slidedown {
+  0% {
+    -webkit-transform: translateY(-120px);
+            transform: translateY(-120px);
+  }
+  50% {
+    -webkit-transform: translateY(-50px);
+            transform: translateY(-50px);
+  }
+  100% {
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px);
+  }
+}
+
+@-webkit-keyframes slideup {
+  0% {
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px);
+    visibility: visible;
+  }
+  50% {
+    -webkit-transform: translateY(-50px);
+            transform: translateY(-50px);
+  }
+  100% {
+    -webkit-transform: translateY(-120px);
+            transform: translateY(-120px);
+    visibility: hidden;
+  }
+}
+
+@keyframes slideup {
+  0% {
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px);
+    visibility: visible;
+  }
+  50% {
+    -webkit-transform: translateY(-50px);
+            transform: translateY(-50px);
+  }
+  100% {
+    -webkit-transform: translateY(-120px);
+            transform: translateY(-120px);
+    visibility: hidden;
+  }
+}
+
+@media only screen and (max-width: 585px) {
+  #header #users, #header #authbutton {
+    visibility: hidden;
+  }
 }
 /*# sourceMappingURL=header.css.map */

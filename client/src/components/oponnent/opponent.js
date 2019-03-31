@@ -8,6 +8,7 @@ import { drawShape, drawBoundary } from '../game/scripts/canvas';
 // custom components
 import OpponentDescription from './opponentInfo';
 import './styles/opponentdescription.css';
+import soundFile from './styles/WPN.wav';
 
 // read from store
 const mapStateToProps = state => state;
@@ -17,7 +18,6 @@ const {
     OPPONENT_UNMOUNTED,
     INVITATION_SENT,
     INVITATION_DECLINED,
-    INVITATION_ACCEPTED,
     START_GAME,
     UPDATED_CLIENT_SCREEN,
   },
@@ -29,7 +29,9 @@ class Opponent extends React.Component {
     super(props);
     this.state = {
       levelsRaised: 0, // storage for surplus floor levels by opponent
+      opponentLinesCleared: 0,
       canvasLoaded: false, // load canvas only once
+      docHidden: false,
     };
     this.canvasOpponent = React.createRef();
   }
@@ -41,7 +43,7 @@ class Opponent extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { canvasLoaded } = this.state; // needed so that canvas loads only once!
+    const { canvasLoaded, opponentLinesCleared, docHidden } = this.state;
     const { game: prevGame, socket: { temp: prevTemp } } = prevProps;
     const {
       game, onReset, toggleMultiplayer, onCanvasFocus,
@@ -57,15 +59,25 @@ class Opponent extends React.Component {
       const tempKey = Object.keys(temp)[0];
       switch (tempKey) {
         case 'acceptedInvitation': {
-          if (!prevTemp.acceptedInvitation) break;
+          if (!prevTemp.acceptedInvitation) {
+            onReset(false);
+            if (this.canvasOpponentContext && !this.canvasOpponentContext.canvas.hidden) {
+              this.canvasOpponentContext.canvas.hidden = true;
+            }
+            break;
+          }
+          if (docHidden) this.audio.play();
           const { acceptedInvitation: { countdown: prevCountdown } } = prevTemp;
           const { acceptedInvitation: { countdown, difficulty } } = temp;
-          if (prevCountdown === 1 && countdown === 0) {
+          const cdReachedZero = prevCountdown === 1 && countdown === 0;
+          if (cdReachedZero) {
+            this.audio.play();
             clientEmitter(START_GAME, {
               opponentInfo: temp[tempKey],
               clientScreen: JSON.stringify(game),
             });
             onSetDifficulty(difficulty);
+            this.setState({ levelsRaised: 0, opponentLinesCleared: 0 });
           }
         }
           break;
@@ -99,18 +111,9 @@ class Opponent extends React.Component {
         }
           break;
         case 'gameOver': {
-          const { socket, onGameOver } = this.props;
-          let message;
-          if (temp.gameOver.winnerSID === socket.mySocketId) { // client is the winner
-            message = 'You Won !!';
-            if (socket.temp.gameOver.disqualified) { // opponent disqualified
-              message = { message, disqualified: true };
-            }
-          } else { // opponent is the winner
-            message = 'You Lost !!';
-          }
+          const { onGameOver } = this.props;
           if (!prevTemp.gameOver) {
-            onGameOver(message);
+            onGameOver([opponentLinesCleared]);
             toggleMultiplayer();
           }
         }
@@ -124,8 +127,8 @@ class Opponent extends React.Component {
   componentWillUnmount() {
     const { socket: { temp } } = this.props;
     // if a person unmounts in the middle of an invitation
-    if (temp.invitationFrom) clientEmitter(INVITATION_DECLINED, temp);
-    clientEmitter(OPPONENT_UNMOUNTED, null);
+    if (temp && temp.invitationFrom) clientEmitter(INVITATION_DECLINED, temp);
+    clientEmitter(OPPONENT_UNMOUNTED, temp);
   }
 
   loadOpponentCanvas = () => {
@@ -188,6 +191,7 @@ class Opponent extends React.Component {
     const linesCleared = totalLinesCleared - previouslyClearedLines;
     // return if no new lines have been cleared
     if (!linesCleared) return;
+    this.setState({ opponentLinesCleared: totalLinesCleared });
     /*
     Difficulty                                 Description
     -----------------------------------------------------------------------------------
@@ -216,22 +220,6 @@ class Opponent extends React.Component {
     clientEmitter(INVITATION_SENT, { sentTo, difficulty });
   }
 
-  declineInvite = () => {
-    const { socket: { temp } } = this.props;
-    clientEmitter(INVITATION_DECLINED, temp);
-    clientEmitter(LOOK_FOR_OPPONENTS, null);
-  };
-
-  acceptInvite = () => {
-    const {
-      onReset, socket: { temp },
-    } = this.props;
-    onReset(false);
-    if (this.canvasOpponentContext
-      && !this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = true;
-    clientEmitter(INVITATION_ACCEPTED, temp);
-  }
-
   resetMultiplayer = () => {
     const { onReset } = this.props;
     onReset(false);
@@ -239,6 +227,12 @@ class Opponent extends React.Component {
     if (!this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = true;
   }
   /* done sockets */
+
+  audioPlayer = () => (
+    <audio ref={(input) => { this.audio = input; }} src={soundFile}>
+      <track kind="captions" />
+    </audio>
+  )
 
   render() {
     const { difficulty, game, socket } = this.props;
@@ -259,6 +253,7 @@ class Opponent extends React.Component {
           width={game.canvas.canvasMajor.width / 2}
           height={game.canvas.canvasMajor.height / 2}
         />
+        {this.audioPlayer()}
       </div>
     );
   }

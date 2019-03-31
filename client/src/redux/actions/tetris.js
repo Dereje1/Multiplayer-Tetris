@@ -90,7 +90,7 @@ export const gameReset = (floorHeight) => {
 export const speedUp = () => (
   {
     type: LEVEL_UP,
-    payload: 150,
+    payload: 50,
   }
 );
 

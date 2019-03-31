@@ -1,0 +1,93 @@
+#menu{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 225px;
+    min-height: 100vh;
+    background: rgba(67, 110, 89, 0.93);
+    .close{
+        font-size: 30px;
+        text-align: right;
+        position: absolute;
+        right: 0;
+        margin: 10px;
+        cursor: pointer;
+    }
+    &.show{
+        animation-name: slideout;
+        animation-duration: .5s;
+        animation-timing-function: linear;
+        animation-iteration-count: 1;
+    }
+    &.hide{
+        animation-name: slidein;
+        animation-duration: .5s;
+        animation-timing-function: linear;
+        animation-iteration-count: 1;
+    }
+    #items{
+        display: flex;
+        flex-direction: column;
+        margin-top: 50%;
+        align-items: center;
+        .menuitems{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            font-family: 'Raleway', sans-serif;
+            color: rgb(240, 236, 236);
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+            width: 200px;
+            text-decoration: none;
+            &.active{
+                color: #2aff00;
+                font-weight: bold;
+            }
+        }
+        :hover{
+            color:#2aff00;
+        }
+    }
+}
+
+.burger{
+    position: absolute;
+    top:20px;
+    left:0;
+    font-size: 40px;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+@keyframes slideout {
+    0%{
+      transform: translateX(-225px);
+    }
+    50%{
+      transform: translateX(-100px);
+    }
+    100%{
+      transform: translateX(0px);
+    }
+  }
+
+@keyframes slidein {
+    0%{
+        transform: translateX(0px);
+    }
+    50%{
+        transform: translateX(-100px);
+    }
+    100%{
+        transform: translateX(-225px);
+    }
+}
+
+@media only screen and (max-width: 585px) {
+    .burger, #menu {
+        visibility: hidden;
+    }
+}

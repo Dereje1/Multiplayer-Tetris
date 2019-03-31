@@ -38,12 +38,12 @@ const drawScreen = (
   // test for collision
   const collisionResult = runCollisionTest(game, locatedShape);
   if (collisionResult && !collisionResult.length) {
-    endTick(true, 'collision check - game done');
+    endTick('collision check - Game Over');
     return gameOver();
   } if (collisionResult && collisionResult.length) {
     if (collisionResult[1]) { // winner found
       // end tick to play animation and start tick back after animation is over
-      endTick(false, 'collision check - Win');
+      endTick('collision check - Win');
       winRubble(
         canvasContextMajor,
         game,
@@ -57,7 +57,7 @@ const drawScreen = (
         clearInterval(inter);
       }, 250);
     } else { // no winner found just set state with current rubble
-      endTick(false, 'collision check - No Win');
+      endTick('collision check - No Win');
       store.dispatch(collide(collisionResult[0]));
       drawRubble(canvasContextMajor, store.getState().game);
       startTick();

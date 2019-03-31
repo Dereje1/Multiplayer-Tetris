@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 /* font awesome */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faSyncAlt, faThumbsUp, faThumbsDown,
+  faSyncAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import './styles/opponentdescription.css';
 
@@ -13,13 +13,11 @@ const OpponentDescription = ({
   difficulty,
   setDifficulty,
   requestInvite,
-  acceptInvite,
-  declineInvite,
   getPool,
 }) => {
   const { temp } = socketState;
   const {
-    opponents, invitationFrom, invitationTo, declinedInvitation,
+    opponents, invitationTo, declinedInvitation,
     acceptedInvitation, gameInProgress, gameOver,
   } = temp;
   // stage 1 - no logged in opponents in multiplayer mode found
@@ -60,30 +58,6 @@ const OpponentDescription = ({
         </div>
         <p className="writing">Invite</p>
         {players}
-      </div>
-    );
-  }
-  // stage 3 - an invitation has been requested, display invitation for the invited
-  if (invitationFrom) {
-    return (
-      <div className="opponentContainer__opponentDescription">
-        <div className="opponentContainer__opponentDescription__invitation">
-          <p className="writing">Invite from</p>
-          <p className="writing">{socketState.temp.invitationFrom.displayname.split(' ')[0]}</p>
-          <p className="writing">{`Difficulty = ${socketState.temp.invitationFrom.difficulty}`}</p>
-          <div className="opponentContainer__opponentDescription__invitation__buttons">
-            <FontAwesomeIcon
-              className="opponentContainer__opponentDescription__invitation__button-accept-invitation"
-              icon={faThumbsUp}
-              onClick={() => acceptInvite()}
-            />
-            <FontAwesomeIcon
-              className="opponentContainer__opponentDescription__invitation__button-decline-invitation"
-              icon={faThumbsDown}
-              onClick={() => declineInvite()}
-            />
-          </div>
-        </div>
       </div>
     );
   }
@@ -140,8 +114,6 @@ const OpponentDescription = ({
           <p className="writing">{opponentGame ? gameInProgress.info.opponnetDisplayname.split(' ')[0] : null}</p>
           <p className="writing">Lines Cleared</p>
           <p className="opponentContainer__opponentDescription__GamePlay__linescleared">{opponentGame ? opponentGame.points.totalLinesCleared : 0}</p>
-          <p className="writing">Games Played</p>
-          <p className="opponentContainer__opponentDescription__GamePlay__gamesplayed">?</p>
         </div>
       </div>
     );
@@ -172,18 +144,14 @@ OpponentDescription.defaultProps = {
   socketState: {},
   setDifficulty: null,
   requestInvite: null,
-  acceptInvite: null,
   difficulty: 2,
-  declineInvite: {},
   getPool: {},
 };
 OpponentDescription.propTypes = {
   socketState: PropTypes.objectOf(PropTypes.any),
   setDifficulty: PropTypes.func,
   requestInvite: PropTypes.func,
-  acceptInvite: PropTypes.func,
   difficulty: PropTypes.number,
-  declineInvite: PropTypes.func,
   getPool: PropTypes.func,
 };
 export default OpponentDescription;

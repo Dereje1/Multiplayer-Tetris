@@ -4,15 +4,15 @@ const tetrisShapes = {
     const randNum = Math.floor(Math.random() * (shapeList.length));
     return shapeList[randNum];
   },
-  getDims: (activeShape) => {
-    const absoluteVertices = tetrisShapes.getAbsoluteVertices(
+  getDims(activeShape) {
+    const absoluteVertices = this.getAbsoluteVertices(
       activeShape.unitBlockSize,
       activeShape.xPosition,
       activeShape.yPosition,
       activeShape.unitVertices,
     );
 
-    return [tetrisShapes.onBoundingBox(absoluteVertices), absoluteVertices];
+    return [this.onBoundingBox(absoluteVertices), absoluteVertices];
   },
   onRotate: (oldVertices) => {
     /*
@@ -44,6 +44,41 @@ const tetrisShapes = {
   getAbsoluteVertices: (blockSize, x, y, unitVertices) => (
     unitVertices.map(v => [x + (v[0] * blockSize), y + (v[1] * blockSize)])
   ),
+  initializeShape(shapeName, game) {
+    // finding intital y bound so it does not get cutoff
+    const x = (shapeName !== 'shapeI' && shapeName !== 'shapeO')
+      ? (game.canvas.canvasMajor.width / 2) + (game.activeShape.unitBlockSize / 2)
+      : game.canvas.canvasMajor.width / 2;
+
+    const initialAbsoluteVertices = this.getAbsoluteVertices(
+      game.activeShape.unitBlockSize,
+      x,
+      0,
+      this[shapeName].vertices,
+    );
+
+    const initialBoundingBox = this.onBoundingBox(initialAbsoluteVertices);
+    const activeShape = {
+      name: shapeName,
+      unitBlockSize: 30,
+      xPosition: x,
+      yPosition: -1 * initialBoundingBox[2],
+      unitVertices: this[shapeName].vertices,
+      absoluteVertices: initialAbsoluteVertices,
+      boundingBox: initialBoundingBox,
+      rotationStage: 0,
+      cells: [],
+    };
+    return activeShape;
+  },
+  createNewShape(game) {
+    const randomShape = game.nextShape
+      ? this.initializeShape(game.nextShape, game)
+      : this.initializeShape(this.getRandShapeName(), game);
+    const newShapeName = this.getRandShapeName();
+    const nextShapeInfo = this.initializeShape(newShapeName, game);
+    return { randomShape, newShapeName, nextShapeInfo };
+  },
   shapeI: {
     vertices: [[-1, 0], [-2, 0], [-2, -1], [-1, -1], [0, -1], [1, -1], [2, -1], [2, 0], [1, 0]],
     color: 'cyan',

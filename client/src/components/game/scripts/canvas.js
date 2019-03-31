@@ -237,3 +237,9 @@ export const drawGameOver = (ctx, ctxMinor, state, opponent) => {
   canvasContext.fillText(textB, 55, 300);
   canvasContext.fillText(textC, 5, 450);
 };
+
+export const drawFloor = (game, canvasContextMajor) => {
+  drawBoundary(canvasContextMajor, game);
+  drawRubble(canvasContextMajor, game);
+  drawShape(canvasContextMajor, game);
+};
