@@ -62,8 +62,8 @@ class Game extends React.Component {
       updateFloor: false, // builds floor on next tick if true
       canvasLoaded: false, // loads only once per mount
       windowTooSmall: null,
-      lastRefresh: 0,
-      requestAnimation: true,
+      lastRefresh: 0, // animation last refresh
+      requestAnimation: true, // used a switch to turn animation off/on
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
@@ -177,11 +177,12 @@ class Game extends React.Component {
     const { actions } = this.props;
     if (makeNewShape) {
       const data = this.newShape();
+      // unable to update store wwithout async, not sure why ??
       await actions.updateScreen(data);
       // eslint-disable-next-line react/destructuring-assignment
       drawShape(this.canvasContextMajor, this.props.game);
     }
-    // setTimeout so not too immediately start the animation
+    // setTimeout so not too immediately start the animation after new shape
     setTimeout(() => {
       this.setState({ requestAnimation: true });
       this.animationId = requestAnimationFrame(this.tick);
@@ -198,8 +199,11 @@ class Game extends React.Component {
         lastRefresh: timeStamp,
         updateFloor: false,
       });
+      // can not do moveshape() in setstate callback, will slip, need more investigation
       this.moveShape();
     }
+    // recursively call tick if animation state is still on,
+    // there maybe a little slippage before it turns off
     if (requestAnimation) this.animationId = requestAnimationFrame(this.tick);
   }
 
@@ -218,11 +222,12 @@ class Game extends React.Component {
   }
 
   newShape = () => {
+    // draw next shape on minor and send data of current shape to starttick()
     const { game, actions } = this.props;
-    // disable down tick on a new shape (for a game already started)
     const { randomShape, newShapeName, nextShapeInfo } = tetrisShapes.createNewShape(game);
     actions.nextShape(newShapeName);
     drawNextShape(this.canvasContextMinor, nextShapeInfo, game);
+    // prepare activeshape data to send to starttick
     [randomShape.boundingBox, randomShape.absoluteVertices] = tetrisShapes.getDims(randomShape);
     const locatedShape = shapeLocator(
       this.canvasContextMajor,
@@ -253,6 +258,7 @@ class Game extends React.Component {
     this.canvasMajor.current.focus();
     actions.pause(!buttonPause);
     if (game.paused) {
+      // test if a new game or within a game
       if (game.activeShape.cells.length) this.startTick(false);
       else this.resetBoard();
     } else this.endTick('Manual Pause');
@@ -265,7 +271,8 @@ class Game extends React.Component {
       this.canvasContextMajor,
       game.canvas.canvasMajor.width,
       game.canvas.canvasMajor.height,
-      this.positionForecast(), false,
+      this.positionForecast(),
+      false,
     );
     const newFloor = getFloorRaiseBoundry(game.rubble, f);
     const collisionResult = runCollisionTest(game, locatedShape, newFloor);
@@ -291,11 +298,7 @@ class Game extends React.Component {
     }
   }
 
-  arrowKeyLag = (e) => {
-    if (e.keyCode === 40) {
-      this.startTick(false);
-    }
-  }
+  arrowKeyLag = e => (e.keyCode === 40 ? this.startTick(false) : null);
 
   /* opponent component Callbacks */
   handleMultiplayer = () => {
