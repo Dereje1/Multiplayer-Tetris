@@ -1,5 +1,6 @@
 # Multiplayer-Tetris
-A full stack tetris application that allows a single player and a multiplayer mode using socket.io
+A full stack tetris application that allows single player and multiplayer mode using socket.io
+![tetris2](https://user-images.githubusercontent.com/23533048/55370992-83a0ef00-54ca-11e9-88d3-b06cdbfd95b3.png)
 
 ## Getting Started
 
