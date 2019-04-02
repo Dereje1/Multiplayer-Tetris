@@ -208,7 +208,7 @@ class Game extends React.Component {
   }
 
   endTick = (sentBy) => {
-    console.log(sentBy);
+    if (process.env.NODE_ENV === 'develpment') console.log(sentBy);
     this.setState({ requestAnimation: false });
     cancelAnimationFrame(this.animationId);
   }
