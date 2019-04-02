@@ -1,9 +1,9 @@
-let userArr = [];
 
 module.exports = {
-  getUsers: () => [...userArr],
-  setUsers: (newUsers) => {
-    userArr = [...newUsers];
+  userArr: [],
+  getUsers() { return [...this.userArr]; },
+  setUsers(newUsers) {
+    this.userArr = [...newUsers];
   },
   modifyProfile: (profile, sockId) => {
     const { username, displayname, userip } = profile;
@@ -18,7 +18,7 @@ module.exports = {
   },
   createPool(socket) {
     console.log(`${socket.id} is looking for opponents`);
-    const currentlyLoggedIn = [...this.getUsers()];
+    const currentlyLoggedIn = [...this.userArr];
 
     const opponentPool = currentlyLoggedIn.filter(
       users => users.socketId !== socket.id && !users.oponnentId && !users.pending,
