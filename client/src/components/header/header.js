@@ -8,7 +8,7 @@ import { clientEmitter } from '../../sockethandler';
 import { socket as socketConstants } from '../../constants/index';
 import Menu from '../menu/menu';
 import Invitation from './invitation';
-import './styles/header.css';
+import './styles/header.scss';
 import soundFile from './styles/invite_recieved.wav';
 
 const mapStateToProps = state => state;

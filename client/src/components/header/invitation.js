@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './styles/header.css';
+import './styles/header.scss';
 
 const Invitation = ({
   invite, onDeclineInvite, onAcceptInvite,

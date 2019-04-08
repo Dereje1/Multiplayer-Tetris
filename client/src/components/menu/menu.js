@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBars, faTimes, faSignOutAlt, faUser, faGamepad,
 } from '@fortawesome/free-solid-svg-icons';
-import './styles/menu.css';
+import './styles/menu.scss';
 
 class Menu extends React.Component {
 

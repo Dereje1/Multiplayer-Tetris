@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSyncAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import './styles/opponentdescription.css';
+import './styles/opponentdescription.scss';
 
 /* opponent top part of component */
 const OpponentDescription = ({

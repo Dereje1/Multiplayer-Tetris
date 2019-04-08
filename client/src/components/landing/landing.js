@@ -1,6 +1,6 @@
 import React from 'react';
 import Game from '../game/game';
-import './styles/landing.css';
+import './styles/landing.scss';
 
 const Landing = () => (
   <div id="landing">

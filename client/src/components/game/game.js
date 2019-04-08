@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import './styles/game.css';
+import './styles/game.scss';
 // connect to redux and get action creators
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

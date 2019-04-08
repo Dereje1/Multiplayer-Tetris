@@ -9,7 +9,7 @@ import {
   faInfoCircle, faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { faTwitter } from '@fortawesome/free-brands-svg-icons';
-import './styles/profile.css';
+import './styles/profile.scss';
 
 const mapStateToProps = state => state;
 

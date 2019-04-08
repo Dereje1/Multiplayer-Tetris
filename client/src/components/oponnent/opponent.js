@@ -7,7 +7,7 @@ import { socket as socketConstants } from '../../constants/index';
 import { drawShape, drawBoundary } from '../game/scripts/canvas';
 // custom components
 import OpponentDescription from './opponentInfo';
-import './styles/opponentdescription.css';
+import './styles/opponentdescription.scss';
 import soundFile from './styles/WPN.wav';
 
 // read from store
