@@ -43,7 +43,8 @@ const OpponentDescription = ({
         onClick={() => requestInvite(p.socketId)}
       >
         {p.displayname.split(' ')[0]}
-      </button>));
+      </button>
+    ));
     return (
       <div className="opponentContainer__opponentDescription">
         <p className="writing">Difficulty</p>
