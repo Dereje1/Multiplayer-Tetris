@@ -1,9 +1,4 @@
 // utility that checks for collision and refreshses screen data
-import store from '../../../redux/store';
-import {
-  updateScreen, collide,
-} from '../../../redux/actions/tetris';
-
 // custom functions
 import tetrisShapes from './shapes';
 import shapeLocator from './locateShape';
@@ -13,15 +8,16 @@ import {
   winRubble,
 } from './canvas';
 
-const drawScreen = (
+const drawScreen = ({
   updatedShape,
   canvasContextMajor,
   endTick,
   startTick,
   gameOver,
-) => {
-  const { game } = store.getState();
-  const shapeToDraw = updatedShape;
+  redux,
+}) => {
+  const { game, collide, updateScreen } = redux;
+  const shapeToDraw = { ...updatedShape };
   [shapeToDraw.boundingBox, shapeToDraw.absoluteVertices] = tetrisShapes.getDims(updatedShape);
 
   const copyOfRubble = Object.assign({}, game.rubble);
@@ -40,7 +36,8 @@ const drawScreen = (
   if (collisionResult && !collisionResult.length) {
     endTick('collision check - Game Over');
     return gameOver();
-  } if (collisionResult && collisionResult.length) {
+  }
+  if (collisionResult && collisionResult.length) {
     if (collisionResult[1]) { // winner found
       // end tick to play animation and start tick back after animation is over
       endTick('collision check - Win');
@@ -49,28 +46,35 @@ const drawScreen = (
         game,
         collisionResult[1],
       );
-      store.dispatch(collide(collisionResult[0]));
+      collide(collisionResult[0]);
+      const collisionData = {
+        activeShape: locatedShape,
+        rubble: collisionResult[0].rubble,
+      };
       const inter = setTimeout(() => {
-        // redux store update not taking effect in upper scope of game def.
-        drawRubble(canvasContextMajor, store.getState().game);
+        drawRubble(canvasContextMajor, collisionData);
         startTick();
-        clearInterval(inter);
+        clearTimeout(inter);
       }, 250);
     } else { // no winner found just set state with current rubble
       endTick('collision check - No Win');
-      store.dispatch(collide(collisionResult[0]));
-      drawRubble(canvasContextMajor, store.getState().game);
+      collide(collisionResult[0]);
+      const collisionData = {
+        activeShape: locatedShape,
+        rubble: collisionResult[0].rubble,
+      };
+      drawRubble(canvasContextMajor, collisionData);
       startTick();
     }
   } else {
-    /*  no collision is found, do this */
-    const data = {
+    /*  no collision is found, just do a screen refresh */
+    const screenRefreshData = {
       activeShape: locatedShape,
       rubble: copyOfRubble,
       paused: false,
     };
-    store.dispatch(updateScreen(data));
-    drawShape(canvasContextMajor, store.getState().game);
+    updateScreen(screenRefreshData);
+    drawShape(canvasContextMajor, screenRefreshData);
   }
   return null;
 };

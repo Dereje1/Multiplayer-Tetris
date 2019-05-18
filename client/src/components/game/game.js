@@ -242,13 +242,23 @@ class Game extends React.Component {
     return data;
   }
 
-  moveShape = (newPosition = this.positionForecast()) => drawScreen(
-    newPosition,
-    this.canvasContextMajor,
-    this.endTick,
-    this.startTick,
-    this.gameOver,
-  );
+  moveShape = (newPosition = this.positionForecast()) => {
+    const { game, actions } = this.props;
+    drawScreen(
+      {
+        updatedShape: newPosition,
+        canvasContextMajor: this.canvasContextMajor,
+        endTick: this.endTick,
+        startTick: this.startTick,
+        gameOver: this.gameOver,
+        redux: {
+          game,
+          collide: actions.collide,
+          updateScreen: actions.updateScreen,
+        },
+      },
+    );
+  };
 
   /* Handle Player Events Below */
   handlePause = () => {
