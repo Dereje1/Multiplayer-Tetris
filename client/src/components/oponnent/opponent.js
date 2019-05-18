@@ -60,7 +60,7 @@ class Opponent extends React.Component {
       switch (tempKey) {
         case 'acceptedInvitation': {
           if (!prevTemp.acceptedInvitation) {
-            onReset(false);
+            onReset({ reStart: false });
             if (this.canvasOpponentContext && !this.canvasOpponentContext.canvas.hidden) {
               this.canvasOpponentContext.canvas.hidden = true;
             }
@@ -85,7 +85,7 @@ class Opponent extends React.Component {
           const { gameInProgress: { info, opponentScreen } } = temp;
           if (!prevTemp.gameInProgress) { // game started
             onCanvasFocus();
-            onReset();
+            onReset({});
             toggleMultiplayer();
           } else { // game running
             /* Important
@@ -222,7 +222,7 @@ class Opponent extends React.Component {
 
   resetMultiplayer = () => {
     const { onReset } = this.props;
-    onReset(false);
+    onReset({ reStart: false });
     clientEmitter(LOOK_FOR_OPPONENTS, null);
     if (!this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = true;
   }
