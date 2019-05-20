@@ -11,12 +11,14 @@ import {
 } from '../../redux/actions/tetris';
 import looserSoundFile from './styles/Looser.wav';
 import winnerSoundFile from './styles/Winner.wav';
+import lineClearSoundFile from './styles/clearedline.wav';
 // custom functions and scripts
+import boardReset from './scripts/boardreset';
 import tetrisShapes from './scripts/shapes';
 import shapeLocator from './scripts/locateShape';
 import { runCollisionTest } from './scripts/collision';
 import {
-  clearCanvas, drawNextShape, drawGameOver, drawFloor, drawShape,
+  clearCanvas, drawNextShape, drawFloor, drawShape,
 } from './scripts/canvas';
 import drawScreen from './scripts/drawscreen';
 import playerMoves from './scripts/player';
@@ -69,6 +71,7 @@ class Game extends React.Component {
     this.canvasMinor = React.createRef();
     this.winnerAudio = React.createRef();
     this.looserAudio = React.createRef();
+    this.clearAudio = React.createRef();
   }
 
 
@@ -118,12 +121,12 @@ class Game extends React.Component {
     if (!multiPlayer && socket.temp) {
       if (prevSocket.temp && !prevSocket.temp.acceptedInvitation
           && socket.temp.acceptedInvitation) {
-        this.setState({ multiPlayer: true }, () => this.resetBoard(false));
+        this.setState({ multiPlayer: true }, () => this.resetBoard({ reStart: false }));
       }
     }
     /* Opponent has unmounted after accepting invitation but no game started */
     if (prevSocket && prevSocket.temp && !socket.temp) {
-      this.setState({ multiPlayer: false }, () => this.resetBoard(false));
+      this.setState({ multiPlayer: false }, () => this.resetBoard({ reStart: false }));
     }
   }
 
@@ -145,32 +148,21 @@ class Game extends React.Component {
     this.setState({ canvasLoaded: true });
   }
 
-  resetBoard = (
-    reStart = true, // if false will not start with a new shape/ tick
-    keepFloor = false, // used to set floor height in sp mode
-    gameover = false,
-    opponent = null, // opponent info needed for canvas
-  ) => {
+  resetBoard = (config) => {
     const { game, actions } = this.props;
-    this.setState({ floorsRaised: 0 });
-    if (gameover) {
-      drawGameOver(this.canvasContextMajor, this.canvasContextMinor, game, opponent);
-      actions.gameReset(1);
-      return;
-    }
-    const floorHeight = game.rubble && keepFloor ? game.rubble.boundaryCells.length / 10 : 1;
-    actions.gameReset(floorHeight);
-    if (this.animationId) this.endTick('reset Board');
-    if (reStart) { // fresh game
-      this.startTick();
-    } else {
-      this.setState({
-        buttonPause: true,
-      });
-    }
-    clearCanvas(this.canvasContextMajor, 'All', 'reset'); // clear canvasMajor
-    if (reStart) drawFloor(game, this.canvasContextMajor);
-    clearCanvas(this.canvasContextMinor, 'All', 'reset'); // clear canvasMajor
+    const resetObject = {
+      config,
+      stateReset: stateItem => this.setState(stateItem),
+      redux: { game, actions },
+      classItems: {
+        canvasContextMajor: this.canvasContextMajor,
+        canvasContextMinor: this.canvasContextMinor,
+        animationId: this.animationId,
+        endTick: this.endTick,
+        startTick: this.startTick,
+      },
+    };
+    boardReset(resetObject);
   }
 
   startTick = async (makeNewShape = true) => {
@@ -208,7 +200,7 @@ class Game extends React.Component {
   }
 
   endTick = (sentBy) => {
-    if (process.env.NODE_ENV === 'develpment') console.log(sentBy);
+    if (process.env.NODE_ENV === 'development') console.log(sentBy);
     this.setState({ requestAnimation: false });
     cancelAnimationFrame(this.animationId);
   }
@@ -242,13 +234,24 @@ class Game extends React.Component {
     return data;
   }
 
-  moveShape = (newPosition = this.positionForecast()) => drawScreen(
-    newPosition,
-    this.canvasContextMajor,
-    this.endTick,
-    this.startTick,
-    this.gameOver,
-  );
+  moveShape = (newPosition = this.positionForecast()) => {
+    const { game, actions } = this.props;
+    drawScreen(
+      {
+        updatedShape: newPosition,
+        canvasContextMajor: this.canvasContextMajor,
+        endTick: this.endTick,
+        startTick: this.startTick,
+        gameOver: this.gameOver,
+        redux: {
+          game,
+          collide: actions.collide,
+          updateScreen: actions.updateScreen,
+        },
+        lineCleared: () => this.clearAudio.current.play(),
+      },
+    );
+  };
 
   /* Handle Player Events Below */
   handlePause = () => {
@@ -260,7 +263,7 @@ class Game extends React.Component {
     if (game.paused) {
       // test if a new game or within a game
       if (game.activeShape.cells.length) this.startTick(false);
-      else this.resetBoard();
+      else this.resetBoard({});
     } else this.endTick('Manual Pause');
   }
 
@@ -310,7 +313,7 @@ class Game extends React.Component {
       clearCanvas(this.canvasContextMinor, 'All', 'Multi');
       this.setState({
         multiPlayer: !multiPlayer,
-      }, () => this.resetBoard(false));
+      }, () => this.resetBoard({ reStart: false }));
     }
   }
 
@@ -331,9 +334,9 @@ class Game extends React.Component {
 
     this.setState({
       buttonPause: true,
-    }, () => this.resetBoard(
-      false, false, true, opponent,
-    ));
+    }, () => this.resetBoard({
+      reStart: false, keepFloor: false, gameover: true, opponent,
+    }));
   }
 
   checkWindowSize = () => {
@@ -365,7 +368,7 @@ class Game extends React.Component {
             socketId={socket.mySocketId}
             multiPlayer={[multiPlayer, inGameToggle]}
             pauseButtonState={buttonPause}
-            onReset={b => this.resetBoard(b)}
+            onReset={b => this.resetBoard({ reStart: b })}
             onhandlePause={() => this.handlePause}
             onFloorRaise={() => this.floorRaise(1)}
             onMultiPlayer={() => this.handleMultiplayer}
@@ -398,6 +401,9 @@ class Game extends React.Component {
             <track kind="captions" />
           </audio>
           <audio ref={this.looserAudio} src={looserSoundFile}>
+            <track kind="captions" />
+          </audio>
+          <audio ref={this.clearAudio} src={lineClearSoundFile}>
             <track kind="captions" />
           </audio>
         </div>
