@@ -15,6 +15,7 @@ const drawScreen = ({
   startTick,
   gameOver,
   redux,
+  lineCleared,
 }) => {
   const { game, collide, updateScreen } = redux;
   const shapeToDraw = { ...updatedShape };
@@ -41,6 +42,7 @@ const drawScreen = ({
     if (collisionResult[1]) { // winner found
       // end tick to play animation and start tick back after animation is over
       endTick('collision check - Win');
+      lineCleared();
       winRubble(
         canvasContextMajor,
         game,

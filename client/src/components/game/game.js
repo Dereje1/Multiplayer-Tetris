@@ -11,6 +11,7 @@ import {
 } from '../../redux/actions/tetris';
 import looserSoundFile from './styles/Looser.wav';
 import winnerSoundFile from './styles/Winner.wav';
+import lineClearSoundFile from './styles/clearedline.wav';
 // custom functions and scripts
 import boardReset from './scripts/boardreset';
 import tetrisShapes from './scripts/shapes';
@@ -70,6 +71,7 @@ class Game extends React.Component {
     this.canvasMinor = React.createRef();
     this.winnerAudio = React.createRef();
     this.looserAudio = React.createRef();
+    this.clearAudio = React.createRef();
   }
 
 
@@ -246,6 +248,7 @@ class Game extends React.Component {
           collide: actions.collide,
           updateScreen: actions.updateScreen,
         },
+        lineCleared: () => this.clearAudio.current.play(),
       },
     );
   };
@@ -398,6 +401,9 @@ class Game extends React.Component {
             <track kind="captions" />
           </audio>
           <audio ref={this.looserAudio} src={looserSoundFile}>
+            <track kind="captions" />
+          </audio>
+          <audio ref={this.clearAudio} src={lineClearSoundFile}>
             <track kind="captions" />
           </audio>
         </div>
