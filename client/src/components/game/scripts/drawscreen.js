@@ -15,7 +15,7 @@ const drawScreen = ({
   startTick,
   gameOver,
   redux,
-  lineCleared,
+  audio,
 }) => {
   const { game, collide, updateScreen } = redux;
   const shapeToDraw = { ...updatedShape };
@@ -50,7 +50,9 @@ const drawScreen = ({
       rubble: collisionResult[0].rubble,
     };
     if (collisionResult[1]) { // winner found
-      lineCleared(); // audio
+      // audio
+      if (collisionResult[1].length === 4) audio.maxLinesCleared();
+      else audio.lineCleared();
       // animation timeout
       winRubble(canvasContextMajor, game, collisionResult[1]);
       const inter = setTimeout(() => {

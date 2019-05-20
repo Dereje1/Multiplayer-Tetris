@@ -9,9 +9,7 @@ import {
   gameReset, nextShape, updateScreen, raiseFloor,
   collide, speedUp, pause, getFloorRaiseBoundry,
 } from '../../redux/actions/tetris';
-import looserSoundFile from './styles/Looser.wav';
-import winnerSoundFile from './styles/Winner.wav';
-import lineClearSoundFile from './styles/clearedline.wav';
+import { Audio, audioTypes } from './audio';
 // custom functions and scripts
 import boardReset from './scripts/boardreset';
 import tetrisShapes from './scripts/shapes';
@@ -69,11 +67,8 @@ class Game extends React.Component {
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
-    this.winnerAudio = React.createRef();
-    this.looserAudio = React.createRef();
-    this.clearAudio = React.createRef();
+    Object.keys(audioTypes).forEach(audio => (this[audio] = React.createRef()));
   }
-
 
   componentDidMount() {
     const { actions, socket } = this.props;
@@ -134,6 +129,14 @@ class Game extends React.Component {
     this.endTick('componentWillUnmount');
     window.removeEventListener('resize', () => {});
   }
+
+  audioProps = () => {
+    const props = {};
+    Object.keys(audioTypes).forEach((audio) => {
+      props[audio] = this[audio];
+    });
+    return props;
+  };
 
   loadCanvas = () => {
     // loads canvas once on game mount
@@ -248,7 +251,10 @@ class Game extends React.Component {
           collide: actions.collide,
           updateScreen: actions.updateScreen,
         },
-        lineCleared: () => this.clearAudio.current.play(),
+        audio: {
+          lineCleared: () => this.clearAudio.current.play(),
+          maxLinesCleared: () => this.maxClearAudio.current.play(),
+        },
       },
     );
   };
@@ -397,15 +403,7 @@ class Game extends React.Component {
             )
             : null
           }
-          <audio ref={this.winnerAudio} src={winnerSoundFile}>
-            <track kind="captions" />
-          </audio>
-          <audio ref={this.looserAudio} src={looserSoundFile}>
-            <track kind="captions" />
-          </audio>
-          <audio ref={this.clearAudio} src={lineClearSoundFile}>
-            <track kind="captions" />
-          </audio>
+          <Audio {...this.audioProps()} />
         </div>
       );
     }
