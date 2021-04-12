@@ -5,7 +5,7 @@ import {
 const boardReset = ({
   config, stateReset, redux, classItems,
 }) => {
-  const { game, actions } = redux;
+  const { game, gameReset } = redux;
   const {
     reStart = true, keepFloor = false, gameover = false, opponent = null,
   } = config;
@@ -15,11 +15,11 @@ const boardReset = ({
   stateReset({ floorsRaised: 0 });
   if (gameover) {
     drawGameOver(canvasContextMajor, canvasContextMajor, game, opponent);
-    actions.gameReset(1);
+    gameReset(1);
     return;
   }
   const floorHeight = game.rubble && keepFloor ? game.rubble.boundaryCells.length / 10 : 1;
-  actions.gameReset(floorHeight);
+  gameReset(floorHeight);
   if (animationId) endTick('reset Board');
   if (reStart) { // fresh game
     startTick();
