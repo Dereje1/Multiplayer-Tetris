@@ -21,8 +21,8 @@
     "express": "^4.16.4",
     "mongoose": "^5.4.4",
     "morgan": "^1.9.1",
-    "passport": "^0.4.0",
-    "passport-google-oauth": "^1.0.0",
+    "passport": "latest",
+    "passport-google-oauth": "^2.0.0",
     "path": "^0.12.7",
     "socket.io": "^2.2.0"
   },
