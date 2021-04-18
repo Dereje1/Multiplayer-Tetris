@@ -2,21 +2,8 @@ import axios from 'axios';
 import { game } from '../../constants/index';
 
 const {
-  INITIALIZE_GAME, LEVEL_UP, PAUSE,
-  SET_NEXT_SHAPE, SCREEN_UPDATE, RAISE_FLOOR, COLLISION,
+  INITIALIZE_GAME, RAISE_FLOOR,
 } = game;
-
-const setBoundry = (unitBlockSize, width, height, boundryRowHeight) => {
-  const boundry = [];
-  const blocksPerRow = width / unitBlockSize;
-  const blocksPerColumn = height / unitBlockSize;
-  for (let j = 0; j < boundryRowHeight; j += 1) {
-    for (let i = 0; i < blocksPerRow; i += 1) {
-      boundry.push(`${i}-${blocksPerColumn - j}`);
-    }
-  }
-  return boundry;
-};
 
 const initialState = { // determine what needs to go into state, a very small portion here
   timerInterval: 700,
@@ -54,6 +41,19 @@ const initialState = { // determine what needs to go into state, a very small po
   },
 };
 
+// Utility functions to transform payload
+const setBoundry = (unitBlockSize, width, height, boundryRowHeight) => {
+  const boundry = [];
+  const blocksPerRow = width / unitBlockSize;
+  const blocksPerColumn = height / unitBlockSize;
+  for (let j = 0; j < boundryRowHeight; j += 1) {
+    for (let i = 0; i < blocksPerRow; i += 1) {
+      boundry.push(`${i}-${blocksPerColumn - j}`);
+    }
+  }
+  return boundry;
+};
+
 export const getFloorRaiseBoundry = (oldRubble, raiseBy = 1) => {
   const newOccupied = oldRubble.occupiedCells.map((c) => {
     const oldY = Number(c[0].split('-')[1]);
@@ -71,70 +71,30 @@ export const getFloorRaiseBoundry = (oldRubble, raiseBy = 1) => {
   );
   return [newOccupied, newBoundary];
 };
-
-export const gameReset = (floorHeight) => {
-  initialState.rubble.boundaryCells = setBoundry(
-    initialState.activeShape.unitBlockSize,
-    initialState.canvas.canvasMajor.width,
-    initialState.canvas.canvasMajor.height,
-    floorHeight,
-  );
-  return (
-    {
-      type: INITIALIZE_GAME,
-      payload: initialState,
-    }
-  );
-};
-
-export const speedUp = () => (
-  {
-    type: LEVEL_UP,
-    payload: 50,
-  }
-);
-
-export const pause = status => (
-  {
-    type: PAUSE,
-    payload: status,
-  }
-);
-
-export const nextShape = shape => (
-  {
-    type: SET_NEXT_SHAPE,
-    payload: shape,
-  }
-);
-
-export const updateScreen = data => (
-  {
-    type: SCREEN_UPDATE,
-    payload: data,
-  }
-);
-
-export const raiseFloor = (oldRubble, raiseBy = 1) => {
-  const newFloor = getFloorRaiseBoundry(oldRubble, raiseBy);
-  return (
-    {
-      type: RAISE_FLOOR,
-      payload: {
+// Actions with transform != null will update payload here
+const updatePayload = (type, payload, transfom) => {
+  switch (type) {
+    case RAISE_FLOOR: {
+      const newFloor = getFloorRaiseBoundry(payload, transfom.raiseBy);
+      return {
         occupiedCells: newFloor[0],
         boundaryCells: newFloor[1],
         winRows: null,
-      },
+      };
     }
-  );
-};
-
-export const collide = data => (
-  {
-    type: COLLISION,
-    payload: data,
+    case INITIALIZE_GAME: {
+      initialState.rubble.boundaryCells = setBoundry(
+        initialState.activeShape.unitBlockSize,
+        initialState.canvas.canvasMajor.width,
+        initialState.canvas.canvasMajor.height,
+        payload,
+      );
+      return initialState;
+    }
+    default:
+      return payload;
   }
-);
+};
 
 export const upDatedb = matchData => new Promise((resolve, reject) => {
   axios
@@ -148,3 +108,10 @@ export const upDatedb = matchData => new Promise((resolve, reject) => {
       reject(err);
     });
 });
+
+export const GameActions = (type, payload, transfom = null) => (
+  {
+    type,
+    payload: transfom ? updatePayload(type, payload, transfom) : payload,
+  }
+);
