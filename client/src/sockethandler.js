@@ -2,9 +2,7 @@ import io from 'socket.io-client';
 import store from './redux/store';
 import { socket as socketConstants } from './constants/index';
 import {
-  getLoggedInUsers, getClientSocketId, getOpponents, removeOpponents,
-  sendInvite, receiveInvite, declinedInvitation, acceptedInvitation,
-  startCountDown, startGame, getOpponentScreen, gameOver,
+  startCountDown, socketDataAction,
 } from './redux/actions/socket';
 
 export const socketConnection = io(socketConstants.connection);
@@ -43,43 +41,43 @@ socketConnection.on(
 // triggered by: SEND_LOGGED_IN_USER
 socketConnection.on(
   LOGGED_IN_USERS,
-  data => store.dispatch(getLoggedInUsers(data)),
+  data => store.dispatch(socketDataAction({ type: LOGGED_IN_USERS, payload: data })),
 );
 // triggered by: SEND_LOGGED_IN_USER
 socketConnection.on(
   SOCKET_ID,
-  data => store.dispatch(getClientSocketId(data)),
+  data => store.dispatch(socketDataAction({ type: SOCKET_ID, payload: data })),
 );
 // triggered by: LOOK_FOR_OPPONENTS, disconnetions
 socketConnection.on(
   OPPONENT_POOL,
-  data => store.dispatch(getOpponents(data)),
+  data => store.dispatch(socketDataAction({ type: OPPONENT_POOL, payload: data })),
 );
 // triggered by: OPPONENT_UNMOUNTED
 socketConnection.on(
   UNMOUNT_OPPONENT,
-  () => store.dispatch(removeOpponents()),
+  () => store.dispatch(socketDataAction({ type: UNMOUNT_OPPONENT, payload: null })),
 );
 // triggered by: INVITATION_SENT
 socketConnection.on(
   INVITE_SENT,
-  reciever => store.dispatch(sendInvite(reciever)),
+  reciever => store.dispatch((socketDataAction({ type: INVITE_SENT, payload: reciever }))),
 );
 // triggered by: INVITATION_SENT
 socketConnection.on(
   INVITE_RECIEVED,
-  sender => store.dispatch(receiveInvite(sender)),
+  sender => store.dispatch(socketDataAction({ type: INVITE_RECIEVED, payload: sender })),
 );
 // triggered by: INVITATION_DECLINED
 socketConnection.on(
   DECLINED_INVITATION,
-  () => store.dispatch(declinedInvitation()),
+  () => store.dispatch(socketDataAction({ type: DECLINED_INVITATION, payload: null })),
 );
 // triggered by: INVITATION_ACCEPTED
 socketConnection.on(
   ACCEPTED_INVITATION,
   async (opponentData) => {
-    const acceptDispatch = await store.dispatch(acceptedInvitation(opponentData));
+    const acceptDispatch = await store.dispatch(socketDataAction({ type: ACCEPTED_INVITATION, payload: opponentData }));
     const timeToCountDown = acceptDispatch.payload.countdown;
     store.dispatch(startCountDown(timeToCountDown));
   },
@@ -88,7 +86,7 @@ socketConnection.on(
 socketConnection.on(
   GAME_STARTED,
   (opponentData, confirmation) => {
-    store.dispatch(startGame(opponentData));
+    store.dispatch(socketDataAction({ type: GAME_STARTED, payload: opponentData }));
     confirmation('Game Start Recieved and dispacthed by Client!!');
   },
 );
@@ -101,12 +99,12 @@ socketConnection.on(
     // for example with background timer throttling of the countdown if page is on
     // a different tab and redux store temp state recieves multiple phases
     if (Object.keys(store.getState().socket.temp)[0] === 'gameInProgress') {
-      store.dispatch(getOpponentScreen(screen));
+      store.dispatch(socketDataAction({ type: OPPONENT_SCREEN, payload: screen }));
     }
   },
 );
 // triggered by: GAME_OVER
 socketConnection.on(
   FINISH_GAME,
-  data => store.dispatch(gameOver(data)),
+  data => store.dispatch(socketDataAction({ type: FINISH_GAME, payload: data })),
 );
