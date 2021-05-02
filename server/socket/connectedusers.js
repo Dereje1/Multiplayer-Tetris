@@ -12,10 +12,10 @@ const authorizedUsers = (socket, callback) => {
     if (userProfile) { // null if client is not logged in
       // client has just logged in or has been logged in but refreshed app
       // If the google Id is already in main array disregard otherwise add
-      const googleIdFilter = currentlyLoggedIn.filter(
+      const existsInPool = currentlyLoggedIn.some(
         l => l.username === userProfile.username,
       );
-      currentlyLoggedIn = !googleIdFilter.length
+      currentlyLoggedIn = !existsInPool
         ? [...currentlyLoggedIn, utility.modifyProfile(userProfile, socket.id)]
         : [...currentlyLoggedIn];
     }

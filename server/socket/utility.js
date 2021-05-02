@@ -5,13 +5,13 @@ module.exports = {
   setUsers(newUsers) {
     this.userArr = [...newUsers];
   },
-  modifyProfile: (profile, sockId) => {
+  modifyProfile: (profile, socketId) => {
     const { username, displayname, userip } = profile;
     return {
       username,
       displayname,
       userip,
-      socketId: sockId,
+      socketId,
       oponnentId: null,
       pending: null,
     };
@@ -24,5 +24,9 @@ module.exports = {
       .filter(users => users.socketId !== socket.id && !users.oponnentId && !users.pending)
       .map(({ displayname, socketId }) => ({ displayname, socketId }))
       .slice(0, 4);
+  },
+  findUserBySocketId(socketID) {
+    const [user] = this.userArr.filter(u => u.socketId === socketID);
+    return user || null;
   },
 };
