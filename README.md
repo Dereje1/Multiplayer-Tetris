@@ -11,7 +11,6 @@ These instructions will get you a copy of the project up and running on your loc
 | Prerequisite                                | Version |
 | ------------------------------------------- | ------- |
 | [Node.js](http://nodejs.org) /  npm (comes with Node)  | `~ ^8.11.2` / `~^6.1.0` |
-| [yarn](https://yarnpkg.com/lang/en/docs/install/) | `~ ^1.3.2` |
 | [Git](https://git-scm.com/downloads) | `~ ^2` |
 | [MongoDB Community Server](https://docs.mongodb.com/manual/administration/install-community/) | `~ ^3.4.9`  |
 
@@ -30,9 +29,9 @@ Pull from github and install packages
 
 ```
 git pull https://github.com/Dereje1/Multiplayer-Tetris.git
-yarn
+npm install
 cd client
-yarn
+npm install
 cd ..
 ```
 
@@ -54,7 +53,7 @@ NODE_ENV=development
 ```
 Run development environment
 ```
-yarn dev
+npm run dev
 ```
 The Browser should now open up with the application in development mode.
 
