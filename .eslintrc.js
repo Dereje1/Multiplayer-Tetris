@@ -43,5 +43,6 @@ module.exports = {
       'linebreak-style': ["error",process.env.OS==='Windows_NT' ? "windows" : "unix"],
       'react/no-did-update-set-state': 0,
       'no-param-reassign': ["error", { "props": true, "ignorePropertyModificationsFor": ["user","req","res"] }],
+      'no-return-assign': ["error","except-parens"],
     }
   };

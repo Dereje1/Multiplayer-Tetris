@@ -15,7 +15,7 @@ const drawScreen = ({
   startTick,
   gameOver,
   redux,
-  lineCleared,
+  audio,
 }) => {
   const { game, collide, updateScreen } = redux;
   const shapeToDraw = { ...updatedShape };
@@ -39,46 +39,41 @@ const drawScreen = ({
     return gameOver();
   }
   if (collisionResult && collisionResult.length) {
+    // collision detected
+    // end tick to perform collision
+    const debug = collisionResult[1] ? 'collision check - Win' : 'collision check - No Win';
+    endTick(debug);
+    // update redux with collision
+    collide(collisionResult[0]);
+    const collisionData = {
+      activeShape: locatedShape,
+      rubble: collisionResult[0].rubble,
+    };
     if (collisionResult[1]) { // winner found
-      // end tick to play animation and start tick back after animation is over
-      endTick('collision check - Win');
-      lineCleared();
-      winRubble(
-        canvasContextMajor,
-        game,
-        collisionResult[1],
-      );
-      collide(collisionResult[0]);
-      const collisionData = {
-        activeShape: locatedShape,
-        rubble: collisionResult[0].rubble,
-      };
+      // audio
+      if (collisionResult[1].length === 4) audio.maxLinesCleared();
+      else audio.lineCleared();
+      // animation timeout
+      winRubble(canvasContextMajor, game, collisionResult[1]);
       const inter = setTimeout(() => {
         drawRubble(canvasContextMajor, collisionData);
         startTick();
         clearTimeout(inter);
       }, 250);
-    } else { // no winner found just set state with current rubble
-      endTick('collision check - No Win');
-      collide(collisionResult[0]);
-      const collisionData = {
-        activeShape: locatedShape,
-        rubble: collisionResult[0].rubble,
-      };
+    } else { // no winner found
       drawRubble(canvasContextMajor, collisionData);
       startTick();
     }
-  } else {
-    /*  no collision is found, just do a screen refresh */
-    const screenRefreshData = {
-      activeShape: locatedShape,
-      rubble: copyOfRubble,
-      paused: false,
-    };
-    updateScreen(screenRefreshData);
-    drawShape(canvasContextMajor, screenRefreshData);
+    return null;
   }
-  return null;
+  /*  no collision is found, just do a screen refresh */
+  const screenRefreshData = {
+    activeShape: locatedShape,
+    rubble: copyOfRubble,
+    paused: false,
+  };
+  updateScreen(screenRefreshData);
+  return drawShape(canvasContextMajor, screenRefreshData);
 };
 
 export default drawScreen;
