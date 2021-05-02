@@ -43,7 +43,7 @@ app.set('port', port);
 const server = http.createServer(app);
 
 /* socket setup */
-const io = socket(server);
+const io = socket(server, { cors: { origin: '*' } });
 require('../server/socket/index')(io);
 /* end socket setup */
 
