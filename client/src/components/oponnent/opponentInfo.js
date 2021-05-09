@@ -12,13 +12,12 @@ import './styles/opponentdescription.scss';
 
 /* opponent top part of component */
 const OpponentDescription = ({
-  socketState,
+  socketState: temp,
   difficulty,
   setDifficulty,
   requestInvite,
   getPool,
 }) => {
-  const { temp } = socketState;
   const {
     opponents, invitationTo, declinedInvitation,
     acceptedInvitation, gameInProgress, gameOver,
@@ -44,7 +43,7 @@ const OpponentDescription = ({
         color="primary"
         aria-label="vertical outlined primary button group"
       >
-        {socketState.temp.opponents.map(p => (
+        {temp.opponents.map(p => (
           <Button
             type="submit"
             key={p.socketId}
@@ -88,7 +87,7 @@ const OpponentDescription = ({
         <div className="opponentContainer__opponentDescription__invitation">
           <p className="writing">Pending</p>
           <p className="writing">Invitation to</p>
-          <p className="writing">{socketState.temp.invitationTo.displaynameReciever.split(' ')[0]}</p>
+          <p className="writing">{temp.invitationTo.displaynameReciever.split(' ')[0]}</p>
           <CircularProgress />
         </div>
       </div>
