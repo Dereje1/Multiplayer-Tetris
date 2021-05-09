@@ -8,11 +8,10 @@
 
 .opponentContainer__opponentDescription{
     display: flex;
-    width: 150px;
+    width: 170px;
     height: 50%;
     flex-direction: column;
     align-items: center;
-    justify-content: space-around;
     
     
     background: #e9eae7;
@@ -20,7 +19,7 @@
     padding: 0;
     word-break: break-all;
     word-wrap: break-word;
-    border: 3px solid rgb(133, 128, 156);
+    border: 2px solid rgb(197, 182, 255);
     box-sizing: border-box;
 }
 
@@ -39,7 +38,7 @@
 }
 .opponentContainer__opponentDescription_diffButtons_dot {
     height: 25px;
-    width: 25px;
+    width: 20px;
     background-color: #a9a7a7;
     border-radius: 50%;
     text-align: center;
@@ -50,7 +49,7 @@
   }
 .opponentContainer__opponentDescription_diffButtons_dot_highlight {
     height: 25px;
-    width: 25px;
+    width: 20px;
     background-color:rgb(233, 113, 113);
     border-radius: 50%;
     text-align: center;
@@ -148,7 +147,7 @@
 }
 
 .writing{
-    color: #652222;
+    color: #19048b;
     font-weight: 900;
     font-size: 18px;
 }
