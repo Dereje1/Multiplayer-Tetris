@@ -68,7 +68,11 @@ const OpponentDescription = ({
                 onClick={() => setDifficulty(d)}
                 onKeyDown={() => {}}
                 tabIndex={0}
+                style={{
+                  maxWidth: 35, maxHeight: 35, minWidth: 35, minHeight: 35,
+                }}
                 variant={d === difficulty ? 'contained' : 'outlined'}
+                size="small"
               >
                 {d}
               </Button>
@@ -154,7 +158,7 @@ const OpponentDescription = ({
 
   return ( // to render on loading
     <div className="opponentContainer__opponentDescription">
-      <div className="loading" />
+      <CircularProgress style={{ marginTop: 80 }} />
     </div>
   );
 };

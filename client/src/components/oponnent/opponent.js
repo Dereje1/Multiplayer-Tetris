@@ -260,7 +260,7 @@ class Opponent extends React.Component {
 
 Opponent.defaultProps = {
   game: {}, // client game in redux store
-  temp: {}, // socket info in redux store
+  temp: null, // socket info in redux store
   onFloorRaise: null,
   onReset: null, // callback to main game
   onSetDifficulty: null,
