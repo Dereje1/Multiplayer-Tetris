@@ -79,7 +79,7 @@ const Controls = ({
         <span>{game.points.totalLinesCleared}</span>
         <span>Level</span>
         <span>{game.points.level}</span>
-        <span>Mode: Single Player</span>
+        <span>Single Player Mode</span>
       </div>
 
     );
@@ -108,12 +108,12 @@ const Controls = ({
       <span>{game.points.totalLinesCleared}</span>
       <span>Difficulty</span>
       <span>{difficulty}</span>
-      <span>Mode: Multi Player</span>
-      {/* { do we really need the socketId to be displayed on client ?
+      <span>Multi Player Mode</span>
+      {
         socketId
           ? <span className="controls__socket">{socketId}</span>
           : null
-      } */}
+      }
     </div>
 
   );
