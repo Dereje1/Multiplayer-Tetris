@@ -4,18 +4,16 @@ import { socket as socketConstants } from './constants/index';
 
 const {
   serverEmit: {
-    LOGGED_IN_USERS, SOCKET_ID, OPPONENT_POOL,
-    UNMOUNT_OPPONENT, INVITE_SENT, INVITE_RECIEVED, DECLINED_INVITATION,
-    ACCEPTED_INVITATION, GAME_STARTED, OPPONENT_SCREEN, FINISH_GAME,
+    SERVER_RESET, ACCEPTED_INVITATION, GAME_STARTED, OPPONENT_SCREEN,
   },
+  clientEmit: { SEND_LOGGED_IN_USER },
   GAME_COUNTDOWN,
+  CONNECTION,
 } = socketConstants;
-
-const { clientEmit: { SEND_LOGGED_IN_USER } } = socketConstants;
 
 const { dispatch } = store;
 
-export const socketConnection = io(socketConstants.connection);
+export const socketConnection = io(CONNECTION);
 
 export const clientEmitter = (event, dataToEmit) => {
   socketConnection.emit(event, dataToEmit);
@@ -68,13 +66,6 @@ FINISH_GAME: triggered by: GAME_OVER
 
 const socketActionMap = {
   SERVER_RESET: () => serverReset(),
-  LOGGED_IN_USERS: data => dispatch({ type: LOGGED_IN_USERS, payload: data }),
-  SOCKET_ID: data => dispatch({ type: SOCKET_ID, payload: data }),
-  OPPONENT_POOL: data => dispatch({ type: OPPONENT_POOL, payload: data }),
-  UNMOUNT_OPPONENT: () => dispatch({ type: UNMOUNT_OPPONENT, payload: null }),
-  INVITE_SENT: reciever => dispatch({ type: INVITE_SENT, payload: reciever }),
-  INVITE_RECIEVED: sender => dispatch({ type: INVITE_RECIEVED, payload: sender }),
-  DECLINED_INVITATION: () => dispatch({ type: DECLINED_INVITATION, payload: null }),
   ACCEPTED_INVITATION: (data) => {
     const acceptDispatch = dispatch({ type: ACCEPTED_INVITATION, payload: data });
     const timeToCountDown = acceptDispatch.payload.countdown;
@@ -87,11 +78,29 @@ const socketActionMap = {
   OPPONENT_SCREEN: screen => (isGameInProgress()
     ? dispatch({ type: OPPONENT_SCREEN, payload: screen })
     : null),
-  FINISH_GAME: data => dispatch({ type: FINISH_GAME, payload: data }),
 };
 
 socketConnection.onAny((event, ...args) => {
+  if (!Object.keys(socketConstants.serverEmit).includes(event)) {
+    console.log(`No action map found for event = ${event}`);
+    return;
+  }
   const [data, callback] = args;
-  if (socketActionMap[event]) socketActionMap[event](data, callback);
-  else console.log(`No action map found for event = ${event}`);
+  switch (event) {
+    case SERVER_RESET:
+      socketActionMap[event]();
+      break;
+    case ACCEPTED_INVITATION:
+      socketActionMap[event](data);
+      break;
+    case GAME_STARTED:
+      socketActionMap[event](data, callback);
+      break;
+    case OPPONENT_SCREEN:
+      socketActionMap[event](data);
+      break;
+    default:
+      dispatch({ type: event, payload: data });
+      break;
+  }
 });

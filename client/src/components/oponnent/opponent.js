@@ -11,7 +11,7 @@ import './styles/opponentdescription.scss';
 import soundFile from './styles/WPN.wav';
 
 // read from store
-const mapStateToProps = state => state;
+const mapStateToProps = ({ game, socket: { temp } }) => ({ game, temp });
 const {
   clientEmit: {
     LOOK_FOR_OPPONENTS,
@@ -38,16 +38,16 @@ class Opponent extends React.Component {
 
   componentDidMount() {
     console.log('Opponent Mounted!!');
-    const { socket: { temp } } = this.props;
+    const { temp } = this.props;
     if (!temp) clientEmitter(LOOK_FOR_OPPONENTS, null);
   }
 
   componentDidUpdate(prevProps) {
     const { canvasLoaded, opponentLinesCleared, docHidden } = this.state;
-    const { game: prevGame, socket: { temp: prevTemp } } = prevProps;
+    const { game: prevGame, temp: prevTemp } = prevProps;
     const {
       game, onReset, toggleMultiplayer, onCanvasFocus,
-      socket: { temp }, onSetDifficulty,
+      temp, onSetDifficulty,
     } = this.props;
     /* load Opponent Canvas */
     if (!canvasLoaded && this.canvasOpponent.current) {
@@ -125,7 +125,7 @@ class Opponent extends React.Component {
   }
 
   componentWillUnmount() {
-    const { socket: { temp } } = this.props;
+    const { temp } = this.props;
     // if a person unmounts in the middle of an invitation
     if (temp && temp.invitationFrom) clientEmitter(INVITATION_DECLINED, temp);
     clientEmitter(OPPONENT_UNMOUNTED, temp);
@@ -142,7 +142,7 @@ class Opponent extends React.Component {
   // called on every game object change
   setGame = (opponentScreen, prevOpponentScreen) => {
     if (!opponentScreen) return;
-    const { socket: { temp } } = this.props;
+    const { temp } = this.props;
     const opp = JSON.parse(opponentScreen);
     const prevOpp = prevOpponentScreen ? JSON.parse(prevOpponentScreen) : null;
     if (temp.gameOver) return;
@@ -162,16 +162,14 @@ class Opponent extends React.Component {
   processFloorRaise = (currentGame, previousGame) => {
     const { levelsRaised } = this.state;
     const {
-      socket:
-        {
-          temp:
+      temp:
           {
             gameInProgress:
             {
               info: { difficulty },
             },
           },
-        }, onFloorRaise, floorsRaisedOnOpp,
+      onFloorRaise, floorsRaisedOnOpp,
     } = this.props;
     const {
       points: { totalLinesCleared: previouslyClearedLines },
@@ -235,12 +233,12 @@ class Opponent extends React.Component {
   )
 
   render() {
-    const { difficulty, game, socket } = this.props;
-    if (!socket.temp) return null;
+    const { difficulty, game, temp } = this.props;
+    if (!temp) return null;
     return (
       <div className="opponentContainer">
         <OpponentDescription
-          socketState={socket}
+          socketState={temp}
           difficulty={difficulty}
           setDifficulty={this.setDifficulty}
           requestInvite={sId => this.requestInvite(sId)}
@@ -262,7 +260,7 @@ class Opponent extends React.Component {
 
 Opponent.defaultProps = {
   game: {}, // client game in redux store
-  socket: {}, // socket info in redux store
+  temp: null, // socket info in redux store
   onFloorRaise: null,
   onReset: null, // callback to main game
   onSetDifficulty: null,
@@ -273,7 +271,7 @@ Opponent.defaultProps = {
   floorsRaisedOnOpp: null,
 };
 Opponent.propTypes = {
-  socket: PropTypes.objectOf(PropTypes.any),
+  temp: PropTypes.objectOf(PropTypes.any),
   game: PropTypes.objectOf(PropTypes.any),
   difficulty: PropTypes.number,
   onFloorRaise: PropTypes.func,

@@ -53,8 +53,15 @@ const gamePlay = (socket, callback) => {
     console.log('Invitation Sent', data);
     const currentlyLoggedIn = [...utility.getUsers()];
     const { sentTo, difficulty } = data;
-    const invitationSender = currentlyLoggedIn.filter(user => user.socketId === socket.id)[0];
-    const invitationReciever = currentlyLoggedIn.filter(user => user.socketId === sentTo)[0];
+    const invitationSender = utility.findUserBySocketId(socket.id);
+    const invitationReciever = utility.findUserBySocketId(sentTo);
+    if (!invitationReciever) {
+      console.log(`Receiver - ${sentTo} - not found!`);
+      callback(null, {
+        operation: 'revokeInvite',
+      });
+      return;
+    }
     const { displayname, socketId } = invitationSender;
     const { displayname: displaynameReciever, socketId: socketIdReciever } = invitationReciever;
 
@@ -142,6 +149,14 @@ const gamePlay = (socket, callback) => {
   socket.on(START_GAME, (data) => {
     const currentlyLoggedIn = [...utility.getUsers()];
     const { opponentInfo, clientScreen } = data;
+    const opponentExists = utility.findUserBySocketId(opponentInfo.opponentSID);
+    if (!opponentExists) {
+      console.log(`Opponent - ${opponentInfo.opponentSID} - not found, aborting game!`);
+      callback(null, {
+        operation: 'revokeInvite',
+      });
+      return;
+    }
     currentlyLoggedIn.forEach(
       (user) => {
         // remove game pending status

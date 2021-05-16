@@ -79,6 +79,7 @@ const Controls = ({
         <span>{game.points.totalLinesCleared}</span>
         <span>Level</span>
         <span>{game.points.level}</span>
+        <span>Single Player Mode</span>
       </div>
 
     );
@@ -107,6 +108,7 @@ const Controls = ({
       <span>{game.points.totalLinesCleared}</span>
       <span>Difficulty</span>
       <span>{difficulty}</span>
+      <span>Multi Player Mode</span>
       {
         socketId
           ? <span className="controls__socket">{socketId}</span>

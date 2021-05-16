@@ -3,19 +3,21 @@ import PropTypes from 'prop-types';
 /* font awesome */
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  Box, ButtonGroup, Button, CircularProgress,
+} from '@material-ui/core';
+import {
   faSyncAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import './styles/opponentdescription.scss';
 
 /* opponent top part of component */
 const OpponentDescription = ({
-  socketState,
+  socketState: temp,
   difficulty,
   setDifficulty,
   requestInvite,
   getPool,
 }) => {
-  const { temp } = socketState;
   const {
     opponents, invitationTo, declinedInvitation,
     acceptedInvitation, gameInProgress, gameOver,
@@ -35,31 +37,51 @@ const OpponentDescription = ({
   }
   // stage 2 - logged in opponents in multiplayer mode found, display invitation buttons
   if (opponents && opponents.length) {
-    const players = socketState.temp.opponents.map(p => (
-      <button
-        type="submit"
-        className="opponentContainer__opponentDescription__playersbutton"
-        key={p.socketId}
-        onClick={() => requestInvite(p.socketId)}
+    const players = (
+      <ButtonGroup
+        orientation="vertical"
+        color="primary"
+        aria-label="vertical outlined primary button group"
       >
-        {p.displayname.split(' ')[0]}
-      </button>
-    ));
+        {temp.opponents.map(p => (
+          <Button
+            type="submit"
+            key={p.socketId}
+            variant="contained"
+            size="large"
+            onClick={() => requestInvite(p.socketId)}
+          >
+            {p.displayname.split(' ')[0]}
+          </Button>
+        ))}
+      </ButtonGroup>
+    );
     return (
-      <div className="opponentContainer__opponentDescription">
+      <Box className="opponentContainer__opponentDescription">
         <p className="writing">Difficulty</p>
-        <div className="opponentContainer__opponentDescription_diffButtons">
+        <ButtonGroup color="primary" aria-label="outlined primary button group">
           {
             [1, 2, 3, 4].map(d => (
-              d === difficulty
-                ? <span key={d} className="opponentContainer__opponentDescription_diffButtons_dot_highlight" role="button" onClick={() => setDifficulty(d)} onKeyDown={() => {}} tabIndex={0}>{d}</span>
-                : <span key={d} className="opponentContainer__opponentDescription_diffButtons_dot" role="button" onClick={() => setDifficulty(d)} onKeyDown={() => {}} tabIndex={0}>{d}</span>
+              <Button
+                key={d}
+                role="button"
+                onClick={() => setDifficulty(d)}
+                onKeyDown={() => {}}
+                tabIndex={0}
+                style={{
+                  maxWidth: 35, maxHeight: 35, minWidth: 35, minHeight: 35,
+                }}
+                variant={d === difficulty ? 'contained' : 'outlined'}
+                size="small"
+              >
+                {d}
+              </Button>
             ))
           }
-        </div>
+        </ButtonGroup>
         <p className="writing">Invite</p>
         {players}
-      </div>
+      </Box>
     );
   }
   // display pending invitation for the requester
@@ -69,8 +91,8 @@ const OpponentDescription = ({
         <div className="opponentContainer__opponentDescription__invitation">
           <p className="writing">Pending</p>
           <p className="writing">Invitation to</p>
-          <p className="writing">{socketState.temp.invitationTo.displaynameReciever.split(' ')[0]}</p>
-          <div className="loading" />
+          <p className="writing">{temp.invitationTo.displaynameReciever.split(' ')[0]}</p>
+          <CircularProgress />
         </div>
       </div>
     );
@@ -136,7 +158,7 @@ const OpponentDescription = ({
 
   return ( // to render on loading
     <div className="opponentContainer__opponentDescription">
-      <div className="loading" />
+      <CircularProgress style={{ marginTop: 80 }} />
     </div>
   );
 };
