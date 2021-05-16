@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './styles/header.scss';
 import {
-  DialogTitle, Dialog, Button, ButtonGroup, Chip, Avatar, DialogContent,DialogActions
+  DialogTitle, Dialog, Button, ButtonGroup, Chip, Avatar, DialogContent, DialogActions,
 } from '@material-ui/core';
 
 const Invitation = ({
