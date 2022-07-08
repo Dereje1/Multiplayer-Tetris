@@ -1,4 +1,6 @@
 # Multiplayer-Tetris
+[![codecov](https://codecov.io/gh/Dereje1/Multiplayer-Tetris/branch/master/graph/badge.svg?token=GQQOCIL1ZR)](https://codecov.io/gh/Dereje1/Multiplayer-Tetris)
+
 A full stack tetris application that allows single player and multiplayer mode using socket.io
 ![tetris2](https://user-images.githubusercontent.com/23533048/55371177-3bce9780-54cb-11e9-8cb6-b89bf13c7884.png)
 
