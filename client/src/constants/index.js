@@ -39,6 +39,6 @@ module.exports = {
       FINISH_GAME: 'FINISH_GAME',
     },
     GAME_COUNTDOWN: 'GAME_COUNTDOWN',
-    CONNECTION: process.env.NODE_ENV === 'development' ? 'http://localhost:5000/' : process.env.PORT,
+    CONNECTION: process.env.NODE_ENV === 'development' ? 'http://localhost:5001/' : process.env.PORT,
   },
 };

@@ -4,7 +4,7 @@ const User = require('../models/user');
 const strategy = new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: '/auth/google/redirect',
+  callbackURL: process.env.GOOGLE_CALLBACK,
 }, (token, tokenSecret, profile, done) => {
   User.findOne({ 'google.id': profile.id }, (err, user) => {
     if (err) return done(err);
