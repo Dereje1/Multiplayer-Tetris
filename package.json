@@ -9,7 +9,9 @@
     "dev": "concurrently --kill-others-on-fail \"npm run devserver\" \"npm run devclient\"",
     "heroku-postbuild": "cd client && npm install --only=dev && npm install && npm run build",
     "test": "jest --watch",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "serverlint": "./node_modules/.bin/eslint server tests",
+    "clientlint": "./client/node_modules/.bin/eslint client"
   },
   "repository": "https://github.com/Dereje1/Multiplayer-Tetris.git",
   "author": "Dereje Getahun",
