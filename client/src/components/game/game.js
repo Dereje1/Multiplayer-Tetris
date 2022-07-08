@@ -342,7 +342,7 @@ class Game extends React.Component {
 
   checkWindowSize = () => {
     const { multiPlayer } = this.state;
-    const minHeight = 750;
+    const minHeight = 700;
     const minWidthSP = 585;
     const minWidthMP = 800;
     if (
