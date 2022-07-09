@@ -7,7 +7,7 @@
     "devserver": "nodemon ./bin/www",
     "devclient": "cd client && npm start",
     "dev": "concurrently --kill-others-on-fail \"npm run devserver\" \"npm run devclient\"",
-    "heroku-postbuild": "cd client && npm install --only=dev && npm install && cd.. && npm dedupe && npm i && cd client && npm run build",
+    "heroku-postbuild": "cd client && npm install --only=dev && npm install && cd .. && npm dedupe && npm i && cd client && npm run build",
     "test": "jest --watch",
     "coverage": "jest --coverage",
     "serverlint": "./node_modules/.bin/eslint server tests",
