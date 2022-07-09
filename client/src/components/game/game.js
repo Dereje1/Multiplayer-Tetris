@@ -144,7 +144,7 @@ class Game extends React.Component {
     this.canvasContextMinor = canvasMinor.getContext('2d');
     this.canvasMajor.current.focus();
     this.setState({ canvasLoaded: true });
-  }
+  };
 
   resetBoard = (config) => {
     const { game, GameActions: Action } = this.props;
@@ -161,7 +161,7 @@ class Game extends React.Component {
       },
     };
     boardReset(resetObject);
-  }
+  };
 
   startTick = async (makeNewShape = true) => {
     const { GameActions: Action } = this.props;
@@ -177,7 +177,7 @@ class Game extends React.Component {
       this.setState({ requestAnimation: true });
       this.animationId = requestAnimationFrame(this.tick);
     }, 50);
-  }
+  };
 
   tick = (timeStamp) => {
     const { lastRefresh, requestAnimation, updateFloor } = this.state;
@@ -195,13 +195,13 @@ class Game extends React.Component {
     // recursively call tick if animation state is still on,
     // there maybe a little slippage before it turns off
     if (requestAnimation) this.animationId = requestAnimationFrame(this.tick);
-  }
+  };
 
   endTick = (sentBy) => {
     if (process.env.NODE_ENV === 'development') console.log(sentBy);
     this.setState({ requestAnimation: false });
     cancelAnimationFrame(this.animationId);
-  }
+  };
 
   // get the next shape ypos
   positionForecast = () => {
@@ -209,7 +209,7 @@ class Game extends React.Component {
     const copyOfActiveShape = Object.assign({}, game.activeShape);
     copyOfActiveShape.yPosition += game.activeShape.unitBlockSize;
     return copyOfActiveShape;
-  }
+  };
 
   newShape = () => {
     // draw next shape on minor and send data of current shape to starttick()
@@ -230,7 +230,7 @@ class Game extends React.Component {
       rubble: game.rubble,
     };
     return data;
-  }
+  };
 
   moveShape = (newPosition = this.positionForecast()) => {
     const { game, GameActions: Action } = this.props;
@@ -266,7 +266,7 @@ class Game extends React.Component {
       if (game.activeShape.cells.length) this.startTick(false);
       else this.resetBoard({});
     } else this.endTick('Manual Pause');
-  }
+  };
 
   floorRaise = (f) => {
     const { game, GameActions: Action } = this.props;
@@ -287,7 +287,7 @@ class Game extends React.Component {
     } else {
       Action(RAISE_FLOOR, game.rubble, { raiseBy: f });
     }
-  }
+  };
 
   gamePlay = (e) => {
     const { game } = this.props;
@@ -300,7 +300,7 @@ class Game extends React.Component {
         this.moveShape(ans);
       }
     }
-  }
+  };
 
   arrowKeyLag = e => (e.keyCode === 40 ? this.startTick(false) : null);
 
@@ -316,7 +316,7 @@ class Game extends React.Component {
         multiPlayer: !multiPlayer,
       }, () => this.resetBoard({ reStart: false }));
     }
-  }
+  };
 
   gameOver = (opponentInfo = null) => {
     const { multiPlayer } = this.state;
@@ -338,7 +338,7 @@ class Game extends React.Component {
     }, () => this.resetBoard({
       reStart: false, keepFloor: false, gameover: true, opponent,
     }));
-  }
+  };
 
   checkWindowSize = () => {
     const { multiPlayer } = this.state;
@@ -351,7 +351,7 @@ class Game extends React.Component {
         || (window.innerHeight < minHeight)
     ) this.setState({ windowTooSmall: true });
     else this.setState({ windowTooSmall: null }, () => this.loadCanvas());
-  }
+  };
 
   render() {
     const { game, socket } = this.props;

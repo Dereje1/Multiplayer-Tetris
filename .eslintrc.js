@@ -1,26 +1,22 @@
 /* istanbul ignore file */
 module.exports = {
-    'env': {
+    env: {
       'browser': true,
       'commonjs': true,
       'es6': true,
       'node': true,
       'jest': true
     },
-    'extends': [
+    extends: [
       'airbnb',
       'plugin:react/recommended',
     ],
-    parser: 'babel-eslint',
-    'plugins': [
+    parser: '@babel/eslint-parser',
+    plugins: [
       'react'
     ],
-    'rules': {
-      'import/first': [
-        'error',
-        'DISABLE-absolute-first'
-      ],
-      'indent': [
+    rules: {
+      indent: [
         'error',
         2,
         { 'SwitchCase': 1 }

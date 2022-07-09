@@ -34,7 +34,7 @@ const Invitation = ({
             onClick={() => onAcceptInvite()}
             style={{ marginLeft: 10, marginBottom: 20, background: 'green' }}
           >
-        Accept
+            Accept
           </Button>
           <Button
             variant="contained"
@@ -42,7 +42,7 @@ const Invitation = ({
             onClick={() => onDeclineInvite()}
             style={{ marginLeft: 50, marginBottom: 20, background: 'red' }}
           >
-        Decline
+            Decline
           </Button>
         </ButtonGroup>
       </DialogActions>

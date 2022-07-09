@@ -66,7 +66,7 @@ class Header extends React.Component {
       SEND_LOGGED_IN_USER,
       payloadToSend,
     );
-  }
+  };
 
   logOutUser = async () => {
     const { getUser: getUserStatus } = this.props;
@@ -75,7 +75,7 @@ class Header extends React.Component {
     user.profile.remove = true;
     clientEmitter(USER_LOGGED_OUT, user.profile);
     window.location.assign('/auth/logout');
-  }
+  };
 
   declineInvite = () => {
     const { socket: { temp } } = this.props;
@@ -86,13 +86,13 @@ class Header extends React.Component {
   acceptInvite = () => {
     const { socket } = this.props;
     this.setState({ inviteAccepted: true }, () => clientEmitter(INVITATION_ACCEPTED, socket.temp));
-  }
+  };
 
   audioPlayer = () => (
     <audio ref={this.audio} src={soundFile}>
       <track kind="captions" />
     </audio>
-  )
+  );
 
   render() {
     const { inviteReceived, inviteAccepted } = this.state;
@@ -152,10 +152,12 @@ Header.propTypes = {
   getUser: PropTypes.func.isRequired,
   socket: PropTypes.shape({
     usersLoggedIn: PropTypes.number,
+    temp: PropTypes.objectOf(PropTypes.any),
   }),
   user: PropTypes.shape({
     profile: PropTypes.shape({
       authenticated: PropTypes.bool.isRequired,
+      remove: PropTypes.bool,
     }),
   }),
   location: PropTypes.shape({

@@ -36,7 +36,7 @@ class Menu extends React.Component {
   openMenu = (e) => {
     this.setState({ showMenu: true });
     e.stopPropagation();
-  }
+  };
 
   closeMenu = () => {
     const { showMenu } = this.state;
@@ -47,12 +47,12 @@ class Menu extends React.Component {
         this.setState({ showMenu: false, delay: false });
       }, 475);
     });
-  }
+  };
 
   testCurrentPath = (path) => {
     const { location: { pathname: currentPath } } = this.props;
     if (path === currentPath) this.closeMenu();
-  }
+  };
 
   render() {
     const { showMenu, delay } = this.state;

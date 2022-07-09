@@ -24,11 +24,11 @@ const initialState = { // determine what needs to go into state, a very small po
     level: 0,
     levelUp: 5,
   },
-  rubble: {// all screen info of rubble
+  rubble: { // all screen info of rubble
     occupiedCells: [],
     winRows: null,
   },
-  activeShape: {// all geometric info of active shape
+  activeShape: { // all geometric info of active shape
     name: 'shapeZ',
     unitBlockSize: 30,
     xPosition: 0,

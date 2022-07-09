@@ -137,7 +137,7 @@ class Opponent extends React.Component {
     canvasOpponent.style.backgroundColor = 'black';
     this.canvasOpponentContext = canvasOpponent.getContext('2d');
     this.canvasOpponentContext.canvas.hidden = true;
-  }
+  };
 
   // called on every game object change
   setGame = (opponentScreen, prevOpponentScreen) => {
@@ -151,12 +151,12 @@ class Opponent extends React.Component {
     if (this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = false;
     opp.activeShape.unitBlockSize /= 2;
     drawShape(this.canvasOpponentContext, opp, true);
-  }
+  };
 
   setDifficulty = (val) => {
     const { onSetDifficulty } = this.props;
     onSetDifficulty(val);
-  }
+  };
 
   // test if a floor raise is warranted
   processFloorRaise = (currentGame, previousGame) => {
@@ -210,27 +210,27 @@ class Opponent extends React.Component {
       const storeForOpponent = totalRaisedByOpponent - (raiseOnClient * amountNeededForRaise);
       this.setState({ levelsRaised: storeForOpponent }, () => onFloorRaise(Number(raiseOnClient)));
     } else this.setState({ levelsRaised: totalRaisedByOpponent });
-  }
+  };
 
   /* process socket-out-going below */
   requestInvite = (sentTo) => {
     const { difficulty } = this.props;
     clientEmitter(INVITATION_SENT, { sentTo, difficulty });
-  }
+  };
 
   resetMultiplayer = () => {
     const { onReset } = this.props;
     onReset({ reStart: false });
     clientEmitter(LOOK_FOR_OPPONENTS, null);
     if (!this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = true;
-  }
+  };
   /* done sockets */
 
   audioPlayer = () => (
     <audio ref={(input) => { this.audio = input; }} src={soundFile}>
       <track kind="captions" />
     </audio>
-  )
+  );
 
   render() {
     const { difficulty, game, temp } = this.props;

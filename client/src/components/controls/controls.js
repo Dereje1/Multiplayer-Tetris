@@ -73,7 +73,7 @@ const Controls = ({
           type="submit"
           onClick={() => onFloorRaise()}
         >
-          {'Raise Floor'}
+          Raise Floor
         </button>
         <span>Lines Cleared</span>
         <span>{game.points.totalLinesCleared}</span>

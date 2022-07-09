@@ -50,7 +50,7 @@ class Profile extends React.Component {
     } catch {
       console.log('Error fetching user Data');
     }
-  }
+  };
 
   crunchData = (userData) => {
     const { user } = this.props;
@@ -70,7 +70,7 @@ class Profile extends React.Component {
     obj.averageLevel = Math.floor(avLevel);
     // ready to render after set state
     this.setState({ userData, computedData: obj });
-  }
+  };
 
   getRecentMatches = () => {
     // displays the last 4 mathces user played
@@ -101,7 +101,7 @@ class Profile extends React.Component {
         {recent}
       </React.Fragment>
     );
-  }
+  };
 
   getRecentGames = () => {
     // displays last 4 games user played
@@ -127,7 +127,7 @@ class Profile extends React.Component {
         {recent}
       </React.Fragment>
     );
-  }
+  };
 
   generateMatchDetail = () => {
     // displays a match detail
@@ -158,7 +158,7 @@ class Profile extends React.Component {
         />
       </React.Fragment>
     );
-  }
+  };
 
   generateSingleDetail = () => {
     const { detail } = this.state;
@@ -176,7 +176,7 @@ class Profile extends React.Component {
         />
       </React.Fragment>
     );
-  }
+  };
 
   overView = () => {
     const { userData, computedData } = this.state;
@@ -204,7 +204,7 @@ class Profile extends React.Component {
         </div>
       </div>
     );
-  }
+  };
 
   detailView = () => {
     const { detail } = this.state;
@@ -222,7 +222,7 @@ class Profile extends React.Component {
         }
       </div>
     );
-  }
+  };
 
   render() {
     const { userData, detail } = this.state;
@@ -250,6 +250,7 @@ Profile.propTypes = {
   user: PropTypes.shape({
     profile: PropTypes.shape({
       displayname: PropTypes.string,
+      username: PropTypes.string,
     }),
   }),
 };
