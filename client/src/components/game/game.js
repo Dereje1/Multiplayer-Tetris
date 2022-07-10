@@ -359,9 +359,11 @@ class Game extends React.Component {
       difficulty, multiPlayer, inGameToggle,
       buttonPause, floorsRaised, windowTooSmall,
     } = this.state;
-    if (Object.keys(game).length && !windowTooSmall) {
-      return (
-        <div className="democontainer">
+    return(
+      <div id="landing">
+        {
+          Object.keys(game).length && !windowTooSmall ?
+          <div className="democontainer">
           <Controls
             minorCanvas={this.canvasMinor}
             game={game}
@@ -400,10 +402,11 @@ class Game extends React.Component {
           }
           <Audio {...this.audioProps()} />
         </div>
-      );
-    }
-    if (windowTooSmall) return <div id="smallwindow" />;
-    return null;
+        :
+        <div id="smallwindow" />
+        }
+      </div>
+    )
   }
 
 }
