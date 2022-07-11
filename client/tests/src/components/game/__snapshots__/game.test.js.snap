@@ -9,3 +9,260 @@ exports[`The Game will display message for small screen sizes 1`] = `
   />
 </div>
 `;
+
+exports[`The Game will display the game for allowed screen sizes 1`] = `
+<div
+  id="landing"
+>
+  <div
+    className="democontainer"
+  >
+    <Controls
+      allowMultiPlayer={false}
+      difficulty={2}
+      game={
+        Object {
+          "activeShape": Object {
+            "absoluteVertices": Array [],
+            "boundingBox": Array [],
+            "cells": Array [],
+            "name": "shapeZ",
+            "rotationStage": 0,
+            "unitBlockSize": 30,
+            "unitVertices": Array [],
+            "xPosition": 0,
+            "yPosition": 0,
+          },
+          "canvas": Object {
+            "canvasMajor": Object {
+              "height": 600,
+              "width": 300,
+            },
+            "canvasMinor": Object {
+              "height": 150,
+              "width": 210,
+            },
+          },
+          "nextShape": "",
+          "paused": true,
+          "points": Object {
+            "level": 0,
+            "levelUp": 5,
+            "totalLinesCleared": 0,
+          },
+          "rubble": Object {
+            "boundaryCells": Array [
+              "0-20",
+              "1-20",
+              "2-20",
+              "3-20",
+              "4-20",
+              "5-20",
+              "6-20",
+              "7-20",
+              "8-20",
+              "9-20",
+            ],
+            "occupiedCells": Array [],
+            "winRows": null,
+          },
+          "timerInterval": 700,
+        }
+      }
+      minorCanvas={
+        Object {
+          "current": Object {
+            "focus": [MockFunction] {
+              "calls": Array [
+                Array [],
+                Array [],
+                Array [],
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+            "getContext": [Function],
+            "style": Object {
+              "backgroundColor": "black",
+            },
+          },
+        }
+      }
+      multiPlayer={
+        Array [
+          false,
+          false,
+        ]
+      }
+      onFloorRaise={[Function]}
+      onMultiPlayer={[Function]}
+      onReset={[Function]}
+      onhandlePause={[Function]}
+      pauseButtonState={true}
+      socketId=""
+    />
+    <canvas
+      height={600}
+      onKeyDown={[Function]}
+      onKeyUp={[Function]}
+      tabIndex="0"
+      width={300}
+    />
+    <Audio
+      clearAudio={
+        Object {
+          "current": Object {
+            "focus": [MockFunction] {
+              "calls": Array [
+                Array [],
+                Array [],
+                Array [],
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+            "getContext": [Function],
+            "style": Object {},
+          },
+        }
+      }
+      looserAudio={
+        Object {
+          "current": Object {
+            "focus": [MockFunction] {
+              "calls": Array [
+                Array [],
+                Array [],
+                Array [],
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+            "getContext": [Function],
+            "style": Object {},
+          },
+        }
+      }
+      maxClearAudio={
+        Object {
+          "current": Object {
+            "focus": [MockFunction] {
+              "calls": Array [
+                Array [],
+                Array [],
+                Array [],
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+            "getContext": [Function],
+            "style": Object {},
+          },
+        }
+      }
+      winnerAudio={
+        Object {
+          "current": Object {
+            "focus": [MockFunction] {
+              "calls": Array [
+                Array [],
+                Array [],
+                Array [],
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
+            "getContext": [Function],
+            "style": Object {},
+          },
+        }
+      }
+    />
+  </div>
+</div>
+`;
