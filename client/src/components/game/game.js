@@ -42,7 +42,7 @@ const mapStateToProps = state => state;
 const actionCreators = {
   GameActions,
 };
-class Game extends React.Component {
+export class Game extends React.Component {
 
   constructor(props) {
     super(props);
@@ -408,7 +408,6 @@ class Game extends React.Component {
       </div>
     )
   }
-
 }
 
 Game.defaultProps = {

@@ -1,4 +1,4 @@
-import util from '../../../server/socket/utility';
+import util from '../../socket/utility';
 
 describe('The socket utility functions', () => {
   test('set users', () => {

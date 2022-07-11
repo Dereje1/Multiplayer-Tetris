@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The Game will display message for small screen sizes 1`] = `
+<div
+  id="landing"
+>
+  <div
+    id="smallwindow"
+  />
+</div>
+`;
