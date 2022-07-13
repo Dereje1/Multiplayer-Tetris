@@ -183,10 +183,7 @@ export class Game extends React.Component {
     const { lastRefresh, requestAnimation, updateFloor } = this.state;
     const { game } = this.props;
     // console.log(timeStamp);
-
-    console.dir({ lastRefresh, timeStamp, updateFloor })
     if ((timeStamp - lastRefresh) >= game.timerInterval) {
-      console.log('howdy')
       if (updateFloor) drawFloor(game, this.canvasContextMajor);
       this.setState({
         lastRefresh: timeStamp,
@@ -201,7 +198,6 @@ export class Game extends React.Component {
   };
 
   endTick = (sentBy) => {
-    console.log('In end tick')
     if (process.env.NODE_ENV === 'development') console.log(sentBy);
     this.setState({ requestAnimation: false });
     cancelAnimationFrame(this.animationId);

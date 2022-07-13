@@ -7,7 +7,6 @@ import toJson from 'enzyme-to-json';
 import { Game } from '../../../../src/components/game/game';
 
 jest.useFakeTimers();
-jest.spyOn(global, 'setTimeout');
 const gameStub = {
     "timerInterval": 700,
     "paused": true,
@@ -55,51 +54,52 @@ const gameStub = {
         "cells": []
     }
 }
+const getRefSpy = () => jest.spyOn(React, "createRef").mockImplementation(() => ({
+    current: {
+        style: {},
+        getContext: () => ({
+            canvas: {
+                width: gameStub.canvas.canvasMajor.width,
+                height: gameStub.canvas.canvasMajor.height
+            },
+            clearRect: jest.fn(),
+            fillRect: jest.fn(),
+            beginPath: jest.fn(),
+            rect: jest.fn(),
+            stroke: jest.fn(),
+            moveTo: jest.fn(),
+            lineTo: jest.fn(),
+            fill: jest.fn()
+        }),
+        focus: jest.fn()
+    }
+}))
 
-describe('The Game', () => {
+const getRequestAnimationFrameSpy = (start, end) => jest.spyOn(window, 'requestAnimationFrame').mockImplementation(cb => {
+    start++
+    if (start < end) {
+        cb(start)
+    } else {
+        return null;
+    }
+});
+
+describe('The Game component', () => {
     let props;
     let useRefSpy;
-    const focus = jest.fn();
-    let counter = 698;
     beforeEach(() => {
         props = {
             GameActions: jest.fn(),
             game: gameStub
         }
-        useRefSpy = jest.spyOn(React, "createRef").mockImplementation(() => ({
-            current: {
-                style: {},
-                getContext: () => ({
-                    canvas: {
-                        width: gameStub.canvas.canvasMajor.width,
-                        height: gameStub.canvas.canvasMajor.height
-                    },
-                    clearRect: jest.fn(),
-                    fillRect: jest.fn(),
-                    beginPath: jest.fn(),
-                    rect: jest.fn(),
-                    stroke: jest.fn(),
-                    moveTo: jest.fn(),
-                    lineTo: jest.fn(),
-                    fill: jest.fn()
-                }),
-                focus
-            }
-        }))
-        jest.spyOn(window, 'requestAnimationFrame').mockImplementation(cb => {
-            counter++
-            if (counter < 702) {
-                cb(counter)
-            } else {
-                return null;
-            }
-        });
+        useRefSpy = getRefSpy();
         global.innerWidth = 1000;
         global.innerHeight = 1000;
     })
     afterEach(() => {
         props = null
         useRefSpy = null;
+        jest.clearAllMocks();
     })
     test('will display message for small screen sizes', () => {
         global.innerWidth = 100;
@@ -112,10 +112,115 @@ describe('The Game', () => {
         expect(toJson(wrapper)).toMatchSnapshot();
     });
     test('will start the game', async () => {
+        getRequestAnimationFrameSpy(698, 702);
         const wrapper = shallow(<Game {...props} />);
         expect(wrapper.state().lastRefresh).toBe(0)
         await wrapper.instance().handlePause()
         jest.advanceTimersByTime(50);
         expect(wrapper.state().lastRefresh).toBe(700)
     });
+    test('will set state to multiplayer mode if an inviation is sent', () => {
+        const propsToUpdate = {
+            ...props,
+            socket: {
+                temp: { invitationFrom: 'stub invite' },
+            }
+
+        };
+        const wrapper = shallow(<Game {...propsToUpdate} />);
+        expect(wrapper.state().multiPlayer).toBe(true);
+    });
 });
+
+describe('Component updates (CDU)', () => {
+    let props;
+    let useRefSpy;
+    beforeEach(() => {
+        props = {
+            GameActions: jest.fn(),
+            game: gameStub
+        }
+        useRefSpy = getRefSpy();
+        global.innerWidth = 1000;
+        global.innerHeight = 1000;
+    })
+    afterEach(() => {
+        props = null
+        useRefSpy = null;
+        jest.clearAllMocks();
+    })
+    test('will return undefined if game object missing', () => {
+        const prevProps = {
+            ...props,
+            game: {}
+        }
+        const wrapper = shallow(<Game {...props} />);
+        const ans = wrapper.instance().componentDidUpdate(prevProps);
+        expect(ans).toBe(undefined)
+    })
+
+    test('will update canvas loaded state', () => {
+        const wrapper = shallow(<Game {...props} />);
+        wrapper.setState({ canvasLoaded: false })
+        expect(wrapper.state().canvasLoaded).toBe(true)
+        expect(props.GameActions).toHaveBeenNthCalledWith(1, "INITIALIZE_GAME", 1, true)
+    })
+
+    test('will speed game up on level increase in single player mode', () => {
+        const updatedProps = {
+            ...props,
+            game: {
+                ...props.game,
+                points: {
+                    ...props.game.points,
+                    level: 1
+                }
+            }
+        }
+        const wrapper = shallow(<Game {...updatedProps} />);
+        wrapper.instance().componentDidUpdate(props);
+        expect(props.GameActions).toHaveBeenNthCalledWith(2, "LEVEL_UP", 50)
+    })
+
+    test('will set state to multiplayer mode if an inviation has been accepted', () => {
+        const propsToUpdate = {
+            ...props,
+            socket: {
+                temp: { acceptedInvitation: true },
+            }
+
+        };
+        const wrapper = shallow(<Game {...propsToUpdate} />);
+        expect(wrapper.state().multiPlayer).toBe(false);
+        const prevProps = {
+            ...props,
+            socket: {
+                temp: { acceptedInvitation: false },
+            }
+
+        };
+        wrapper.instance().componentDidUpdate(prevProps);
+        expect(wrapper.state().multiPlayer).toBe(true);
+    });
+
+    test('will set multiplayer mode state off if opponent has unmounted', () => {
+        const oldProps = {
+            ...props,
+            socket: {
+                temp: { invitationFrom: 'stub invite' },
+            }
+
+        };
+        const wrapper = shallow(<Game {...oldProps} />);
+        expect(wrapper.state().multiPlayer).toBe(true);
+        const newProps = {
+            ...props,
+            socket: {
+                temp: null,
+            }
+
+        };
+        wrapper.setProps({...newProps});
+        expect(wrapper.state().multiPlayer).toBe(false);
+    });
+})
