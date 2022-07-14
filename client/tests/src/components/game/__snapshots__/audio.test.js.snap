@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The audio will set the Audio component 1`] = `
+Array [
+  <audio
+    key="winnerAudio"
+    src={
+      Object {
+        "canInstrument": true,
+        "createTransformer": [Function],
+        "getCacheKey": [Function],
+        "getCacheKeyAsync": [Function],
+        "process": [Function],
+        "processAsync": [Function],
+      }
+    }
+  >
+    <track
+      kind="captions"
+    />
+  </audio>,
+  <audio
+    key="looserAudio"
+    src={
+      Object {
+        "canInstrument": true,
+        "createTransformer": [Function],
+        "getCacheKey": [Function],
+        "getCacheKeyAsync": [Function],
+        "process": [Function],
+        "processAsync": [Function],
+      }
+    }
+  >
+    <track
+      kind="captions"
+    />
+  </audio>,
+  <audio
+    key="clearAudio"
+    src={
+      Object {
+        "canInstrument": true,
+        "createTransformer": [Function],
+        "getCacheKey": [Function],
+        "getCacheKeyAsync": [Function],
+        "process": [Function],
+        "processAsync": [Function],
+      }
+    }
+  >
+    <track
+      kind="captions"
+    />
+  </audio>,
+  <audio
+    key="maxClearAudio"
+    src={
+      Object {
+        "canInstrument": true,
+        "createTransformer": [Function],
+        "getCacheKey": [Function],
+        "getCacheKeyAsync": [Function],
+        "process": [Function],
+        "processAsync": [Function],
+      }
+    }
+  >
+    <track
+      kind="captions"
+    />
+  </audio>,
+]
+`;

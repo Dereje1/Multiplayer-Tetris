@@ -72,7 +72,32 @@ exports[`The Game component will display the game for allowed screen sizes 1`] =
       minorCanvas={
         Object {
           "current": Object {
-            "focus": [MockFunction],
+            "focus": [MockFunction] {
+              "calls": Array [
+                Array [],
+                Array [],
+                Array [],
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
             "getContext": [Function],
             "style": Object {
               "backgroundColor": "black",
@@ -104,7 +129,32 @@ exports[`The Game component will display the game for allowed screen sizes 1`] =
       clearAudio={
         Object {
           "current": Object {
-            "focus": [MockFunction],
+            "focus": [MockFunction] {
+              "calls": Array [
+                Array [],
+                Array [],
+                Array [],
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
             "getContext": [Function],
             "style": Object {},
           },
@@ -113,7 +163,32 @@ exports[`The Game component will display the game for allowed screen sizes 1`] =
       looserAudio={
         Object {
           "current": Object {
-            "focus": [MockFunction],
+            "focus": [MockFunction] {
+              "calls": Array [
+                Array [],
+                Array [],
+                Array [],
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
             "getContext": [Function],
             "style": Object {},
           },
@@ -122,7 +197,32 @@ exports[`The Game component will display the game for allowed screen sizes 1`] =
       maxClearAudio={
         Object {
           "current": Object {
-            "focus": [MockFunction],
+            "focus": [MockFunction] {
+              "calls": Array [
+                Array [],
+                Array [],
+                Array [],
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
             "getContext": [Function],
             "style": Object {},
           },
@@ -131,7 +231,32 @@ exports[`The Game component will display the game for allowed screen sizes 1`] =
       winnerAudio={
         Object {
           "current": Object {
-            "focus": [MockFunction],
+            "focus": [MockFunction] {
+              "calls": Array [
+                Array [],
+                Array [],
+                Array [],
+                Array [],
+              ],
+              "results": Array [
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+                Object {
+                  "type": "return",
+                  "value": undefined,
+                },
+              ],
+            },
             "getContext": [Function],
             "style": Object {},
           },
