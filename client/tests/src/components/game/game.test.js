@@ -5,57 +5,12 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 import { Game } from '../../../../src/components/game/game';
+import { gameStub } from '../../../stub';
 
 jest.useFakeTimers();
 const fillText = jest.fn()
-const focus= jest.fn()
-const gameStub = {
-    "timerInterval": 700,
-    "paused": true,
-    "nextShape": "",
-    "canvas": {
-        "canvasMajor": {
-            "width": 300,
-            "height": 600
-        },
-        "canvasMinor": {
-            "width": 210,
-            "height": 150
-        }
-    },
-    "points": {
-        "totalLinesCleared": 0,
-        "level": 0,
-        "levelUp": 5
-    },
-    "rubble": {
-        "occupiedCells": [],
-        "winRows": null,
-        "boundaryCells": [
-            "0-20",
-            "1-20",
-            "2-20",
-            "3-20",
-            "4-20",
-            "5-20",
-            "6-20",
-            "7-20",
-            "8-20",
-            "9-20"
-        ]
-    },
-    "activeShape": {
-        "name": "shapeZ",
-        "unitBlockSize": 30,
-        "xPosition": 0,
-        "yPosition": 0,
-        "unitVertices": [],
-        "absoluteVertices": [],
-        "boundingBox": [],
-        "rotationStage": 0,
-        "cells": []
-    }
-}
+const focus = jest.fn()
+
 const getRefSpy = () => jest.spyOn(React, "createRef").mockImplementation(() => ({
     current: {
         style: {},
