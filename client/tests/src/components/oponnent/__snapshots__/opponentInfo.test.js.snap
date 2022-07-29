@@ -1,0 +1,384 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The opponent info will render loading wheel for all other states 1`] = `
+<div
+  className="opponentContainer__opponentDescription"
+>
+  <WithStyles(ForwardRef(CircularProgress))
+    style={
+      Object {
+        "marginTop": 80,
+      }
+    }
+  />
+</div>
+`;
+
+exports[`The opponent info will render stage 1 1`] = `
+<div
+  className="opponentContainer__opponentDescription"
+>
+  <p
+    className="writing"
+  >
+    No opponents  
+  </p>
+  <FontAwesomeIcon
+    beat={false}
+    beatFade={false}
+    border={false}
+    bounce={false}
+    className="opponentContainer__opponentDescription__invitation_reload"
+    fade={false}
+    fixedWidth={false}
+    flip={false}
+    icon={
+      Object {
+        "icon": Array [
+          512,
+          512,
+          Array [],
+          "f2f1",
+          "M370.72 133.28C339.458 104.008 298.888 87.962 255.848 88c-77.458.068-144.328 53.178-162.791 126.85-1.344 5.363-6.122 9.15-11.651 9.15H24.103c-7.498 0-13.194-6.807-11.807-14.176C33.933 94.924 134.813 8 256 8c66.448 0 126.791 26.136 171.315 68.685L463.03 40.97C478.149 25.851 504 36.559 504 57.941V192c0 13.255-10.745 24-24 24H345.941c-21.382 0-32.09-25.851-16.971-40.971l41.75-41.749zM32 296h134.059c21.382 0 32.09 25.851 16.971 40.971l-41.75 41.75c31.262 29.273 71.835 45.319 114.876 45.28 77.418-.07 144.315-53.144 162.787-126.849 1.344-5.363 6.122-9.15 11.651-9.15h57.304c7.498 0 13.194 6.807 11.807 14.176C478.067 417.076 377.187 504 256 504c-66.448 0-126.791-26.136-171.315-68.685L48.97 471.03C33.851 486.149 8 475.441 8 454.059V320c0-13.255 10.745-24 24-24z",
+        ],
+        "iconName": "sync-alt",
+        "prefix": "fas",
+      }
+    }
+    inverse={false}
+    listItem={false}
+    mask={null}
+    maskId={null}
+    onClick={[Function]}
+    pull={null}
+    pulse={false}
+    rotation={null}
+    shake={false}
+    size={null}
+    spin={false}
+    spinPulse={false}
+    spinReverse={false}
+    swapOpacity={false}
+    symbol={false}
+    title=""
+    titleId={null}
+    transform={null}
+  />
+</div>
+`;
+
+exports[`The opponent info will render stage 2 1`] = `
+<Styled(MuiBox)
+  className="opponentContainer__opponentDescription"
+>
+  <p
+    className="writing"
+  >
+    Difficulty
+  </p>
+  <WithStyles(ForwardRef(ButtonGroup))
+    aria-label="outlined primary button group"
+    color="primary"
+  >
+    <WithStyles(ForwardRef(Button))
+      key="1"
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="button"
+      size="small"
+      style={
+        Object {
+          "maxHeight": 35,
+          "maxWidth": 35,
+          "minHeight": 35,
+          "minWidth": 35,
+        }
+      }
+      tabIndex={0}
+      variant="outlined"
+    >
+      1
+    </WithStyles(ForwardRef(Button))>
+    <WithStyles(ForwardRef(Button))
+      key="2"
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="button"
+      size="small"
+      style={
+        Object {
+          "maxHeight": 35,
+          "maxWidth": 35,
+          "minHeight": 35,
+          "minWidth": 35,
+        }
+      }
+      tabIndex={0}
+      variant="contained"
+    >
+      2
+    </WithStyles(ForwardRef(Button))>
+    <WithStyles(ForwardRef(Button))
+      key="3"
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="button"
+      size="small"
+      style={
+        Object {
+          "maxHeight": 35,
+          "maxWidth": 35,
+          "minHeight": 35,
+          "minWidth": 35,
+        }
+      }
+      tabIndex={0}
+      variant="outlined"
+    >
+      3
+    </WithStyles(ForwardRef(Button))>
+    <WithStyles(ForwardRef(Button))
+      key="4"
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="button"
+      size="small"
+      style={
+        Object {
+          "maxHeight": 35,
+          "maxWidth": 35,
+          "minHeight": 35,
+          "minWidth": 35,
+        }
+      }
+      tabIndex={0}
+      variant="outlined"
+    >
+      4
+    </WithStyles(ForwardRef(Button))>
+  </WithStyles(ForwardRef(ButtonGroup))>
+  <p
+    className="writing"
+  >
+    Invite
+  </p>
+  <WithStyles(ForwardRef(ButtonGroup))
+    aria-label="vertical outlined primary button group"
+    color="primary"
+    orientation="vertical"
+  >
+    <WithStyles(ForwardRef(Button))
+      key="stub-opponent-1-socketID"
+      onClick={[Function]}
+      size="large"
+      type="submit"
+      variant="contained"
+    >
+      stub
+    </WithStyles(ForwardRef(Button))>
+    <WithStyles(ForwardRef(Button))
+      key="stub-opponent-2-socketID"
+      onClick={[Function]}
+      size="large"
+      type="submit"
+      variant="contained"
+    >
+      stub
+    </WithStyles(ForwardRef(Button))>
+  </WithStyles(ForwardRef(ButtonGroup))>
+</Styled(MuiBox)>
+`;
+
+exports[`The opponent info will render stage 3A 1`] = `
+<div
+  className="opponentContainer__opponentDescription"
+>
+  <div
+    className="opponentContainer__opponentDescription__invitation"
+  >
+    <p
+      className="writing"
+    >
+      Pending
+    </p>
+    <p
+      className="writing"
+    >
+      Invitation to
+    </p>
+    <p
+      className="writing"
+    >
+      stub
+    </p>
+    <WithStyles(ForwardRef(CircularProgress)) />
+  </div>
+</div>
+`;
+
+exports[`The opponent info will render stage 3B 1`] = `
+<div
+  className="opponentContainer__opponentDescription"
+>
+  <div
+    className="opponentContainer__opponentDescription__invitation"
+  >
+    <p
+      className="writing"
+    >
+      Invitation
+    </p>
+    <p
+      className="writing"
+    >
+      Declined
+    </p>
+    <FontAwesomeIcon
+      beat={false}
+      beatFade={false}
+      border={false}
+      bounce={false}
+      className="opponentContainer__opponentDescription__invitation_reload"
+      fade={false}
+      fixedWidth={false}
+      flip={false}
+      icon={
+        Object {
+          "icon": Array [
+            512,
+            512,
+            Array [],
+            "f2f1",
+            "M370.72 133.28C339.458 104.008 298.888 87.962 255.848 88c-77.458.068-144.328 53.178-162.791 126.85-1.344 5.363-6.122 9.15-11.651 9.15H24.103c-7.498 0-13.194-6.807-11.807-14.176C33.933 94.924 134.813 8 256 8c66.448 0 126.791 26.136 171.315 68.685L463.03 40.97C478.149 25.851 504 36.559 504 57.941V192c0 13.255-10.745 24-24 24H345.941c-21.382 0-32.09-25.851-16.971-40.971l41.75-41.749zM32 296h134.059c21.382 0 32.09 25.851 16.971 40.971l-41.75 41.75c31.262 29.273 71.835 45.319 114.876 45.28 77.418-.07 144.315-53.144 162.787-126.849 1.344-5.363 6.122-9.15 11.651-9.15h57.304c7.498 0 13.194 6.807 11.807 14.176C478.067 417.076 377.187 504 256 504c-66.448 0-126.791-26.136-171.315-68.685L48.97 471.03C33.851 486.149 8 475.441 8 454.059V320c0-13.255 10.745-24 24-24z",
+          ],
+          "iconName": "sync-alt",
+          "prefix": "fas",
+        }
+      }
+      inverse={false}
+      listItem={false}
+      mask={null}
+      maskId={null}
+      onClick={[Function]}
+      pull={null}
+      pulse={false}
+      rotation={null}
+      shake={false}
+      size={null}
+      spin={false}
+      spinPulse={false}
+      spinReverse={false}
+      swapOpacity={false}
+      symbol={false}
+      title=""
+      titleId={null}
+      transform={null}
+    />
+  </div>
+</div>
+`;
+
+exports[`The opponent info will render stage 4 1`] = `
+<div
+  className="opponentContainer__opponentDescription"
+>
+  <div
+    className="opponentContainer__opponentDescription__Timer"
+  >
+    <h4>
+      GET READY
+    </h4>
+    <h4>
+      TO DUEL WITH:
+    </h4>
+    <p
+      className="timercountdown"
+    >
+      stub
+    </p>
+    <p
+      className="timercountdown"
+    >
+      in 7 s
+    </p>
+  </div>
+</div>
+`;
+
+exports[`The opponent info will render stage 5 1`] = `
+<div
+  className="opponentContainer__opponentDescription"
+>
+  <div
+    className="opponentContainer__opponentDescription__GamePlay"
+  >
+    <p
+      className="writing"
+    >
+      stub
+    </p>
+    <p
+      className="writing"
+    >
+      Lines Cleared
+    </p>
+    <p
+      className="opponentContainer__opponentDescription__GamePlay__linescleared"
+    >
+      0
+    </p>
+  </div>
+</div>
+`;
+
+exports[`The opponent info will render stage 6 1`] = `
+<div
+  className="opponentContainer__opponentDescription"
+>
+  <div
+    className="opponentContainer__opponentDescription__invitation"
+  >
+    <FontAwesomeIcon
+      beat={false}
+      beatFade={false}
+      border={false}
+      bounce={false}
+      className="opponentContainer__opponentDescription__invitation_reload"
+      fade={false}
+      fixedWidth={false}
+      flip={false}
+      icon={
+        Object {
+          "icon": Array [
+            512,
+            512,
+            Array [],
+            "f2f1",
+            "M370.72 133.28C339.458 104.008 298.888 87.962 255.848 88c-77.458.068-144.328 53.178-162.791 126.85-1.344 5.363-6.122 9.15-11.651 9.15H24.103c-7.498 0-13.194-6.807-11.807-14.176C33.933 94.924 134.813 8 256 8c66.448 0 126.791 26.136 171.315 68.685L463.03 40.97C478.149 25.851 504 36.559 504 57.941V192c0 13.255-10.745 24-24 24H345.941c-21.382 0-32.09-25.851-16.971-40.971l41.75-41.749zM32 296h134.059c21.382 0 32.09 25.851 16.971 40.971l-41.75 41.75c31.262 29.273 71.835 45.319 114.876 45.28 77.418-.07 144.315-53.144 162.787-126.849 1.344-5.363 6.122-9.15 11.651-9.15h57.304c7.498 0 13.194 6.807 11.807 14.176C478.067 417.076 377.187 504 256 504c-66.448 0-126.791-26.136-171.315-68.685L48.97 471.03C33.851 486.149 8 475.441 8 454.059V320c0-13.255 10.745-24 24-24z",
+          ],
+          "iconName": "sync-alt",
+          "prefix": "fas",
+        }
+      }
+      inverse={false}
+      listItem={false}
+      mask={null}
+      maskId={null}
+      onClick={[Function]}
+      pull={null}
+      pulse={false}
+      rotation={null}
+      shake={false}
+      size={null}
+      spin={false}
+      spinPulse={false}
+      spinReverse={false}
+      swapOpacity={false}
+      symbol={false}
+      title=""
+      titleId={null}
+      transform={null}
+    />
+  </div>
+</div>
+`;

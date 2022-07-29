@@ -1,4 +1,5 @@
 const socketMock = {
-    onAny: jest.fn()
+    onAny: jest.fn(),
+    emit: jest.fn()
 };
 export default jest.fn(() => socketMock);

@@ -23,7 +23,7 @@ const {
   },
 } = socketConstants;
 
-class Opponent extends React.Component {
+export class Opponent extends React.Component {
 
   constructor(props) {
     super(props);
@@ -242,8 +242,6 @@ class Opponent extends React.Component {
           difficulty={difficulty}
           setDifficulty={this.setDifficulty}
           requestInvite={sId => this.requestInvite(sId)}
-          acceptInvite={() => this.acceptInvite()}
-          declineInvite={() => this.declineInvite()}
           getPool={() => this.resetMultiplayer()}
         />
         <canvas
