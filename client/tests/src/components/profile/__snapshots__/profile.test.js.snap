@@ -1,0 +1,493 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The profile component will render detailed view for a match 1`] = `
+<div
+  id="profile"
+>
+  <div
+    id="gameDetail"
+  >
+    <FontAwesomeIcon
+      beat={false}
+      beatFade={false}
+      border={false}
+      bounce={false}
+      className="action"
+      fade={false}
+      fixedWidth={false}
+      flip={false}
+      icon={
+        Object {
+          "icon": Array [
+            352,
+            512,
+            Array [],
+            "f00d",
+            "M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z",
+          ],
+          "iconName": "times",
+          "prefix": "fas",
+        }
+      }
+      inverse={false}
+      listItem={false}
+      mask={null}
+      maskId={null}
+      onClick={[Function]}
+      pull={null}
+      pulse={false}
+      rotation={null}
+      shake={false}
+      size={null}
+      spin={false}
+      spinPulse={false}
+      spinReverse={false}
+      swapOpacity={false}
+      symbol={false}
+      title=""
+      titleId={null}
+      transform={null}
+    />
+    <span
+      className="detailitems"
+    >
+      July 24th 2022, 12:08:11 am
+    </span>
+    <span
+      className="detailitems"
+    >
+      You Lost against Stub oponent name
+    </span>
+    <span
+      className="detailitems"
+    >
+      Lines Cleared by You: 0
+    </span>
+    <span
+      className="detailitems"
+    >
+      Lines Cleared by Stub: 2
+    </span>
+    <span
+      className="detailitems"
+    >
+      Floors Raised by You: 0
+    </span>
+    <span
+      className="detailitems"
+    >
+      Floors Raised by Stub: 1
+    </span>
+    <span
+      className="detailitems"
+    >
+      Game Difficulty Level: 4
+    </span>
+    <FontAwesomeIcon
+      beat={false}
+      beatFade={false}
+      border={false}
+      bounce={false}
+      className="action tweet"
+      fade={false}
+      fixedWidth={false}
+      flip={false}
+      icon={
+        Object {
+          "icon": Array [
+            512,
+            512,
+            Array [],
+            "f099",
+            "M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z",
+          ],
+          "iconName": "twitter",
+          "prefix": "fab",
+        }
+      }
+      inverse={false}
+      listItem={false}
+      mask={null}
+      maskId={null}
+      onClick={[Function]}
+      pull={null}
+      pulse={false}
+      rotation={null}
+      shake={false}
+      size={null}
+      spin={false}
+      spinPulse={false}
+      spinReverse={false}
+      swapOpacity={false}
+      symbol={false}
+      title=""
+      titleId={null}
+      transform={null}
+    />
+  </div>
+</div>
+`;
+
+exports[`The profile component will render detailed view for a single game 1`] = `
+<div
+  id="profile"
+>
+  <div
+    id="gameDetail"
+  >
+    <FontAwesomeIcon
+      beat={false}
+      beatFade={false}
+      border={false}
+      bounce={false}
+      className="action"
+      fade={false}
+      fixedWidth={false}
+      flip={false}
+      icon={
+        Object {
+          "icon": Array [
+            352,
+            512,
+            Array [],
+            "f00d",
+            "M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z",
+          ],
+          "iconName": "times",
+          "prefix": "fas",
+        }
+      }
+      inverse={false}
+      listItem={false}
+      mask={null}
+      maskId={null}
+      onClick={[Function]}
+      pull={null}
+      pulse={false}
+      rotation={null}
+      shake={false}
+      size={null}
+      spin={false}
+      spinPulse={false}
+      spinReverse={false}
+      swapOpacity={false}
+      symbol={false}
+      title=""
+      titleId={null}
+      transform={null}
+    />
+    <span
+      className="detailitems"
+    >
+      July 26th 2022, 2:30:24 pm
+    </span>
+    <span
+      className="detailitems"
+    >
+      Total Lines Cleared: 60
+    </span>
+    <span
+      className="detailitems"
+    >
+      Level Reached : 12
+    </span>
+    <FontAwesomeIcon
+      beat={false}
+      beatFade={false}
+      border={false}
+      bounce={false}
+      className="action tweet"
+      fade={false}
+      fixedWidth={false}
+      flip={false}
+      icon={
+        Object {
+          "icon": Array [
+            512,
+            512,
+            Array [],
+            "f099",
+            "M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z",
+          ],
+          "iconName": "twitter",
+          "prefix": "fab",
+        }
+      }
+      inverse={false}
+      listItem={false}
+      mask={null}
+      maskId={null}
+      onClick={[Function]}
+      pull={null}
+      pulse={false}
+      rotation={null}
+      shake={false}
+      size={null}
+      spin={false}
+      spinPulse={false}
+      spinReverse={false}
+      swapOpacity={false}
+      symbol={false}
+      title=""
+      titleId={null}
+      transform={null}
+    />
+  </div>
+</div>
+`;
+
+exports[`The profile component will render for logged in user 1`] = `
+<div
+  id="profile"
+>
+  <div
+    id="card"
+  >
+    <span
+      id="name"
+    >
+      Stub Display Name
+    </span>
+    <div
+      id="detail"
+    >
+      <div
+        id="match"
+      >
+        <span
+          className="head"
+        >
+          2 Matches
+        </span>
+        <span>
+          Wins - 1
+        </span>
+        <span>
+          Losses - 1 (DQ - 0)
+        </span>
+        <div
+          className="recentmatches"
+        >
+          <span
+            className="recentDescriptionHeader"
+          >
+            Recent Matches
+          </span>
+          <span
+            className="recentDescription"
+            key="62dd04cb1a1a257ead39a1ea"
+          >
+            Stub, 6 days ago 
+            <FontAwesomeIcon
+              beat={false}
+              beatFade={false}
+              border={false}
+              bounce={false}
+              className="info Won"
+              fade={false}
+              fixedWidth={false}
+              flip={false}
+              icon={
+                Object {
+                  "icon": Array [
+                    512,
+                    512,
+                    Array [],
+                    "f05a",
+                    "M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z",
+                  ],
+                  "iconName": "info-circle",
+                  "prefix": "fas",
+                }
+              }
+              inverse={false}
+              listItem={false}
+              mask={null}
+              maskId={null}
+              onClick={[Function]}
+              pull={null}
+              pulse={false}
+              rotation={null}
+              shake={false}
+              size={null}
+              spin={false}
+              spinPulse={false}
+              spinReverse={false}
+              swapOpacity={false}
+              symbol={false}
+              title=""
+              titleId={null}
+              transform={null}
+            />
+          </span>
+          <span
+            className="recentDescription"
+            key="62dc633b2464e19567160cb3"
+          >
+            Stub, 6 days ago 
+            <FontAwesomeIcon
+              beat={false}
+              beatFade={false}
+              border={false}
+              bounce={false}
+              className="info Lost"
+              fade={false}
+              fixedWidth={false}
+              flip={false}
+              icon={
+                Object {
+                  "icon": Array [
+                    512,
+                    512,
+                    Array [],
+                    "f05a",
+                    "M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z",
+                  ],
+                  "iconName": "info-circle",
+                  "prefix": "fas",
+                }
+              }
+              inverse={false}
+              listItem={false}
+              mask={null}
+              maskId={null}
+              onClick={[Function]}
+              pull={null}
+              pulse={false}
+              rotation={null}
+              shake={false}
+              size={null}
+              spin={false}
+              spinPulse={false}
+              spinReverse={false}
+              swapOpacity={false}
+              symbol={false}
+              title=""
+              titleId={null}
+              transform={null}
+            />
+          </span>
+        </div>
+      </div>
+      <div
+        id="Single"
+      >
+        <span
+          className="head"
+        >
+          2 Single Player Games
+        </span>
+        <span>
+          Total Lines Cleared - 109
+        </span>
+        <span>
+          Average Level Reached - 10
+        </span>
+        <div
+          className="recentgames"
+        >
+          <span
+            className="recentDescriptionHeader"
+          >
+            Recent Games
+          </span>
+          <span
+            className="recentDescription"
+            key="62e3f935616501f9bd180a71"
+          >
+            17 hours ago 
+            <FontAwesomeIcon
+              beat={false}
+              beatFade={false}
+              border={false}
+              bounce={false}
+              className="info"
+              fade={false}
+              fixedWidth={false}
+              flip={false}
+              icon={
+                Object {
+                  "icon": Array [
+                    512,
+                    512,
+                    Array [],
+                    "f05a",
+                    "M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z",
+                  ],
+                  "iconName": "info-circle",
+                  "prefix": "fas",
+                }
+              }
+              inverse={false}
+              listItem={false}
+              mask={null}
+              maskId={null}
+              onClick={[Function]}
+              pull={null}
+              pulse={false}
+              rotation={null}
+              shake={false}
+              size={null}
+              spin={false}
+              spinPulse={false}
+              spinReverse={false}
+              swapOpacity={false}
+              symbol={false}
+              title=""
+              titleId={null}
+              transform={null}
+            />
+          </span>
+          <span
+            className="recentDescription"
+            key="62dfd050d218114e5c901c43"
+          >
+            4 days ago 
+            <FontAwesomeIcon
+              beat={false}
+              beatFade={false}
+              border={false}
+              bounce={false}
+              className="info"
+              fade={false}
+              fixedWidth={false}
+              flip={false}
+              icon={
+                Object {
+                  "icon": Array [
+                    512,
+                    512,
+                    Array [],
+                    "f05a",
+                    "M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z",
+                  ],
+                  "iconName": "info-circle",
+                  "prefix": "fas",
+                }
+              }
+              inverse={false}
+              listItem={false}
+              mask={null}
+              maskId={null}
+              onClick={[Function]}
+              pull={null}
+              pulse={false}
+              rotation={null}
+              shake={false}
+              size={null}
+              spin={false}
+              spinPulse={false}
+              spinReverse={false}
+              swapOpacity={false}
+              symbol={false}
+              title=""
+              titleId={null}
+              transform={null}
+            />
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

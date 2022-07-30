@@ -379,3 +379,69 @@ export const stubShapeI = {
         ]
     ]
 }
+
+export const stubProfile = {
+    user: {
+        profile: {
+            authenticated: true,
+            userip: "::ffff:127.0.0.1",
+            username: "0001",
+            displayname: "Stub Display Name"
+        }
+    },
+    userProfileResponse: {
+        singleStats: [
+            {
+                "_id": "62e3f935616501f9bd180a71",
+                "googleId": "0001",
+                "linesCleared": 49,
+                "levelReached": 9,
+                "createdAt": "2022-07-29T15:13:57.976Z",
+                "updatedAt": "2022-07-29T15:13:57.976Z",
+                "__v": 0
+            },
+            {
+                "_id": "62dfd050d218114e5c901c43",
+                "googleId": "0001",
+                "linesCleared": 60,
+                "levelReached": 12,
+                "createdAt": "2022-07-26T11:30:24.576Z",
+                "updatedAt": "2022-07-26T11:30:24.576Z",
+                "__v": 0
+            },
+        ],
+        matchStats: [
+            {
+                "_id": "62dd04cb1a1a257ead39a1ea",
+                "winnerGoogleId": "0001",
+                "looserGoogleId": "0002",
+                "difficulty": 2,
+                "winnerLinesCleared": 0,
+                "winnerFloorsRaised": 0,
+                "looserLinesCleared": 0,
+                "looserFloorsRaised": 0,
+                "looserDisqualified": true,
+                "createdAt": "2022-07-24T08:37:31.809Z",
+                "updatedAt": "2022-07-24T08:37:31.809Z",
+                "__v": 0
+            },
+            {
+                "_id": "62dc633b2464e19567160cb3",
+                "winnerGoogleId": "0002",
+                "looserGoogleId": "0001",
+                "difficulty": 4,
+                "winnerLinesCleared": 2,
+                "winnerFloorsRaised": 1,
+                "looserLinesCleared": 0,
+                "looserFloorsRaised": 0,
+                "looserDisqualified": false,
+                "createdAt": "2022-07-23T21:08:11.812Z",
+                "updatedAt": "2022-07-23T21:08:11.812Z",
+                "__v": 0
+            },
+        ],
+        opponentNames: {
+            "0002": "Stub oponent name"
+        }
+    }
+}
