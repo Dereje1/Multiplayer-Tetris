@@ -7,6 +7,11 @@ import { stubProfile } from '../../../stub'
 
 jest.mock('axios')
 
+// Fix date to match snapshot both locally and github 
+const utcFixedDate = new Date(Date.UTC(2022, 6, 30, 12, 35, 0))
+Date.now = jest.fn(() => utcFixedDate);
+
+
 describe('The profile component', () => {
     let props;
     beforeEach(() => {

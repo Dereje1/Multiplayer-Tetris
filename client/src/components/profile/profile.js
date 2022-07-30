@@ -139,11 +139,11 @@ export class Profile extends React.Component {
     const opponetName = userData.opponentNames[opponentId];
     const disqualified = !win && match.looserDisqualified;
     const tweetMessage = win
-      ? `${moment(match.createdAt).format('MMMM Do YYYY')}, I Won against ${opponetName} In Multi Player Tetris`
-      : `${moment(match.createdAt).format('MMMM Do YYYY')}, I Lost to ${opponetName} In Multi Player Tetris`;
+      ? `${moment.utc(match.createdAt).format('MMMM Do YYYY')}, I Won against ${opponetName} In Multi Player Tetris`
+      : `${moment.utc(match.createdAt).format('MMMM Do YYYY')}, I Lost to ${opponetName} In Multi Player Tetris`;
     return (
       <React.Fragment>
-        <span className="detailitems">{moment(match.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</span>
+        <span className="detailitems">{moment.utc(match.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</span>
         <span className="detailitems">{`You ${win ? 'Won' : 'Lost'} against ${opponetName}`}</span>
         {disqualified ? <span>Lost By Disqualification!</span> : null}
         <span className="detailitems">{`Lines Cleared by You: ${win ? match.winnerLinesCleared : match.looserLinesCleared}`}</span>
@@ -166,7 +166,7 @@ export class Profile extends React.Component {
     const tweetMessage = `${moment(single.createdAt).format('MMMM Do YYYY')}, I cleared ${single.linesCleared} Lines in Single Player Tetris`;
     return (
       <React.Fragment>
-        <span className="detailitems">{moment(single.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</span>
+        <span className="detailitems">{moment.utc(single.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</span>
         <span className="detailitems">{`Total Lines Cleared: ${single.linesCleared}`}</span>
         <span className="detailitems">{`Level Reached : ${single.levelReached}`}</span>
         <FontAwesomeIcon

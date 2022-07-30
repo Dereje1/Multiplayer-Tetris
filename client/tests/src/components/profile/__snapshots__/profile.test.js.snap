@@ -51,7 +51,7 @@ exports[`The profile component will render detailed view for a match 1`] = `
     <span
       className="detailitems"
     >
-      July 24th 2022, 12:08:11 am
+      July 23rd 2022, 9:08:11 pm
     </span>
     <span
       className="detailitems"
@@ -179,7 +179,7 @@ exports[`The profile component will render detailed view for a single game 1`] =
     <span
       className="detailitems"
     >
-      July 26th 2022, 2:30:24 pm
+      July 26th 2022, 11:30:24 am
     </span>
     <span
       className="detailitems"
@@ -324,7 +324,7 @@ exports[`The profile component will render for logged in user 1`] = `
             className="recentDescription"
             key="62dc633b2464e19567160cb3"
           >
-            Stub, 6 days ago 
+            Stub, 7 days ago 
             <FontAwesomeIcon
               beat={false}
               beatFade={false}
@@ -395,7 +395,7 @@ exports[`The profile component will render for logged in user 1`] = `
             className="recentDescription"
             key="62e3f935616501f9bd180a71"
           >
-            17 hours ago 
+            21 hours ago 
             <FontAwesomeIcon
               beat={false}
               beatFade={false}
