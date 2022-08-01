@@ -20,7 +20,7 @@ const {
   },
 } = socketConstants;
 
-class Header extends React.Component {
+export class Header extends React.Component {
 
   constructor(props) {
     super(props);
@@ -36,8 +36,7 @@ class Header extends React.Component {
   }
 
   componentDidUpdate() {
-    if (!this.audio) return;
-    if (!this.audio.current) return;
+    if (!this.audio && !this.audio.current) return;
     const { inviteAccepted, inviteReceived } = this.state;
     const { socket } = this.props;
     if (Object.keys(socket).includes('temp')) {

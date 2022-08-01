@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`will render the invitation modal 1`] = `
+<WithStyles(ForwardRef(Dialog))
+  aria-labelledby="simple-dialog-title"
+  open={true}
+>
+  <WithStyles(ForwardRef(DialogTitle))
+    id="simple-dialog-title"
+  >
+    stub_Invite_name invites you to a duel!
+  </WithStyles(ForwardRef(DialogTitle))>
+  <WithStyles(ForwardRef(DialogContent))>
+    <WithStyles(ForwardRef(Chip))
+      avatar={
+        <WithStyles(ForwardRef(Avatar))>
+          3
+        </WithStyles(ForwardRef(Avatar))>
+      }
+      color="primary"
+      label="Difficulty"
+      size="medium"
+      style={
+        Object {
+          "marginLeft": 70,
+        }
+      }
+    />
+  </WithStyles(ForwardRef(DialogContent))>
+  <WithStyles(ForwardRef(DialogActions))>
+    <WithStyles(ForwardRef(ButtonGroup))
+      aria-label="vertical outlined primary button group"
+      color="primary"
+    >
+      <WithStyles(ForwardRef(Button))
+        onClick={[Function]}
+        size="large"
+        style={
+          Object {
+            "background": "green",
+            "marginBottom": 20,
+            "marginLeft": 10,
+          }
+        }
+        variant="contained"
+      >
+        Accept
+      </WithStyles(ForwardRef(Button))>
+      <WithStyles(ForwardRef(Button))
+        onClick={[Function]}
+        size="large"
+        style={
+          Object {
+            "background": "red",
+            "marginBottom": 20,
+            "marginLeft": 50,
+          }
+        }
+        variant="contained"
+      >
+        Decline
+      </WithStyles(ForwardRef(Button))>
+    </WithStyles(ForwardRef(ButtonGroup))>
+  </WithStyles(ForwardRef(DialogActions))>
+</WithStyles(ForwardRef(Dialog))>
+`;

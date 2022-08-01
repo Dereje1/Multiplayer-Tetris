@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The header will render for authenticated users 1`] = `
+<div
+  id="header"
+>
+  <withRouter(Menu)
+    onLogOut={[Function]}
+  />
+  <Invitation
+    invite={Array []}
+    onAcceptInvite={[Function]}
+    onDeclineInvite={[Function]}
+  />
+  <div
+    id="users"
+    onClick={[Function]}
+    onKeyDown={[Function]}
+    role="button"
+    tabIndex={-1}
+  >
+    <span />
+  </div>
+  <audio
+    src={
+      Object {
+        "canInstrument": true,
+        "createTransformer": [Function],
+        "getCacheKey": [Function],
+        "getCacheKeyAsync": [Function],
+        "process": [Function],
+        "processAsync": [Function],
+      }
+    }
+  >
+    <track
+      kind="captions"
+    />
+  </audio>
+</div>
+`;
+
+exports[`The header will render for unauthenticated users 1`] = `
+<div
+  id="header"
+>
+  <div
+    id="authbutton"
+  >
+    <button
+      id="login"
+      onClick={[Function]}
+      type="submit"
+    />
+  </div>
+  <div
+    id="users"
+    onClick={[Function]}
+    onKeyDown={[Function]}
+    role="button"
+    tabIndex={-1}
+  >
+    <span />
+  </div>
+  <audio
+    src={
+      Object {
+        "canInstrument": true,
+        "createTransformer": [Function],
+        "getCacheKey": [Function],
+        "getCacheKeyAsync": [Function],
+        "process": [Function],
+        "processAsync": [Function],
+      }
+    }
+  >
+    <track
+      kind="captions"
+    />
+  </audio>
+</div>
+`;
