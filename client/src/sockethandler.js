@@ -23,12 +23,13 @@ const serverReset = () => {
   // runs whenever there is a new connection.
   // If client has not refreshed then use existing user profile to update server
   const { socket: socketObject, user } = store.getState();
-  if (!Object.keys(socketObject).length) return;
+  if (!Object.keys(socketObject).length) return null;
   const payloadToSend = user.profile.authenticated ? user.profile : null;
   clientEmitter(
     SEND_LOGGED_IN_USER,
     payloadToSend,
   );
+  return true;
 };
 
 const startCountDown = counter => (dispatchTimeLeft) => {
@@ -80,7 +81,7 @@ const socketActionMap = {
     : null),
 };
 
-socketConnection.onAny((event, ...args) => {
+export const handleServerSocketResponses = (event, ...args) => {
   if (!Object.keys(socketConstants.serverEmit).includes(event)) {
     console.log(`No action map found for event = ${event}`);
     return;
@@ -88,8 +89,7 @@ socketConnection.onAny((event, ...args) => {
   const [data, callback] = args;
   switch (event) {
     case SERVER_RESET:
-      socketActionMap[event]();
-      break;
+      return socketActionMap[event]();
     case ACCEPTED_INVITATION:
       socketActionMap[event](data);
       break;
@@ -103,4 +103,6 @@ socketConnection.onAny((event, ...args) => {
       dispatch({ type: event, payload: data });
       break;
   }
-});
+}
+
+socketConnection.onAny((event, ...args) => handleServerSocketResponses(event, ...args));
