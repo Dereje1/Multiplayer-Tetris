@@ -96,19 +96,6 @@ const updatePayload = (type, payload, transfom) => {
   }
 };
 
-export const upDatedb = matchData => new Promise((resolve, reject) => {
-  axios
-    .post('/api/save_match', matchData)
-    .then(({ data }) => {
-      console.log('Data has been posted succesfully');
-      resolve(data);
-    })
-    .catch((err) => {
-      console.log(`Data has failed to post: ${err}`);
-      reject(err);
-    });
-});
-
 export const GameActions = (type, payload, transfom = null) => (
   {
     type,

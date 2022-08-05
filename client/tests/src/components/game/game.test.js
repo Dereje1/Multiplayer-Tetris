@@ -130,7 +130,7 @@ describe('The Game component', () => {
             "yPosition": 0
         })
     });
-    test('will handle game over', () => {
+    test('will handle game over', async () => {
         const updatedProps = {
             ...props,
             user: {
@@ -138,7 +138,7 @@ describe('The Game component', () => {
             }
         }
         const wrapper = shallow(<Game {...updatedProps} />);
-        wrapper.instance().gameOver()
+        await wrapper.instance().gameOver()
         expect(fillText).toHaveBeenNthCalledWith(1, "Game Over", 14, 100)
         expect(fillText).toHaveBeenNthCalledWith(2, "0 Lines Cleared", 55, 300)
         expect(fillText).toHaveBeenNthCalledWith(3, "     Reached Level 0", 5, 450)

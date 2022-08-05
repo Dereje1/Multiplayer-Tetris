@@ -1,15 +1,21 @@
-import axios from 'axios';
+import RESTcall from '../../crud';
 import { auth } from '../../constants/index';
 
 const { GET_LOGIN_STATUS } = auth;
 
-const getUser = () => dispatch => (
-  axios.get('/auth/profile').then(({ data }) => {
+export const getUser = path => async (dispatch) => {
+  try {
+    const payload = await RESTcall({ address: '/auth/profile' });
     dispatch({
       type: GET_LOGIN_STATUS,
-      payload: data,
+      payload,
     });
-  })
-);
+  } catch (err) {
+    dispatch({
+      type: 'GET_USER_STATUS_REJECTED',
+      payload: err,
+    });
+  }
+};
 
 export default getUser;

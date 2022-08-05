@@ -1,6 +1,6 @@
-import axios from 'axios';
+import RESTcall from '../../../crud'
 
-export const processMatch = (oppLinesCleared, state, props, winnerAudio) => {
+export const processMatch = async (oppLinesCleared, state, props, winnerAudio) => {
   const { floorsRaised, difficulty } = state;
   const {
     socket: {
@@ -9,13 +9,13 @@ export const processMatch = (oppLinesCleared, state, props, winnerAudio) => {
       },
     }, user, game,
   } = props;
-    // test if client is winner
+  // test if client is winner
   const iAmWinner = gameOver.winnerGoogleID === user.profile.username;
   // get floor level of processing client
   const floorLevel = game.rubble.boundaryCells.length > 10
     ? Math.floor((game.rubble.boundaryCells.length - 10) / 10)
     : 0;
-    // message for canvas display
+  // message for canvas display
   let multiplayerMessage;
   // prepare match object for db, only winner will send results
   if (iAmWinner || gameOver.disqualified) {
@@ -30,9 +30,7 @@ export const processMatch = (oppLinesCleared, state, props, winnerAudio) => {
       looserFloorsRaised: floorLevel,
       looserDisqualified: gameOver.disqualified || false,
     };
-    axios.post('/api/multiplayer', matchObject)
-      .then(() => {})
-      .catch(e => console.log(e.response));
+    await RESTcall({ address: '/api/multiplayer', method: 'post', payload: matchObject })
   }
   // prepare message for canvas
   if (iAmWinner && gameOver.disqualified) {
@@ -49,16 +47,13 @@ export const processMatch = (oppLinesCleared, state, props, winnerAudio) => {
   return multiplayerMessage;
 };
 
-export const processSinglePlayer = ({ game, user }) => {
+export const processSinglePlayer = async ({ game, user }) => {
   if (!user.profile.authenticated) return null;
   const singlePlayerObject = {
     googleId: user.profile.username,
     linesCleared: game.points.totalLinesCleared,
     levelReached: game.points.level,
   };
-  axios.post('/api/single', singlePlayerObject)
-    .then(() => {})
-    .catch(e => console.log(e.response));
-
+  await RESTcall({ address: '/api/single', method: 'post', payload: singlePlayerObject })
   return null;
 };

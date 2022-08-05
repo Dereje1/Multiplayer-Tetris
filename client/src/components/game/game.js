@@ -318,7 +318,7 @@ export class Game extends React.Component {
     }
   };
 
-  gameOver = (opponentInfo = null) => {
+  gameOver = async (opponentInfo = null) => {
     const { multiPlayer } = this.state;
     const { game, user, socket } = this.props;
     // Whoever looses first will emit game over while in multiplayer mode
@@ -330,8 +330,8 @@ export class Game extends React.Component {
     if (multiPlayer && !opponentInfo) return;
 
     const opponent = opponentInfo
-      ? processMatch(opponentInfo[0], this.state, this.props, this.winnerAudio)
-      : processSinglePlayer({ game, user });
+      ? await processMatch(opponentInfo[0], this.state, this.props, this.winnerAudio)
+      : await processSinglePlayer({ game, user });
 
     this.setState({
       buttonPause: true,

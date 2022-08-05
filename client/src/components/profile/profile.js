@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import RESTcall from '../../crud';
 import moment from 'moment';
 import { connect } from 'react-redux';
 /* font awesome */
@@ -44,7 +44,7 @@ export class Profile extends React.Component {
   fetchUserStats = async () => {
     try {
       // get data
-      const { data: userData } = await axios.get('/api/user');
+      const userData = await RESTcall({ address: '/api/user' });
       // compute data
       this.crunchData(userData);
     } catch {
