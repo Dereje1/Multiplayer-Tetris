@@ -6,11 +6,11 @@ module.exports = {
     this.userArr = [...newUsers];
   },
   modifyProfile: (profile, socketId) => {
-    const { username, displayname, userip } = profile;
+    const { username, displayname, userIp } = profile;
     return {
       username,
       displayname,
-      userip,
+      userIp,
       socketId,
       oponnentId: null,
       pending: null,

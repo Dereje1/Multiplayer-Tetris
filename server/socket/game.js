@@ -21,12 +21,7 @@ const gamePlay = (socket, callback) => {
   });
 
   socket.on(OPPONENT_UNMOUNTED, (data) => {
-    if (!data) {
-      socket.emit(UNMOUNT_OPPONENT, null);
-      return callback(null, null);
-    }
-    if (Object.keys(data).includes('invitationTo')
-        || Object.keys(data).includes('acceptedInvitation')) {
+    if (data && (Object.keys(data).includes('invitationTo') || Object.keys(data).includes('acceptedInvitation'))) {
       const otherPartyId = data.invitationTo
         ? data.invitationTo.socketIdReciever
         : data.acceptedInvitation.opponentSID;
@@ -44,9 +39,10 @@ const gamePlay = (socket, callback) => {
         operation: 'revokeInvite',
         recieverId: otherPartyId,
       });
+    } else {
+      socket.emit(UNMOUNT_OPPONENT, null);
+      return callback(null, null);
     }
-    socket.emit(UNMOUNT_OPPONENT, null);
-    return callback(null, null);
   });
 
   socket.on(INVITATION_SENT, (data) => {
