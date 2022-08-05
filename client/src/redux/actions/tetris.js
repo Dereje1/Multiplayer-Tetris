@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { game } from '../../constants/index';
 
 const {
