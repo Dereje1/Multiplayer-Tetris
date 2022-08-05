@@ -1,16 +1,14 @@
+// Index for authentication
 const passport = require('passport');
-const configurePassport = require('./configurepassport');
-const authRoutes = require('./routes');
+const { setAuthRoutes } = require('./routes');
+const { passportConfig } = require('./passportConfig');
 
-const authenticationConfig = (app) => {
-  // pass passport for configuration
-  configurePassport(passport);
-  // initialize passport
+const configEntry = (app) => {
+  passportConfig(passport); // pass passport for configuration
   app.use(passport.initialize());
-  // persist session and deserialize user
-  app.use(passport.session());
-  // pass app and passport for routes to use
-  authRoutes(app, passport);
+  app.use(passport.session()); // persistent login sessions
+  // routes ======================================================================
+  setAuthRoutes(app, passport);
 };
 
-module.exports = authenticationConfig;
+module.exports = configEntry;

@@ -1,24 +1,35 @@
+const ip = require('ip');
 const isLoggedIn = require('./isloggedin');
 
-const authRoutes = (app, passport) => {
-  // login route
-  app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-  // redirect from google
-  app.get('/auth/google/redirect', passport.authenticate('google', { successRedirect: '/', failureRedirect: '/' }));
-  // logout route
-  app.get('/auth/logout', (req, res) => {
-    req.logout();
-    res.redirect('/');
-  });
-  // populates auth/profile endpoint if logged in
-  app.get('/auth/profile', isLoggedIn, (req, res) => {
-    res.json({
-      authenticated: true,
-      userip: req.userip,
-      username: req.user.google.id,
-      displayname: req.user.google.displayName,
-    });
+const getProfile = (req, res) => {
+  const { user } = req;
+  const [service] = ['google', 'twitter'].filter(s => user[s] && Boolean(user[s].id));
+  res.json({
+    authenticated: true,
+    userIp: ip.address(),
+    username: user[service].id,
+    userId: user[service].id,
+    displayname: user[service].displayName,
+    service,
   });
 };
 
-module.exports = authRoutes;
+
+const logOut = (req, res) => {
+  req.logout();
+  res.redirect('/');
+};
+
+const setAuthRoutes = (app, passport) => {
+  app.get('/auth/profile', isLoggedIn, getProfile);
+  app.get('/auth/logout', logOut);
+  app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+  app.get('/auth/google/redirect', passport.authenticate('google', {
+    successRedirect: '/',
+    failureRedirect: '/',
+  }));
+};
+
+module.exports = {
+  setAuthRoutes, getProfile, logOut,
+};
