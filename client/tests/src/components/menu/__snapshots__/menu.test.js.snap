@@ -1,0 +1,259 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The Menu will render the collapsed menu 1`] = `
+<FontAwesomeIcon
+  beat={false}
+  beatFade={false}
+  border={false}
+  bounce={false}
+  className="burger"
+  fade={false}
+  fixedWidth={false}
+  flip={false}
+  icon={
+    Object {
+      "icon": Array [
+        448,
+        512,
+        Array [],
+        "f0c9",
+        "M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z",
+      ],
+      "iconName": "bars",
+      "prefix": "fas",
+    }
+  }
+  inverse={false}
+  listItem={false}
+  mask={null}
+  maskId={null}
+  onClick={[Function]}
+  pull={null}
+  pulse={false}
+  rotation={null}
+  shake={false}
+  size={null}
+  spin={false}
+  spinPulse={false}
+  spinReverse={false}
+  swapOpacity={false}
+  symbol={false}
+  title=""
+  titleId={null}
+  transform={null}
+/>
+`;
+
+exports[`The Menu will render the expanded menu 1`] = `
+<div
+  className="show"
+  id="menu"
+  onClick={[Function]}
+  onKeyDown={[Function]}
+  role="menuitem"
+  tabIndex={-1}
+>
+  <FontAwesomeIcon
+    beat={false}
+    beatFade={false}
+    border={false}
+    bounce={false}
+    className="close"
+    fade={false}
+    fixedWidth={false}
+    flip={false}
+    icon={
+      Object {
+        "icon": Array [
+          352,
+          512,
+          Array [],
+          "f00d",
+          "M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z",
+        ],
+        "iconName": "times",
+        "prefix": "fas",
+      }
+    }
+    inverse={false}
+    listItem={false}
+    mask={null}
+    maskId={null}
+    onClick={[Function]}
+    pull={null}
+    pulse={false}
+    rotation={null}
+    shake={false}
+    size={null}
+    spin={false}
+    spinPulse={false}
+    spinReverse={false}
+    swapOpacity={false}
+    symbol={false}
+    title=""
+    titleId={null}
+    transform={null}
+  />
+  <div
+    id="items"
+  >
+    <div
+      className="menuitems"
+      onClick={[Function]}
+      onKeyDown={[Function]}
+      role="menuitem"
+      tabIndex={-1}
+    >
+      <FontAwesomeIcon
+        beat={false}
+        beatFade={false}
+        border={false}
+        bounce={false}
+        className=""
+        fade={false}
+        fixedWidth={false}
+        flip={false}
+        icon={
+          Object {
+            "icon": Array [
+              512,
+              512,
+              Array [],
+              "f2f5",
+              "M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z",
+            ],
+            "iconName": "sign-out-alt",
+            "prefix": "fas",
+          }
+        }
+        inverse={false}
+        listItem={false}
+        mask={null}
+        maskId={null}
+        pull={null}
+        pulse={false}
+        rotation={null}
+        shake={false}
+        size={null}
+        spin={false}
+        spinPulse={false}
+        spinReverse={false}
+        swapOpacity={false}
+        symbol={false}
+        title=""
+        titleId={null}
+        transform={null}
+      />
+      <p>
+        Logout
+      </p>
+    </div>
+    <NavLink
+      activeClassName="active"
+      aria-current="page"
+      className="menuitems"
+      exact={true}
+      onClick={[Function]}
+      to="/profile"
+    >
+      <FontAwesomeIcon
+        beat={false}
+        beatFade={false}
+        border={false}
+        bounce={false}
+        className=""
+        fade={false}
+        fixedWidth={false}
+        flip={false}
+        icon={
+          Object {
+            "icon": Array [
+              448,
+              512,
+              Array [],
+              "f007",
+              "M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z",
+            ],
+            "iconName": "user",
+            "prefix": "fas",
+          }
+        }
+        inverse={false}
+        listItem={false}
+        mask={null}
+        maskId={null}
+        pull={null}
+        pulse={false}
+        rotation={null}
+        shake={false}
+        size={null}
+        spin={false}
+        spinPulse={false}
+        spinReverse={false}
+        swapOpacity={false}
+        symbol={false}
+        title=""
+        titleId={null}
+        transform={null}
+      />
+      <p>
+        Profile
+      </p>
+    </NavLink>
+    <div>
+      <NavLink
+        activeClassName="active"
+        aria-current="page"
+        className="menuitems"
+        exact={true}
+        onClick={[Function]}
+        to="/"
+      >
+        <FontAwesomeIcon
+          beat={false}
+          beatFade={false}
+          border={false}
+          bounce={false}
+          className=""
+          fade={false}
+          fixedWidth={false}
+          flip={false}
+          icon={
+            Object {
+              "icon": Array [
+                640,
+                512,
+                Array [],
+                "f11b",
+                "M480.07 96H160a160 160 0 1 0 114.24 272h91.52A160 160 0 1 0 480.07 96zM248 268a12 12 0 0 1-12 12h-52v52a12 12 0 0 1-12 12h-24a12 12 0 0 1-12-12v-52H84a12 12 0 0 1-12-12v-24a12 12 0 0 1 12-12h52v-52a12 12 0 0 1 12-12h24a12 12 0 0 1 12 12v52h52a12 12 0 0 1 12 12zm216 76a40 40 0 1 1 40-40 40 40 0 0 1-40 40zm64-96a40 40 0 1 1 40-40 40 40 0 0 1-40 40z",
+              ],
+              "iconName": "gamepad",
+              "prefix": "fas",
+            }
+          }
+          inverse={false}
+          listItem={false}
+          mask={null}
+          maskId={null}
+          pull={null}
+          pulse={false}
+          rotation={null}
+          shake={false}
+          size={null}
+          spin={false}
+          spinPulse={false}
+          spinReverse={false}
+          swapOpacity={false}
+          symbol={false}
+          title=""
+          titleId={null}
+          transform={null}
+        />
+        <p>
+          Game
+        </p>
+      </NavLink>
+    </div>
+  </div>
+</div>
+`;

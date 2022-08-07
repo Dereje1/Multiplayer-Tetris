@@ -8,7 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import './styles/menu.scss';
 
-class Menu extends React.Component {
+export class Menu extends React.Component {
 
   constructor(props) {
     super(props);
