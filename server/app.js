@@ -27,7 +27,7 @@ require('./models/db');
 require('./authentication/index')(app);
 
 // use crud routes
-app.use(require('./routes/crud'));
+app.use(require('./routes/crud').router);
 /* Build and deployment */
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
