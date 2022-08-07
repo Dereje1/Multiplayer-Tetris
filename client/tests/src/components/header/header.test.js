@@ -49,13 +49,6 @@ describe('The header', () => {
         expect(toJson(wrapper)).toMatchSnapshot();
     })
 
-    test('will login unauthenticated users', async () => {
-        const wrapper = shallow(<Header {...props} />)
-        const loginButton = wrapper.find({id: 'login'})
-        loginButton.props().onClick()
-        expect(assign).toHaveBeenCalledWith('/auth/google')
-    })
-
     test('will render for authenticated users', async () => {
         const updatedProps = {
             ...props,

@@ -1,21 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`will render the invitation modal 1`] = `
-<WithStyles(ForwardRef(Dialog))
+<ForwardRef(Dialog)
   aria-labelledby="simple-dialog-title"
   open={true}
 >
-  <WithStyles(ForwardRef(DialogTitle))
+  <ForwardRef(DialogTitle)
     id="simple-dialog-title"
   >
     stub_Invite_name invites you to a duel!
-  </WithStyles(ForwardRef(DialogTitle))>
-  <WithStyles(ForwardRef(DialogContent))>
-    <WithStyles(ForwardRef(Chip))
+  </ForwardRef(DialogTitle)>
+  <ForwardRef(DialogContent)>
+    <ForwardRef(Chip)
       avatar={
-        <WithStyles(ForwardRef(Avatar))>
+        <ForwardRef(Avatar)>
           3
-        </WithStyles(ForwardRef(Avatar))>
+        </ForwardRef(Avatar)>
       }
       color="primary"
       label="Difficulty"
@@ -26,13 +26,13 @@ exports[`will render the invitation modal 1`] = `
         }
       }
     />
-  </WithStyles(ForwardRef(DialogContent))>
-  <WithStyles(ForwardRef(DialogActions))>
-    <WithStyles(ForwardRef(ButtonGroup))
+  </ForwardRef(DialogContent)>
+  <ForwardRef(DialogActions)>
+    <ForwardRef(ButtonGroup)
       aria-label="vertical outlined primary button group"
       color="primary"
     >
-      <WithStyles(ForwardRef(Button))
+      <ForwardRef(Button)
         onClick={[Function]}
         size="large"
         style={
@@ -45,8 +45,8 @@ exports[`will render the invitation modal 1`] = `
         variant="contained"
       >
         Accept
-      </WithStyles(ForwardRef(Button))>
-      <WithStyles(ForwardRef(Button))
+      </ForwardRef(Button)>
+      <ForwardRef(Button)
         onClick={[Function]}
         size="large"
         style={
@@ -59,8 +59,8 @@ exports[`will render the invitation modal 1`] = `
         variant="contained"
       >
         Decline
-      </WithStyles(ForwardRef(Button))>
-    </WithStyles(ForwardRef(ButtonGroup))>
-  </WithStyles(ForwardRef(DialogActions))>
-</WithStyles(ForwardRef(Dialog))>
+      </ForwardRef(Button)>
+    </ForwardRef(ButtonGroup)>
+  </ForwardRef(DialogActions)>
+</ForwardRef(Dialog)>
 `;

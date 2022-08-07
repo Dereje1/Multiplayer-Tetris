@@ -1,3 +1,27 @@
+ #googleloginbutton{
+    border: 0px;
+    height: 40px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    border-radius: 2px;
+    padding: 1px;
+    font-size: 15px;
+    font-weight: bold;
+    outline: none;
+    box-shadow: none;
+    cursor: pointer;
+    background-clip: padding-box;
+    transition: opacity .2s linear;
+    width: 268px;
+    margin-top: 10px;
+    color:white;
+    background-color: #4285F4;
+    .buttontext{
+        padding-right: 45px;
+      }
+  }
+
 .opponentContainer{
     margin-left: 30px;
     margin-right:30px;

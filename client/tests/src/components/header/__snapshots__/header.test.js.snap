@@ -45,15 +45,6 @@ exports[`The header will render for unauthenticated users 1`] = `
   id="header"
 >
   <div
-    id="authbutton"
-  >
-    <button
-      id="login"
-      onClick={[Function]}
-      type="submit"
-    />
-  </div>
-  <div
     id="users"
     onClick={[Function]}
     onKeyDown={[Function]}

@@ -4,7 +4,7 @@ exports[`The opponent info will render loading wheel for all other states 1`] = 
 <div
   className="opponentContainer__opponentDescription"
 >
-  <WithStyles(ForwardRef(CircularProgress))
+  <ForwardRef(CircularProgress)
     style={
       Object {
         "marginTop": 80,
@@ -12,6 +12,25 @@ exports[`The opponent info will render loading wheel for all other states 1`] = 
     }
   />
 </div>
+`;
+
+exports[`The opponent info will render login for unauthenticated users 1`] = `
+<ForwardRef(Button)
+  id="googleloginbutton"
+  onClick={[Function]}
+  startIcon={
+    <Memo
+      style={
+        Object {
+          "fontSize": 25,
+        }
+      }
+    />
+  }
+  variant="outlined"
+>
+  Continue With Google
+</ForwardRef(Button)>
 `;
 
 exports[`The opponent info will render stage 1 1`] = `
@@ -68,7 +87,7 @@ exports[`The opponent info will render stage 1 1`] = `
 `;
 
 exports[`The opponent info will render stage 2 1`] = `
-<Styled(MuiBox)
+<ForwardRef(Box)
   className="opponentContainer__opponentDescription"
 >
   <p
@@ -76,11 +95,11 @@ exports[`The opponent info will render stage 2 1`] = `
   >
     Difficulty
   </p>
-  <WithStyles(ForwardRef(ButtonGroup))
+  <ForwardRef(ButtonGroup)
     aria-label="outlined primary button group"
     color="primary"
   >
-    <WithStyles(ForwardRef(Button))
+    <ForwardRef(Button)
       key="1"
       onClick={[Function]}
       onKeyDown={[Function]}
@@ -98,8 +117,8 @@ exports[`The opponent info will render stage 2 1`] = `
       variant="outlined"
     >
       1
-    </WithStyles(ForwardRef(Button))>
-    <WithStyles(ForwardRef(Button))
+    </ForwardRef(Button)>
+    <ForwardRef(Button)
       key="2"
       onClick={[Function]}
       onKeyDown={[Function]}
@@ -117,8 +136,8 @@ exports[`The opponent info will render stage 2 1`] = `
       variant="contained"
     >
       2
-    </WithStyles(ForwardRef(Button))>
-    <WithStyles(ForwardRef(Button))
+    </ForwardRef(Button)>
+    <ForwardRef(Button)
       key="3"
       onClick={[Function]}
       onKeyDown={[Function]}
@@ -136,8 +155,8 @@ exports[`The opponent info will render stage 2 1`] = `
       variant="outlined"
     >
       3
-    </WithStyles(ForwardRef(Button))>
-    <WithStyles(ForwardRef(Button))
+    </ForwardRef(Button)>
+    <ForwardRef(Button)
       key="4"
       onClick={[Function]}
       onKeyDown={[Function]}
@@ -155,19 +174,19 @@ exports[`The opponent info will render stage 2 1`] = `
       variant="outlined"
     >
       4
-    </WithStyles(ForwardRef(Button))>
-  </WithStyles(ForwardRef(ButtonGroup))>
+    </ForwardRef(Button)>
+  </ForwardRef(ButtonGroup)>
   <p
     className="writing"
   >
     Invite
   </p>
-  <WithStyles(ForwardRef(ButtonGroup))
+  <ForwardRef(ButtonGroup)
     aria-label="vertical outlined primary button group"
     color="primary"
     orientation="vertical"
   >
-    <WithStyles(ForwardRef(Button))
+    <ForwardRef(Button)
       key="stub-opponent-1-socketID"
       onClick={[Function]}
       size="large"
@@ -175,8 +194,8 @@ exports[`The opponent info will render stage 2 1`] = `
       variant="contained"
     >
       stub
-    </WithStyles(ForwardRef(Button))>
-    <WithStyles(ForwardRef(Button))
+    </ForwardRef(Button)>
+    <ForwardRef(Button)
       key="stub-opponent-2-socketID"
       onClick={[Function]}
       size="large"
@@ -184,9 +203,9 @@ exports[`The opponent info will render stage 2 1`] = `
       variant="contained"
     >
       stub
-    </WithStyles(ForwardRef(Button))>
-  </WithStyles(ForwardRef(ButtonGroup))>
-</Styled(MuiBox)>
+    </ForwardRef(Button)>
+  </ForwardRef(ButtonGroup)>
+</ForwardRef(Box)>
 `;
 
 exports[`The opponent info will render stage 3A 1`] = `
@@ -211,7 +230,7 @@ exports[`The opponent info will render stage 3A 1`] = `
     >
       stub
     </p>
-    <WithStyles(ForwardRef(CircularProgress)) />
+    <ForwardRef(CircularProgress) />
   </div>
 </div>
 `;

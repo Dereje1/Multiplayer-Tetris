@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Box, ButtonGroup, Button, CircularProgress,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   faSyncAlt,
 } from '@fortawesome/free-solid-svg-icons';
+import GoogleIcon from '@mui/icons-material/Google';
 import './styles/opponentdescription.scss';
 
 /* opponent top part of component */
@@ -17,12 +18,24 @@ const OpponentDescription = ({
   setDifficulty,
   requestInvite,
   getPool,
+  authenticated
 }) => {
+  if (!temp) return null
   const {
     opponents, invitationTo, declinedInvitation,
     acceptedInvitation, gameInProgress, gameOver,
   } = temp;
   // stage 1 - no logged in opponents in multiplayer mode found
+  if (!authenticated) {
+    return (
+      <Button id="googleloginbutton"
+        variant="outlined" startIcon={<GoogleIcon style={{ fontSize: 25 }} />}
+        onClick={() => window.location.assign('/auth/google')}>
+        Continue With Google
+      </Button>
+    );
+  }
+
   if (opponents && !opponents.length) {
     return (
       <div className="opponentContainer__opponentDescription">
@@ -66,7 +79,7 @@ const OpponentDescription = ({
                 key={d}
                 role="button"
                 onClick={() => setDifficulty(d)}
-                onKeyDown={() => {}}
+                onKeyDown={() => { }}
                 tabIndex={0}
                 style={{
                   maxWidth: 35, maxHeight: 35, minWidth: 35, minHeight: 35,
@@ -176,5 +189,6 @@ OpponentDescription.propTypes = {
   requestInvite: PropTypes.func,
   difficulty: PropTypes.number,
   getPool: PropTypes.func,
+  authenticated: PropTypes.bool,
 };
 export default OpponentDescription;

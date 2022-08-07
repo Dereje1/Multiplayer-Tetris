@@ -5,21 +5,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    #authbutton{
-            margin-top: 25px;
-            width: auto;
-            height: 100%;
-        #login{
-            width: 232px;
-            height: 70%;
-            background: url('btn_google_signin_dark_normal_web@2x.png');
-            background-size: 100% 100%;
-            background-repeat: no-repeat;
-            cursor: pointer;
-            outline: none;
-        }
-    }
-
     #users{
         position: absolute;
         right: 0;

@@ -94,15 +94,15 @@ export class Game extends React.Component {
 
     /* spped up on level up */
     if ((game.points.level > prevGame.points.level)
-          && (game.timerInterval > 100)
-          && (!multiPlayer)
+      && (game.timerInterval > 100)
+      && (!multiPlayer)
     ) {
       Action(LEVEL_UP, 50);
     }
 
     /* draws floor or sets state to do so before the next tick */
     if (game.rubble.boundaryCells.length > 10
-       && prevGame.rubble.boundaryCells.length !== game.rubble.boundaryCells.length) {
+      && prevGame.rubble.boundaryCells.length !== game.rubble.boundaryCells.length) {
       if (!game.activeShape.cells.length || game.paused) drawFloor(game, this.canvasContextMajor);
       else this.setState({ updateFloor: true });
     }
@@ -110,7 +110,7 @@ export class Game extends React.Component {
     /* an Invitation from another client has been accepted */
     if (!multiPlayer && socket.temp) {
       if (prevSocket.temp && !prevSocket.temp.acceptedInvitation
-          && socket.temp.acceptedInvitation) {
+        && socket.temp.acceptedInvitation) {
         this.setState({ multiPlayer: true }, () => this.resetBoard({ reStart: false }));
       }
     }
@@ -122,7 +122,7 @@ export class Game extends React.Component {
 
   componentWillUnmount() {
     this.endTick('componentWillUnmount');
-    window.removeEventListener('resize', () => {});
+    window.removeEventListener('resize', () => { });
   }
 
   audioProps = () => {
@@ -347,8 +347,8 @@ export class Game extends React.Component {
     const minWidthMP = 800;
     if (
       (multiPlayer && window.innerWidth < minWidthMP)
-        || (!multiPlayer && window.innerWidth < minWidthSP)
-        || (window.innerHeight < minHeight)
+      || (!multiPlayer && window.innerWidth < minWidthSP)
+      || (window.innerHeight < minHeight)
     ) this.setState({ windowTooSmall: true });
     else this.setState({ windowTooSmall: null }, () => this.loadCanvas());
   };
@@ -359,34 +359,33 @@ export class Game extends React.Component {
       difficulty, multiPlayer, inGameToggle,
       buttonPause, floorsRaised, windowTooSmall,
     } = this.state;
-    return(
+    return (
       <div id="landing">
         {
           Object.keys(game).length && !windowTooSmall ?
-          <div className="democontainer">
-          <Controls
-            minorCanvas={this.canvasMinor}
-            game={game}
-            difficulty={difficulty}
-            socketId={socket.mySocketId}
-            multiPlayer={[multiPlayer, inGameToggle]}
-            pauseButtonState={buttonPause}
-            onReset={b => this.resetBoard({ reStart: b })}
-            onhandlePause={() => this.handlePause}
-            onFloorRaise={() => this.floorRaise(1)}
-            onMultiPlayer={() => this.handleMultiplayer}
-            allowMultiPlayer={Boolean(Object.keys(socket).length) && socket.usersLoggedIn > 1}
-          />
-          <canvas
-            ref={this.canvasMajor}
-            width={game.canvas.canvasMajor.width}
-            height={game.canvas.canvasMajor.height}
-            tabIndex="0"
-            onKeyDown={e => this.gamePlay(e)}
-            onKeyUp={e => this.arrowKeyLag(e)}
-          />
-          {multiPlayer
-            ? (
+            <div className="democontainer">
+              <Controls
+                minorCanvas={this.canvasMinor}
+                game={game}
+                difficulty={difficulty}
+                socketId={socket.mySocketId}
+                multiPlayer={[multiPlayer, inGameToggle]}
+                pauseButtonState={buttonPause}
+                onReset={b => this.resetBoard({ reStart: b })}
+                onhandlePause={() => this.handlePause}
+                onFloorRaise={() => this.floorRaise(1)}
+                onMultiPlayer={() => this.handleMultiplayer}
+                allowMultiPlayer={Boolean(Object.keys(socket).length) && socket.usersLoggedIn > 1}
+              />
+              <canvas
+                ref={this.canvasMajor}
+                width={game.canvas.canvasMajor.width}
+                height={game.canvas.canvasMajor.height}
+                tabIndex="0"
+                onKeyDown={e => this.gamePlay(e)}
+                onKeyUp={e => this.arrowKeyLag(e)}
+              />
+
               <Opponent
                 onReset={reStart => this.resetBoard(reStart)}
                 onFloorRaise={f => this.floorRaise(f)}
@@ -397,13 +396,11 @@ export class Game extends React.Component {
                 difficulty={difficulty}
                 floorsRaisedOnOpp={f => this.setState({ floorsRaised: floorsRaised + f })}
               />
-            )
-            : null
-          }
-          <Audio {...this.audioProps()} />
-        </div>
-        :
-        <div id="smallwindow" />
+
+              <Audio {...this.audioProps()} />
+            </div>
+            :
+            <div id="smallwindow" />
         }
       </div>
     )

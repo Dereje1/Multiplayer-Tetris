@@ -1,3 +1,6 @@
+/**
+ * @jest-environment jsdom
+ */
 import React from 'react';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
@@ -5,7 +8,8 @@ import OpponentInfo from '../../../../src/components/oponnent/opponentInfo';
 import { gameStub } from '../../../stub'
 
 describe('The opponent info', () => {
-    let props;
+    let props, windowSpy;
+    let assign = jest.fn();
     beforeEach(() => {
         props = {
             socketState: {},
@@ -13,11 +17,28 @@ describe('The opponent info', () => {
             setDifficulty: jest.fn(),
             requestInvite: jest.fn(),
             getPool: jest.fn(),
+            authenticated: true
         }
+        windowSpy = jest.spyOn(global, "window", "get");
+        windowSpy.mockImplementation(() => ({ location: { assign } }));
     })
     afterEach(() => {
         props = null
+        windowSpy.mockClear()
     })
+
+    test('will render login for unauthenticated users', async () => {
+        const updatedProps = {
+            ...props,
+            authenticated: false
+        }
+        const wrapper = shallow(<OpponentInfo {...updatedProps} />)
+        expect(toJson(wrapper)).toMatchSnapshot();
+        const loginButton = wrapper.find({id: 'googleloginbutton'})
+        loginButton.props().onClick()
+        expect(assign).toHaveBeenCalledWith('/auth/google')
+    })
+
     test('will render stage 1', () => {
         // stage 1 - no logged in opponents in multiplayer mode found
         const updatedProps = {

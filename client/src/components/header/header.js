@@ -120,7 +120,7 @@ export class Header extends React.Component {
                   }
                 </React.Fragment>
               )
-              : <div id="authbutton"><button id="login" type="submit" onClick={() => window.location.assign('/auth/google')} /></div>
+              : null
           }
           <div
             id="users"

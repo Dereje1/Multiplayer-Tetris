@@ -125,6 +125,16 @@ exports[`The Game component will display the game for allowed screen sizes 1`] =
       tabIndex="0"
       width={300}
     />
+    <Connect(Opponent)
+      difficulty={2}
+      floorsRaisedOnOpp={[Function]}
+      onCanvasFocus={[Function]}
+      onFloorRaise={[Function]}
+      onGameOver={[Function]}
+      onReset={[Function]}
+      onSetDifficulty={[Function]}
+      toggleMultiplayer={[Function]}
+    />
     <Audio
       clearAudio={
         Object {
