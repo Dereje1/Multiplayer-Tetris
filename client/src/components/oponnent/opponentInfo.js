@@ -5,10 +5,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Box, ButtonGroup, Button, CircularProgress,
 } from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Chip from '@mui/material/Chip';
+import GroupIcon from '@mui/icons-material/Group';
 import {
   faSyncAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import GoogleIcon from '@mui/icons-material/Google';
 import './styles/opponentdescription.scss';
 
 /* opponent top part of component */
@@ -18,7 +23,9 @@ const OpponentDescription = ({
   setDifficulty,
   requestInvite,
   getPool,
-  authenticated
+  authenticated,
+  multiPlayer,
+  usersLoggedIn
 }) => {
   if (!temp) return null
   const {
@@ -34,6 +41,23 @@ const OpponentDescription = ({
         Continue With Google
       </Button>
     );
+  }
+  if (!multiPlayer && (!invitationTo || !acceptedInvitation || !gameInProgress || !gameOver)) {
+    return (<Card sx={{ minWidth: 275 }}>
+      <CardContent>
+        <Chip
+          icon={<GroupIcon />}
+          label={usersLoggedIn}
+          color={usersLoggedIn > 1 ? "success" : "error"}
+          sx={{marginBottom: 1}}
+        />
+        <Typography sx={{ fontSize: 14 }} color="text.secondary">
+          {
+            usersLoggedIn > 1 ? "Switch to multi player mode to find opponents" : null
+          }
+        </Typography>
+      </CardContent>
+    </Card>)
   }
 
   if (opponents && !opponents.length) {
@@ -190,5 +214,6 @@ OpponentDescription.propTypes = {
   difficulty: PropTypes.number,
   getPool: PropTypes.func,
   authenticated: PropTypes.bool,
+  usersLoggedIn: PropTypes.number
 };
 export default OpponentDescription;

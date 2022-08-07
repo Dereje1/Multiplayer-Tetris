@@ -1,9 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`The header will render for authenticated users 1`] = `
-<div
-  id="header"
->
+<Fragment>
   <withRouter(Menu)
     onLogOut={[Function]}
   />
@@ -12,15 +10,6 @@ exports[`The header will render for authenticated users 1`] = `
     onAcceptInvite={[Function]}
     onDeclineInvite={[Function]}
   />
-  <div
-    id="users"
-    onClick={[Function]}
-    onKeyDown={[Function]}
-    role="button"
-    tabIndex={-1}
-  >
-    <span />
-  </div>
   <audio
     src={
       Object {
@@ -37,22 +26,11 @@ exports[`The header will render for authenticated users 1`] = `
       kind="captions"
     />
   </audio>
-</div>
+</Fragment>
 `;
 
 exports[`The header will render for unauthenticated users 1`] = `
-<div
-  id="header"
->
-  <div
-    id="users"
-    onClick={[Function]}
-    onKeyDown={[Function]}
-    role="button"
-    tabIndex={-1}
-  >
-    <span />
-  </div>
+<Fragment>
   <audio
     src={
       Object {
@@ -69,5 +47,5 @@ exports[`The header will render for unauthenticated users 1`] = `
       kind="captions"
     />
   </audio>
-</div>
+</Fragment>
 `;

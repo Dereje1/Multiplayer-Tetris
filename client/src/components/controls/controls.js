@@ -2,14 +2,41 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './styles/controls.scss';
 /* font awesome */
-import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faPowerOff, faPause, faPlay, faUsers, faUser,
+  faUsers, faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import IconButton from '@mui/material/IconButton';
+import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite";
+import PauseIcon from "@mui/icons-material/Pause";
 
-/* adds font awesome icons */
-library.add(faPowerOff, faPause, faPlay);
+
+const PlayControls = ({ pauseButtonState, onhandlePause, onReset, disabled }) => (
+  <>
+    <IconButton
+      aria-label="reset"
+      size="large"
+      onClick={() => onReset(false)}
+      disabled={disabled}
+    >
+      <RestartAltIcon sx={{ fontSize: 52, color: disabled ? 'grey' : 'rgb(59, 9, 153)' }} />
+    </IconButton>
+    {
+      pauseButtonState
+        ? (
+          <IconButton aria-label="play" size="large" onClick={onhandlePause} disabled={disabled}>
+            <PlayCircleFilledWhiteIcon sx={{ fontSize: 52, color: disabled ? 'grey' : 'green' }} />
+          </IconButton>
+        )
+        : (
+          <IconButton aria-label="play" size="large" onClick={onhandlePause} disabled={disabled}>
+            <PauseIcon sx={{ fontSize: 52, color: disabled ? 'grey' : 'red' }} />
+          </IconButton>
+        )
+    }
+  </>
+)
 
 const Controls = ({
   onhandlePause,
@@ -34,28 +61,11 @@ const Controls = ({
           tabIndex="0"
         />
         <div className="controls__resetPause">
-          <FontAwesomeIcon
-            className="controls__resetPause__reset"
-            icon={faPowerOff}
-            onClick={() => onReset(false)}
+          <PlayControls
+            pauseButtonState={pauseButtonState}
+            onhandlePause={onhandlePause}
+            onReset={onReset}
           />
-          {
-            pauseButtonState
-              ? (
-                <FontAwesomeIcon
-                  className="controls__resetPause__play"
-                  icon={faPlay}
-                  onClick={onhandlePause()}
-                />
-              )
-              : (
-                <FontAwesomeIcon
-                  className="controls__resetPause__pause"
-                  icon={faPause}
-                  onClick={onhandlePause()}
-                />
-              )
-          }
         </div>
         {
           allowMultiPlayer
@@ -63,7 +73,7 @@ const Controls = ({
               <FontAwesomeIcon
                 className="controls__multiplayer"
                 icon={faUsers}
-                onClick={onMultiPlayer()}
+                onClick={onMultiPlayer}
               />
             )
             : null
@@ -71,7 +81,7 @@ const Controls = ({
         <button
           className="controls__raise"
           type="submit"
-          onClick={() => onFloorRaise()}
+          onClick={onFloorRaise}
         >
           Raise Floor
         </button>
@@ -93,17 +103,25 @@ const Controls = ({
         height={game.canvas.canvasMinor.height}
         tabIndex="0"
       />
+      <div className="controls__resetPause">
+        <PlayControls
+          pauseButtonState={pauseButtonState}
+          onhandlePause={onhandlePause}
+          onReset={onReset}
+          disabled={true}
+        />
+      </div>
       {
         !multiPlayer[1] ? (
           <FontAwesomeIcon
             className="controls__multiplayer"
             icon={faUser}
-            onClick={onMultiPlayer()}
+            onClick={onMultiPlayer}
           />
         )
           : null
       }
-
+      <div style={{ height: 40 }}></div>
       <span>Lines Cleared</span>
       <span>{game.points.totalLinesCleared}</span>
       <span>Difficulty</span>

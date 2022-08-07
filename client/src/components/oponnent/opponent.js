@@ -13,10 +13,10 @@ import soundFile from './styles/WPN.wav';
 // read from store
 const mapStateToProps = ({
   game,
-  socket: { temp },
+  socket: { temp, usersLoggedIn },
   user
 }) =>
-  ({ game, temp, user });
+  ({ game, temp, user, usersLoggedIn });
 const {
   clientEmit: {
     LOOK_FOR_OPPONENTS,
@@ -238,7 +238,7 @@ export class Opponent extends React.Component {
   );
 
   render() {
-    const { difficulty, game, temp, user } = this.props;
+    const { difficulty, game, temp, user, multiPlayer, usersLoggedIn } = this.props;
     return (
       <div className="opponentContainer">
         <OpponentDescription
@@ -248,6 +248,8 @@ export class Opponent extends React.Component {
           requestInvite={sId => this.requestInvite(sId)}
           getPool={() => this.resetMultiplayer()}
           authenticated={user && user.profile && user.profile.authenticated}
+          multiPlayer={multiPlayer}
+          usersLoggedIn={usersLoggedIn}
         />
         <canvas
           ref={this.canvasOpponent}

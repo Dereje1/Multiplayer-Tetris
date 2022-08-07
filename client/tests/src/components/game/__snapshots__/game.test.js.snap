@@ -128,6 +128,7 @@ exports[`The Game component will display the game for allowed screen sizes 1`] =
     <Connect(Opponent)
       difficulty={2}
       floorsRaisedOnOpp={[Function]}
+      multiPlayer={false}
       onCanvasFocus={[Function]}
       onFloorRaise={[Function]}
       onGameOver={[Function]}

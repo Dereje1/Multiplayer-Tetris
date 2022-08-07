@@ -8,7 +8,6 @@ import { clientEmitter } from '../../sockethandler';
 import { socket as socketConstants } from '../../constants/index';
 import Menu from '../menu/menu';
 import Invitation from './invitation';
-import './styles/header.scss';
 import soundFile from './styles/invite_recieved.wav';
 
 const mapStateToProps = state => state;
@@ -95,14 +94,11 @@ export class Header extends React.Component {
 
   render() {
     const { inviteReceived, inviteAccepted } = this.state;
-    const { user, socket } = this.props;
-    const usersMessage = socket.usersLoggedIn
-      ? `${socket.usersLoggedIn}  logged in user${socket.usersLoggedIn < 2 ? '' : 's'}`
-      : null;
+    const { user } = this.props;
     if (user.profile) {
       const { user: { profile: { authenticated } } } = this.props;
       return (
-        <div id="header">
+        <>
           {
             authenticated
               ? (
@@ -122,20 +118,11 @@ export class Header extends React.Component {
               )
               : null
           }
-          <div
-            id="users"
-            role="button"
-            tabIndex={-1}
-            onKeyDown={() => {}}
-            onClick={() => clientEmitter('pool', null)}
-          >
-            <span>{usersMessage}</span>
-          </div>
           {this.audioPlayer()}
-        </div>
+        </>
       );
     }
-    return <div id="header" />;
+    return null;
   }
 
 }

@@ -288,7 +288,7 @@ describe('Sub-Component callbacks', () => {
         const wrapper = shallow(<Game {...props} />);
         const controls = wrapper.find('Controls')
         const spy1 = jest.spyOn(wrapper.instance(), 'handlePause');
-        controls.props().onhandlePause()()
+        controls.props().onhandlePause()
         expect(spy1).toHaveBeenCalled()
     });
     test('Controls - will raise the floor', () => {
@@ -308,7 +308,7 @@ describe('Sub-Component callbacks', () => {
         const wrapper = shallow(<Game {...updatedProps} />);
         const controls = wrapper.find('Controls')
         const spy1 = jest.spyOn(wrapper.instance(), 'handleMultiplayer');
-        controls.props().onMultiPlayer()()
+        controls.props().onMultiPlayer()
         expect(spy1).toHaveBeenCalled()
         expect(controls.props().allowMultiPlayer).toBe(false)
     });

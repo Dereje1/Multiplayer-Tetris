@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './styles/header.scss';
 import {
   DialogTitle, Dialog, Button, ButtonGroup, Chip, Avatar, DialogContent, DialogActions,
 } from '@mui/material';

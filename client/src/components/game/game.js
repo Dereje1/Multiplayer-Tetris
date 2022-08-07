@@ -372,9 +372,9 @@ export class Game extends React.Component {
                 multiPlayer={[multiPlayer, inGameToggle]}
                 pauseButtonState={buttonPause}
                 onReset={b => this.resetBoard({ reStart: b })}
-                onhandlePause={() => this.handlePause}
+                onhandlePause={() => this.handlePause()}
                 onFloorRaise={() => this.floorRaise(1)}
-                onMultiPlayer={() => this.handleMultiplayer}
+                onMultiPlayer={() => this.handleMultiplayer()}
                 allowMultiPlayer={Boolean(Object.keys(socket).length) && socket.usersLoggedIn > 1}
               />
               <canvas
@@ -395,6 +395,7 @@ export class Game extends React.Component {
                 toggleMultiplayer={() => this.setState({ inGameToggle: !inGameToggle })}
                 difficulty={difficulty}
                 floorsRaisedOnOpp={f => this.setState({ floorsRaised: floorsRaised + f })}
+                multiPlayer={multiPlayer}
               />
 
               <Audio {...this.audioProps()} />

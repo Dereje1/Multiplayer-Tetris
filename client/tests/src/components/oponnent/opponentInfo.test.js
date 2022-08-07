@@ -17,7 +17,8 @@ describe('The opponent info', () => {
             setDifficulty: jest.fn(),
             requestInvite: jest.fn(),
             getPool: jest.fn(),
-            authenticated: true
+            authenticated: true,
+            multiPlayer: true
         }
         windowSpy = jest.spyOn(global, "window", "get");
         windowSpy.mockImplementation(() => ({ location: { assign } }));
@@ -37,6 +38,15 @@ describe('The opponent info', () => {
         const loginButton = wrapper.find({id: 'googleloginbutton'})
         loginButton.props().onClick()
         expect(assign).toHaveBeenCalledWith('/auth/google')
+    })
+
+    test('will render for logged in users in single player mode', async () => {
+        const updatedProps = {
+            ...props,
+            multiPlayer: false
+        }
+        const wrapper = shallow(<OpponentInfo {...updatedProps} />)
+        expect(toJson(wrapper)).toMatchSnapshot();
     })
 
     test('will render stage 1', () => {
