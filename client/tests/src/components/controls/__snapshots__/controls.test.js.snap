@@ -108,13 +108,13 @@ exports[`The Controls Will render the controls for single player mode 1`] = `
       pauseButtonState={false}
     />
   </div>
-  <button
+  <ForwardRef(Button)
     className="controls__raise"
     onClick={[MockFunction]}
-    type="submit"
+    variant="contained"
   >
     Raise Floor
-  </button>
+  </ForwardRef(Button)>
   <span>
     Lines Cleared
   </span>
@@ -192,13 +192,13 @@ exports[`The Controls Will render the controls for single player mode with an op
     titleId={null}
     transform={null}
   />
-  <button
+  <ForwardRef(Button)
     className="controls__raise"
     onClick={[MockFunction]}
-    type="submit"
+    variant="contained"
   >
     Raise Floor
-  </button>
+  </ForwardRef(Button)>
   <span>
     Lines Cleared
   </span>

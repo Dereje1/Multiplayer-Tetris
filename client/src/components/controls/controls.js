@@ -10,6 +10,7 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import IconButton from '@mui/material/IconButton';
 import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite";
 import PauseIcon from "@mui/icons-material/Pause";
+import Button from '@mui/material/Button';
 
 
 const PlayControls = ({ pauseButtonState, onhandlePause, onReset, disabled }) => (
@@ -78,13 +79,13 @@ const Controls = ({
             )
             : null
         }
-        <button
+        <Button
           className="controls__raise"
-          type="submit"
+          variant="contained"
           onClick={onFloorRaise}
         >
           Raise Floor
-        </button>
+        </Button>
         <span>Lines Cleared</span>
         <span>{game.points.totalLinesCleared}</span>
         <span>Level</span>

@@ -4,7 +4,7 @@
     justify-content: space-around;
     align-items: center;
     width:auto;
-    background: rgb(190, 190, 190);
+    background: #e7e2e2;
     margin-right: 5%;
     color: rgb(7, 44, 53);
     font-weight: 900;
@@ -61,11 +61,11 @@
 
 .controls__resetPause__reset:hover, .controls__resetPause__pause:hover, .controls__resetPause__play:hover, .controls__multiplayer:hover {
   transition: all 1s;
-  transform: scale(1.25);
+  transform: scale(1.1);
 }
 
 .controls__raise:hover{
   transition: all 1s;
-  transform: translateY(-5px);
+  transform: translateY(-3px);
   box-shadow: 5px 10px;
 }

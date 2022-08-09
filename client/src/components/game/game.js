@@ -341,13 +341,9 @@ export class Game extends React.Component {
   };
 
   checkWindowSize = () => {
-    const { multiPlayer } = this.state;
     const minHeight = 700;
-    const minWidthSP = 585;
-    const minWidthMP = 800;
-    if (
-      (multiPlayer && window.innerWidth < minWidthMP)
-      || (!multiPlayer && window.innerWidth < minWidthSP)
+    const minWidth = 950;
+    if ((window.innerWidth < minWidth)
       || (window.innerHeight < minHeight)
     ) this.setState({ windowTooSmall: true });
     else this.setState({ windowTooSmall: null }, () => this.loadCanvas());
