@@ -1,0 +1,105 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The Single games table will render 1`] = `
+<ForwardRef(TableContainer)
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "propTypes": Object {
+        "children": [Function],
+        "className": [Function],
+        "classes": [Function],
+        "component": [Function],
+        "elevation": [Function],
+        "square": [Function],
+        "sx": [Function],
+        "variant": [Function],
+      },
+      "render": [Function],
+    }
+  }
+>
+  <ForwardRef(Table)
+    aria-label="simple table"
+    sx={
+      Object {
+        "minWidth": 650,
+      }
+    }
+  >
+    <ForwardRef(TableHead)>
+      <ForwardRef(TableRow)>
+        <ForwardRef(TableCell)>
+          Date
+        </ForwardRef(TableCell)>
+        <ForwardRef(TableCell)
+          align="center"
+        >
+          Lines Cleared
+        </ForwardRef(TableCell)>
+        <ForwardRef(TableCell)
+          align="center"
+        >
+          Level Reached
+        </ForwardRef(TableCell)>
+      </ForwardRef(TableRow)>
+    </ForwardRef(TableHead)>
+    <ForwardRef(TableBody)>
+      <ForwardRef(TableRow)
+        key="62e3f935616501f9bd180a71"
+        sx={
+          Object {
+            "&:last-child td, &:last-child th": Object {
+              "border": 0,
+            },
+          }
+        }
+      >
+        <ForwardRef(TableCell)
+          component="th"
+          scope="row"
+        >
+          July 29th 2022, 3:13:57 pm
+        </ForwardRef(TableCell)>
+        <ForwardRef(TableCell)
+          align="center"
+        >
+          49
+        </ForwardRef(TableCell)>
+        <ForwardRef(TableCell)
+          align="center"
+        >
+          9
+        </ForwardRef(TableCell)>
+      </ForwardRef(TableRow)>
+      <ForwardRef(TableRow)
+        key="62dfd050d218114e5c901c43"
+        sx={
+          Object {
+            "&:last-child td, &:last-child th": Object {
+              "border": 0,
+            },
+          }
+        }
+      >
+        <ForwardRef(TableCell)
+          component="th"
+          scope="row"
+        >
+          July 26th 2022, 11:30:24 am
+        </ForwardRef(TableCell)>
+        <ForwardRef(TableCell)
+          align="center"
+        >
+          60
+        </ForwardRef(TableCell)>
+        <ForwardRef(TableCell)
+          align="center"
+        >
+          12
+        </ForwardRef(TableCell)>
+      </ForwardRef(TableRow)>
+    </ForwardRef(TableBody)>
+  </ForwardRef(Table)>
+</ForwardRef(TableContainer)>
+`;

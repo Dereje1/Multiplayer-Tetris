@@ -1,0 +1,600 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The Matches table row will render a collapsed row for a loosing user 1`] = `
+<Fragment>
+  <ForwardRef(TableRow)
+    sx={
+      Object {
+        "& > *": Object {
+          "borderBottom": "unset",
+        },
+      }
+    }
+  >
+    <ForwardRef(TableCell)>
+      <ForwardRef(IconButton)
+        aria-label="expand row"
+        onClick={[Function]}
+        size="small"
+      >
+        <Memo(ForwardRef(KeyboardArrowDownIcon)) />
+      </ForwardRef(IconButton)>
+    </ForwardRef(TableCell)>
+    <ForwardRef(TableCell)
+      component="th"
+      scope="row"
+    >
+      July 23rd 2022, 9:08 pm
+    </ForwardRef(TableCell)>
+    <ForwardRef(TableCell)
+      align="center"
+    >
+      Stub oponent name
+    </ForwardRef(TableCell)>
+    <ForwardRef(TableCell)
+      align="center"
+    >
+      <Memo(ForwardRef(SentimentVeryDissatisfiedIcon))
+        sx={
+          Object {
+            "color": "red",
+            "fontSize": 26,
+          }
+        }
+      />
+    </ForwardRef(TableCell)>
+    <ForwardRef(TableCell)
+      align="center"
+    >
+      4
+    </ForwardRef(TableCell)>
+  </ForwardRef(TableRow)>
+  <ForwardRef(TableRow)>
+    <ForwardRef(TableCell)
+      colSpan={6}
+      style={
+        Object {
+          "paddingBottom": 0,
+          "paddingTop": 0,
+        }
+      }
+    >
+      <ForwardRef(Collapse)
+        in={false}
+        timeout="auto"
+        unmountOnExit={true}
+      >
+        <ForwardRef(Box)
+          sx={
+            Object {
+              "margin": 1,
+            }
+          }
+        >
+          <ForwardRef(Typography)
+            component="div"
+            gutterBottom={true}
+            sx={
+              Object {
+                "fontWeight": "bold",
+              }
+            }
+          >
+            Details
+          </ForwardRef(Typography)>
+          <ForwardRef(Table)
+            aria-label="purchases"
+            size="small"
+          >
+            <ForwardRef(TableHead)>
+              <ForwardRef(TableRow)>
+                <ForwardRef(TableCell) />
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  Lines cleared
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  Floors raised
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  Disqualified
+                </ForwardRef(TableCell)>
+              </ForwardRef(TableRow)>
+            </ForwardRef(TableHead)>
+            <ForwardRef(TableBody)>
+              <ForwardRef(TableRow)
+                key="62dc633b2464e19567160cb3_0"
+              >
+                <ForwardRef(TableCell)
+                  component="th"
+                  scope="row"
+                >
+                  You
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  0
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  0
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  No
+                </ForwardRef(TableCell)>
+              </ForwardRef(TableRow)>
+              <ForwardRef(TableRow)
+                key="62dc633b2464e19567160cb3_1"
+              >
+                <ForwardRef(TableCell)
+                  component="th"
+                  scope="row"
+                >
+                  Stub oponent name
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  2
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  1
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  No
+                </ForwardRef(TableCell)>
+              </ForwardRef(TableRow)>
+            </ForwardRef(TableBody)>
+          </ForwardRef(Table)>
+        </ForwardRef(Box)>
+      </ForwardRef(Collapse)>
+    </ForwardRef(TableCell)>
+  </ForwardRef(TableRow)>
+</Fragment>
+`;
+
+exports[`The Matches table row will render a collapsed row for a winning user 1`] = `
+<Fragment>
+  <ForwardRef(TableRow)
+    sx={
+      Object {
+        "& > *": Object {
+          "borderBottom": "unset",
+        },
+      }
+    }
+  >
+    <ForwardRef(TableCell)>
+      <ForwardRef(IconButton)
+        aria-label="expand row"
+        onClick={[Function]}
+        size="small"
+      >
+        <Memo(ForwardRef(KeyboardArrowDownIcon)) />
+      </ForwardRef(IconButton)>
+    </ForwardRef(TableCell)>
+    <ForwardRef(TableCell)
+      component="th"
+      scope="row"
+    >
+      July 24th 2022, 8:37 am
+    </ForwardRef(TableCell)>
+    <ForwardRef(TableCell)
+      align="center"
+    >
+      Stub oponent name
+    </ForwardRef(TableCell)>
+    <ForwardRef(TableCell)
+      align="center"
+    >
+      <Memo(ForwardRef(EmojiEventsIcon))
+        sx={
+          Object {
+            "color": "green",
+            "fontSize": 26,
+          }
+        }
+      />
+    </ForwardRef(TableCell)>
+    <ForwardRef(TableCell)
+      align="center"
+    >
+      2
+    </ForwardRef(TableCell)>
+  </ForwardRef(TableRow)>
+  <ForwardRef(TableRow)>
+    <ForwardRef(TableCell)
+      colSpan={6}
+      style={
+        Object {
+          "paddingBottom": 0,
+          "paddingTop": 0,
+        }
+      }
+    >
+      <ForwardRef(Collapse)
+        in={false}
+        timeout="auto"
+        unmountOnExit={true}
+      >
+        <ForwardRef(Box)
+          sx={
+            Object {
+              "margin": 1,
+            }
+          }
+        >
+          <ForwardRef(Typography)
+            component="div"
+            gutterBottom={true}
+            sx={
+              Object {
+                "fontWeight": "bold",
+              }
+            }
+          >
+            Details
+          </ForwardRef(Typography)>
+          <ForwardRef(Table)
+            aria-label="purchases"
+            size="small"
+          >
+            <ForwardRef(TableHead)>
+              <ForwardRef(TableRow)>
+                <ForwardRef(TableCell) />
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  Lines cleared
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  Floors raised
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  Disqualified
+                </ForwardRef(TableCell)>
+              </ForwardRef(TableRow)>
+            </ForwardRef(TableHead)>
+            <ForwardRef(TableBody)>
+              <ForwardRef(TableRow)
+                key="62dd04cb1a1a257ead39a1ea_0"
+              >
+                <ForwardRef(TableCell)
+                  component="th"
+                  scope="row"
+                >
+                  You
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  0
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  0
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  No
+                </ForwardRef(TableCell)>
+              </ForwardRef(TableRow)>
+              <ForwardRef(TableRow)
+                key="62dd04cb1a1a257ead39a1ea_1"
+              >
+                <ForwardRef(TableCell)
+                  component="th"
+                  scope="row"
+                >
+                  Stub oponent name
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  0
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  0
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  Yes
+                </ForwardRef(TableCell)>
+              </ForwardRef(TableRow)>
+            </ForwardRef(TableBody)>
+          </ForwardRef(Table)>
+        </ForwardRef(Box)>
+      </ForwardRef(Collapse)>
+    </ForwardRef(TableCell)>
+  </ForwardRef(TableRow)>
+</Fragment>
+`;
+
+exports[`The Matches table row will render an expanded row 1`] = `
+<Fragment>
+  <ForwardRef(TableRow)
+    sx={
+      Object {
+        "& > *": Object {
+          "borderBottom": "unset",
+        },
+      }
+    }
+  >
+    <ForwardRef(TableCell)>
+      <ForwardRef(IconButton)
+        aria-label="expand row"
+        onClick={[Function]}
+        size="small"
+      >
+        <Memo(ForwardRef(KeyboardArrowUpIcon)) />
+      </ForwardRef(IconButton)>
+    </ForwardRef(TableCell)>
+    <ForwardRef(TableCell)
+      component="th"
+      scope="row"
+    >
+      July 24th 2022, 8:37 am
+    </ForwardRef(TableCell)>
+    <ForwardRef(TableCell)
+      align="center"
+    >
+      Stub oponent name
+    </ForwardRef(TableCell)>
+    <ForwardRef(TableCell)
+      align="center"
+    >
+      <Memo(ForwardRef(EmojiEventsIcon))
+        sx={
+          Object {
+            "color": "green",
+            "fontSize": 26,
+          }
+        }
+      />
+    </ForwardRef(TableCell)>
+    <ForwardRef(TableCell)
+      align="center"
+    >
+      2
+    </ForwardRef(TableCell)>
+  </ForwardRef(TableRow)>
+  <ForwardRef(TableRow)>
+    <ForwardRef(TableCell)
+      colSpan={6}
+      style={
+        Object {
+          "paddingBottom": 0,
+          "paddingTop": 0,
+        }
+      }
+    >
+      <ForwardRef(Collapse)
+        in={true}
+        timeout="auto"
+        unmountOnExit={true}
+      >
+        <ForwardRef(Box)
+          sx={
+            Object {
+              "margin": 1,
+            }
+          }
+        >
+          <ForwardRef(Typography)
+            component="div"
+            gutterBottom={true}
+            sx={
+              Object {
+                "fontWeight": "bold",
+              }
+            }
+          >
+            Details
+          </ForwardRef(Typography)>
+          <ForwardRef(Table)
+            aria-label="purchases"
+            size="small"
+          >
+            <ForwardRef(TableHead)>
+              <ForwardRef(TableRow)>
+                <ForwardRef(TableCell) />
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  Lines cleared
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  Floors raised
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  Disqualified
+                </ForwardRef(TableCell)>
+              </ForwardRef(TableRow)>
+            </ForwardRef(TableHead)>
+            <ForwardRef(TableBody)>
+              <ForwardRef(TableRow)
+                key="62dd04cb1a1a257ead39a1ea_0"
+              >
+                <ForwardRef(TableCell)
+                  component="th"
+                  scope="row"
+                >
+                  You
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  0
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  0
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  No
+                </ForwardRef(TableCell)>
+              </ForwardRef(TableRow)>
+              <ForwardRef(TableRow)
+                key="62dd04cb1a1a257ead39a1ea_1"
+              >
+                <ForwardRef(TableCell)
+                  component="th"
+                  scope="row"
+                >
+                  Stub oponent name
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  0
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  0
+                </ForwardRef(TableCell)>
+                <ForwardRef(TableCell)
+                  align="center"
+                >
+                  Yes
+                </ForwardRef(TableCell)>
+              </ForwardRef(TableRow)>
+            </ForwardRef(TableBody)>
+          </ForwardRef(Table)>
+        </ForwardRef(Box)>
+      </ForwardRef(Collapse)>
+    </ForwardRef(TableCell)>
+  </ForwardRef(TableRow)>
+</Fragment>
+`;
+
+exports[`The Matches table will render 1`] = `
+<ForwardRef(TableContainer)
+  component={
+    Object {
+      "$$typeof": Symbol(react.forward_ref),
+      "propTypes": Object {
+        "children": [Function],
+        "className": [Function],
+        "classes": [Function],
+        "component": [Function],
+        "elevation": [Function],
+        "square": [Function],
+        "sx": [Function],
+        "variant": [Function],
+      },
+      "render": [Function],
+    }
+  }
+>
+  <ForwardRef(Table)
+    aria-label="collapsible table"
+  >
+    <ForwardRef(TableHead)>
+      <ForwardRef(TableRow)>
+        <ForwardRef(TableCell) />
+        <ForwardRef(TableCell)>
+          Date (UTC)
+        </ForwardRef(TableCell)>
+        <ForwardRef(TableCell)
+          align="center"
+        >
+          Opponent
+        </ForwardRef(TableCell)>
+        <ForwardRef(TableCell)
+          align="center"
+        >
+          Win/Loss
+        </ForwardRef(TableCell)>
+        <ForwardRef(TableCell)
+          align="center"
+        >
+          Difficulty level
+        </ForwardRef(TableCell)>
+      </ForwardRef(TableRow)>
+    </ForwardRef(TableHead)>
+    <ForwardRef(TableBody)>
+      <Row
+        key="62dd04cb1a1a257ead39a1ea"
+        opponents={
+          Object {
+            "0002": "Stub oponent name",
+          }
+        }
+        row={
+          Object {
+            "__v": 0,
+            "_id": "62dd04cb1a1a257ead39a1ea",
+            "createdAt": "2022-07-24T08:37:31.809Z",
+            "difficulty": 2,
+            "looserDisqualified": true,
+            "looserFloorsRaised": 0,
+            "looserGoogleId": "0002",
+            "looserLinesCleared": 0,
+            "updatedAt": "2022-07-24T08:37:31.809Z",
+            "winnerFloorsRaised": 0,
+            "winnerGoogleId": "0001",
+            "winnerLinesCleared": 0,
+          }
+        }
+        userId="0001"
+      />
+      <Row
+        key="62dc633b2464e19567160cb3"
+        opponents={
+          Object {
+            "0002": "Stub oponent name",
+          }
+        }
+        row={
+          Object {
+            "__v": 0,
+            "_id": "62dc633b2464e19567160cb3",
+            "createdAt": "2022-07-23T21:08:11.812Z",
+            "difficulty": 4,
+            "looserDisqualified": false,
+            "looserFloorsRaised": 0,
+            "looserGoogleId": "0001",
+            "looserLinesCleared": 0,
+            "updatedAt": "2022-07-23T21:08:11.812Z",
+            "winnerFloorsRaised": 1,
+            "winnerGoogleId": "0002",
+            "winnerLinesCleared": 2,
+          }
+        }
+        userId="0001"
+      />
+    </ForwardRef(TableBody)>
+  </ForwardRef(Table)>
+</ForwardRef(TableContainer)>
+`;

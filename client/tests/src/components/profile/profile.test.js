@@ -7,11 +7,6 @@ import { stubProfile } from '../../../stub'
 
 jest.mock('../../../../src/crud')
 
-// Fix date to match snapshot both locally and github 
-const utcFixedDate = new Date(Date.UTC(2022, 6, 30, 12, 35, 0))
-Date.now = jest.fn(() => utcFixedDate);
-
-
 describe('The profile component', () => {
     let props;
     beforeEach(() => {
@@ -23,33 +18,24 @@ describe('The profile component', () => {
         props = null
         RESTcall.mockClear()
     })
-    test('will render for logged in user', async () => {
+    test('will render for logged in user in single mode', async () => {
         RESTcall.mockImplementation(() => Promise.resolve(stubProfile.userProfileResponse ))
         const wrapper = shallow(<Profile {...props} />)
         await Promise.resolve()
         expect(toJson(wrapper)).toMatchSnapshot();
     })
-    test('will empty render if no data fetched', async () => {
-        RESTcall.mockImplementation(() => Promise.resolve({ data: null }))
-        const wrapper = shallow(<Profile {...props} />)
-        await Promise.resolve()
-        expect(wrapper.isEmptyRender()).toBe(true)
-    })
-    test('will render detailed view for a single game', async () => {
+    test('will render for logged in user in match mode', async () => {
         RESTcall.mockImplementation(() => Promise.resolve(stubProfile.userProfileResponse ))
         const wrapper = shallow(<Profile {...props} />)
         await Promise.resolve()
-        const singleGameIcon = wrapper.find('FontAwesomeIcon').at(3)
-        const singleGameDetail = singleGameIcon.props().onClick()
-        expect(toJson(singleGameDetail)).toMatchSnapshot();
+        const tableSwitch = wrapper.find('ForwardRef(FormControlLabel)').props().control;
+        tableSwitch.props.onChange()
+        expect(toJson(wrapper)).toMatchSnapshot();
     })
-
-    test('will render detailed view for a match', async () => {
-        RESTcall.mockImplementation(() => Promise.resolve(stubProfile.userProfileResponse ))
+    test('will render progress bar if no data fetched yet or rejected', async () => {
+        RESTcall.mockImplementation(() => Promise.reject(null))
         const wrapper = shallow(<Profile {...props} />)
         await Promise.resolve()
-        const matchIcon = wrapper.find('FontAwesomeIcon').at(1)
-        const matchDetail = matchIcon.props().onClick()
-        expect(toJson(matchDetail)).toMatchSnapshot();
+        expect(toJson(wrapper)).toMatchSnapshot();
     })
 })
