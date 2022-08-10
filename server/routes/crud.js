@@ -86,11 +86,32 @@ const fetchUserData = async (req, res) => {
   }
 }
 
+const deleteSingleResult = async (req, res) => {
+  try {
+    const { id: googleId } = req.user.google;
+    const query = { _id: req.params._id };
+    const idToRemove = req.params._id;
+    const singleResult = await Single.findById(idToRemove).exec();
+    if (googleId === singleResult.googleId) {
+      const removedResult = await Single.findOneAndRemove(query).exec();
+      console.log(`${googleId} deleted result ${JSON.stringify(removedResult)}`);
+      res.json(removedResult);
+    } else {
+      console.log(`Invalid deletion by googleId: ${googleId} for _id: ${idToRemove}`)
+      res.json(`Invalid deletion by googleId: ${googleId} for _id: ${idToRemove}`);
+    }
+  } catch (err) {
+    res.status(400).send(err)
+  }
+};
+
 /* Add single player result to db */
 router.post('/api/single', isLoggedIn, saveSingleGameResults);
 /* Add match result to db */
 router.post('/api/multiplayer', isLoggedIn, saveMatchGameResults);
 /* Get user data for client profile page consumption */
 router.get('/api/user', isLoggedIn, fetchUserData);
+// deletes a single game result if owned by user
+router.delete('/api/delete_single/:_id', isLoggedIn, deleteSingleResult);
 
-module.exports = { router, saveSingleGameResults, saveMatchGameResults, fetchUserData };
+module.exports = { router, saveSingleGameResults, saveMatchGameResults, fetchUserData, deleteSingleResult };

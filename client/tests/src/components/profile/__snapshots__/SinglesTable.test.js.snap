@@ -42,6 +42,11 @@ exports[`The Single games table will render 1`] = `
         >
           Level Reached
         </ForwardRef(TableCell)>
+        <ForwardRef(TableCell)
+          align="center"
+        >
+          Delete
+        </ForwardRef(TableCell)>
       </ForwardRef(TableRow)>
     </ForwardRef(TableHead)>
     <ForwardRef(TableBody)>
@@ -71,6 +76,24 @@ exports[`The Single games table will render 1`] = `
         >
           9
         </ForwardRef(TableCell)>
+        <ForwardRef(TableCell)
+          align="center"
+          padding="checkbox"
+        >
+          <ForwardRef(IconButton)
+            id="delete-result"
+            onClick={[Function]}
+          >
+            <Memo(ForwardRef(DeleteForeverIcon))
+              color="error"
+              sx={
+                Object {
+                  "fontSize": "1.3em",
+                }
+              }
+            />
+          </ForwardRef(IconButton)>
+        </ForwardRef(TableCell)>
       </ForwardRef(TableRow)>
       <ForwardRef(TableRow)
         key="62dfd050d218114e5c901c43"
@@ -97,6 +120,24 @@ exports[`The Single games table will render 1`] = `
           align="center"
         >
           12
+        </ForwardRef(TableCell)>
+        <ForwardRef(TableCell)
+          align="center"
+          padding="checkbox"
+        >
+          <ForwardRef(IconButton)
+            id="delete-result"
+            onClick={[Function]}
+          >
+            <Memo(ForwardRef(DeleteForeverIcon))
+              color="error"
+              sx={
+                Object {
+                  "fontSize": "1.3em",
+                }
+              }
+            />
+          </ForwardRef(IconButton)>
         </ForwardRef(TableCell)>
       </ForwardRef(TableRow)>
     </ForwardRef(TableBody)>

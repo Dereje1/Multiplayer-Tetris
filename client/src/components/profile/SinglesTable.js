@@ -9,8 +9,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import IconButton from '@mui/material/IconButton'
 
-export default function SinglesTable({rows}) {
+export default function SinglesTable({ rows, onDelete }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -19,6 +21,7 @@ export default function SinglesTable({rows}) {
             <TableCell>Date</TableCell>
             <TableCell align="center">Lines Cleared</TableCell>
             <TableCell align="center">Level Reached</TableCell>
+            <TableCell align="center" >Delete</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -32,6 +35,11 @@ export default function SinglesTable({rows}) {
               </TableCell>
               <TableCell align="center">{row.linesCleared}</TableCell>
               <TableCell align="center">{row.levelReached}</TableCell>
+              <TableCell padding="checkbox" align='center'>
+                <IconButton id="delete-result" onClick={() => onDelete(row._id)}>
+                  <DeleteForeverIcon color='error' sx={{ fontSize: '1.3em' }} />
+                </IconButton>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -41,5 +49,6 @@ export default function SinglesTable({rows}) {
 }
 
 SinglesTable.propTypes = {
-  rows:PropTypes.arrayOf(PropTypes.object).isRequired
+  rows: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onDelete: PropTypes.func.isRequired
 }

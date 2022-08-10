@@ -13,7 +13,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 
-const mapStateToProps = ({user}) =>  ({user});
+const mapStateToProps = ({ user }) => ({ user });
 
 export class Profile extends React.Component {
 
@@ -26,7 +26,7 @@ export class Profile extends React.Component {
   }
 
   componentDidMount() {
-      this.fetchUserStats();
+    this.fetchUserStats();
   }
 
   fetchUserStats = async () => {
@@ -37,6 +37,17 @@ export class Profile extends React.Component {
       this.setState({ userData: null });
     }
   };
+
+  deleteResult = (id) => {
+    const { userData: { singleStats } } = this.state;
+    const updatedSingleStats = singleStats.filter(stat => stat._id !== id)
+    this.setState({
+      userData: {
+        ...this.state.userData,
+        singleStats: updatedSingleStats
+      }
+    }, async () => await RESTcall({ address: `/api/delete_single/${id}`, method: 'delete' }))
+  }
 
   render() {
     const { userData, mode } = this.state;
@@ -52,8 +63,8 @@ export class Profile extends React.Component {
         flexDirection: 'column',
         alignItems: 'center'
       }}>
-      <CircularProgress />
-    </Box>
+        <CircularProgress />
+      </Box>
     );
     return (
       <Box
@@ -91,7 +102,7 @@ export class Profile extends React.Component {
               userId={user.profile.username}
             />
             :
-            <SinglesTable rows={userData.singleStats} />
+            <SinglesTable rows={userData.singleStats} onDelete={this.deleteResult} />
         }
       </Box>
     );

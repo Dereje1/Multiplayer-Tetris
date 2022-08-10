@@ -1,4 +1,4 @@
-const { saveSingleGameResults, saveMatchGameResults, fetchUserData } = require('../../routes/crud')
+const { saveSingleGameResults, saveMatchGameResults, fetchUserData, deleteSingleResult } = require('../../routes/crud')
 const Single = require('../../models/single');
 const Match = require('../../models/match');
 const User = require('../../models/user');
@@ -169,7 +169,7 @@ describe('Fetching User data', () => {
             ],
             opponentNames: { 'stub opponent Id': 'stub opponent displayname' }
         })
-        expect(Single.find).toHaveBeenCalledWith({"googleId": "stub_google_id_1"})
+        expect(Single.find).toHaveBeenCalledWith({ "googleId": "stub_google_id_1" })
         expect(Match.find).toHaveBeenCalled()
         expect(User.find).toHaveBeenCalled()
     })
@@ -184,6 +184,70 @@ describe('Fetching User data', () => {
         }
         const res = { status: jest.fn(() => ({ send: jest.fn() })) }
         await fetchUserData(req, res)
+        expect(res.status).toHaveBeenCalledWith(400)
+    })
+})
+
+describe('Deleting single game results', () => {
+    let json;
+    beforeEach(() => {
+        json = jest.fn()
+        Single.findOneAndRemove = jest.fn(() => ({
+            exec: jest.fn().mockResolvedValue('removed result')
+        }));
+    })
+    afterEach(() => {
+        json.mockClear()
+        Single.findById.mockClear()
+        Single.findOneAndRemove.mockClear()
+    })
+
+    it('will not delete results if ids do not match', async () => {
+        const req = {
+            params: { _id: 'result_id' },
+            user: {
+                google: {
+                    id: 'stub_google_id_1'
+                }
+            }
+        }
+        const res = { json }
+        Single.findById = jest.fn(() => ({
+            exec: jest.fn().mockResolvedValue({ googleId: 'stub_google_id_2' })
+        }));
+        await deleteSingleResult(req, res)
+        expect(json).toHaveBeenCalledWith("Invalid deletion by googleId: stub_google_id_1 for _id: result_id")
+        expect(Single.findOneAndRemove).not.toHaveBeenCalled()
+    })
+
+    it('will delete results if ids match', async () => {
+        const req = {
+            params: { _id: 'result_id' },
+            user: {
+                google: {
+                    id: 'stub_google_id_1'
+                }
+            }
+        }
+        const res = { json }
+        Single.findById = jest.fn(() => ({
+            exec: jest.fn().mockResolvedValue({ googleId: 'stub_google_id_1' })
+        }));
+        await deleteSingleResult(req, res)
+        expect(json).toHaveBeenCalledWith("removed result")
+        expect(Single.findOneAndRemove).toHaveBeenCalledWith({"_id": "result_id"})
+    })
+
+    it('will catch and send errors', async () => {
+        const req = {
+            user: {
+                google: {
+                    id: 'stub_google_id_1'
+                }
+            }
+        }
+        const res = { status: jest.fn(() => ({ send: jest.fn() })) }
+        await deleteSingleResult(req, res)
         expect(res.status).toHaveBeenCalledWith(400)
     })
 })

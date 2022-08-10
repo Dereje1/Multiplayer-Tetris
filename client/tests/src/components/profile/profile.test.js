@@ -38,4 +38,17 @@ describe('The profile component', () => {
         await Promise.resolve()
         expect(toJson(wrapper)).toMatchSnapshot();
     })
+    test('will delete a single game result', async () => {
+        RESTcall.mockImplementation(() => Promise.resolve(stubProfile.userProfileResponse ))
+        const wrapper = shallow(<Profile {...props} />)
+        await Promise.resolve()
+        let singleIds = wrapper.state().userData.singleStats.map(d => d._id)
+        expect(singleIds.includes('62e3f935616501f9bd180a71')).toBe(true)
+        
+        const deleteResult = wrapper.find('SinglesTable');
+        deleteResult.props().onDelete('62e3f935616501f9bd180a71')
+        singleIds = wrapper.state().userData.singleStats.map(d => d._id)
+        expect(singleIds.includes('62e3f935616501f9bd180a71')).toBe(false)
+        expect(RESTcall).toHaveBeenLastCalledWith({address: "/api/delete_single/62e3f935616501f9bd180a71", method: "delete"})
+    })
 })
