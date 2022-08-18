@@ -55,11 +55,11 @@ export class Game extends React.Component {
       updateFloor: false, // builds floor on next tick if true
       canvasLoaded: false, // loads only once per mount
       windowTooSmall: null,
-      lastRefresh: 0, // animation last refresh
       requestAnimation: true, // used a switch to turn animation off/on
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
+    this.lastRefresh = 0; // animation last refresh
     Object.keys(audioTypes).forEach(audio => (this[audio] = React.createRef()));
   }
 
@@ -69,14 +69,6 @@ export class Game extends React.Component {
     this.checkWindowSize();
     window.addEventListener('resize', () => this.checkWindowSize());
     if (socket.temp && socket.temp.invitationFrom) this.setState({ multiPlayer: true });
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    const { lastRefresh } = this.state;
-    // component already updates on redux prop change of y-movement for new tick
-    // prevent an unnecessary update on last refresh being changed in the state.
-    if (nextState.lastRefresh !== lastRefresh) return false;
-    return true;
   }
 
   componentDidUpdate(prevProps) {
@@ -180,16 +172,16 @@ export class Game extends React.Component {
   };
 
   tick = (timeStamp) => {
-    const { lastRefresh, requestAnimation, updateFloor } = this.state;
+    const { requestAnimation, updateFloor } = this.state;
     const { game } = this.props;
     // console.log(timeStamp);
-    if ((timeStamp - lastRefresh) >= game.timerInterval) {
-      if (updateFloor) drawFloor(game, this.canvasContextMajor);
-      this.setState({
-        lastRefresh: timeStamp,
-        updateFloor: false,
-      });
-      // can not do moveshape() in setstate callback, will slip, need more investigation
+    if ((timeStamp - this.lastRefresh) >= game.timerInterval) {
+      this.lastRefresh = timeStamp;
+      if (updateFloor) {
+        this.setState({
+          updateFloor: false,
+        }, () => drawFloor(game, this.canvasContextMajor));
+      };
       this.moveShape();
     }
     // recursively call tick if animation state is still on,

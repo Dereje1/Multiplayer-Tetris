@@ -72,10 +72,10 @@ describe('The Game component', () => {
     test('will start the game', async () => {
         getRequestAnimationFrameSpy(698, 702);
         const wrapper = shallow(<Game {...props} />);
-        expect(wrapper.state().lastRefresh).toBe(0)
+        expect(wrapper.instance().lastRefresh).toBe(0)
         await wrapper.instance().handlePause()
         jest.advanceTimersByTime(50);
-        expect(wrapper.state().lastRefresh).toBe(700)
+        expect(wrapper.instance().lastRefresh).toBe(700)
     });
     test('will set state to multiplayer mode if an inviation is sent', () => {
         const propsToUpdate = {
