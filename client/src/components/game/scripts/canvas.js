@@ -147,7 +147,7 @@ export const drawShape = (ctx, state, opponent = false) => {
   drawCells(ctx, shapeToDraw, opponent);
 };
 
-export const drawNextShape = (ctx, newShape, state) => {
+export const drawNextShape = async (ctx, newShape, state) => {
   clearCanvas(ctx, 'All', 'drawNextShape');
   const initiailizedShape = newShape;
   const canvasWidth = state.canvas.canvasMinor.width;
@@ -174,6 +174,7 @@ export const drawNextShape = (ctx, newShape, state) => {
     false,
     specialshapes,
   );
+  await Promise.resolve()
   const canvasContext = ctx;
   canvasContext.beginPath();
   canvasContext.fillStyle = tetrisShapes[locatedShape.name].color;
