@@ -21,9 +21,6 @@ const drawScreen = ({
   const shapeToDraw = { ...updatedShape };
   [shapeToDraw.boundingBox, shapeToDraw.absoluteVertices] = tetrisShapes.getDims(updatedShape);
 
-  const copyOfRubble = Object.assign({}, game.rubble);
-  copyOfRubble.winRows = null; // need to reset back to null incase of previous win
-
   // Locate Shape on screen and then set .cell prop of activeShape
   const locatedShape = shapeLocator(
     canvasContextMajor,
@@ -69,7 +66,10 @@ const drawScreen = ({
   /*  no collision is found, just do a screen refresh */
   const screenRefreshData = {
     activeShape: locatedShape,
-    rubble: copyOfRubble,
+    rubble: {
+      ...game.rubble,
+      winRows: null // need to reset back to null incase of previous win
+    },
     paused: false,
   };
   updateScreen(screenRefreshData);

@@ -25,7 +25,9 @@ exports[`The opponent info will render for logged in users in single player mode
           "fontSize": 14,
         }
       }
-    />
+    >
+      You are the only logged in user, ask some friends to login and play in dual mode
+    </ForwardRef(Typography)>
   </ForwardRef(CardContent)>
 </ForwardRef(Card)>
 `;

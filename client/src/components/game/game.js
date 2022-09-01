@@ -64,8 +64,8 @@ export class Game extends React.Component {
   }
 
   componentDidMount() {
-    const { GameActions: Action, socket } = this.props;
-    Action(INITIALIZE_GAME, 1, true);
+    const { GameActions, socket } = this.props;
+    GameActions(INITIALIZE_GAME, 1, true);
     this.checkWindowSize();
     window.addEventListener('resize', () => this.checkWindowSize());
     if (socket.temp && socket.temp.invitationFrom) this.setState({ multiPlayer: true });
@@ -75,7 +75,7 @@ export class Game extends React.Component {
     // all optimizations go here
     if (!Object.keys(prevProps.game).length) return;
     const { game: prevGame, socket: prevSocket } = prevProps;
-    const { game, socket, GameActions: Action } = this.props;
+    const { game, socket, GameActions } = this.props;
     const {
       multiPlayer, canvasLoaded, windowTooSmall,
     } = this.state;
@@ -89,7 +89,7 @@ export class Game extends React.Component {
       && (game.timerInterval > 100)
       && (!multiPlayer)
     ) {
-      Action(LEVEL_UP, 50);
+      GameActions(LEVEL_UP, 50);
     }
 
     /* draws floor or sets state to do so before the next tick */
@@ -139,11 +139,11 @@ export class Game extends React.Component {
   };
 
   resetBoard = (config) => {
-    const { game, GameActions: Action } = this.props;
+    const { game, GameActions } = this.props;
     const resetObject = {
       config,
       stateReset: stateItem => this.setState(stateItem),
-      redux: { game, gameReset: floorHeight => Action(INITIALIZE_GAME, floorHeight, true) },
+      redux: { game, gameReset: floorHeight => GameActions(INITIALIZE_GAME, floorHeight, true) },
       classItems: {
         canvasContextMajor: this.canvasContextMajor,
         canvasContextMinor: this.canvasContextMinor,
@@ -156,11 +156,11 @@ export class Game extends React.Component {
   };
 
   startTick = async (makeNewShape = true) => {
-    const { GameActions: Action } = this.props;
+    const { GameActions } = this.props;
     if (makeNewShape) {
       const data = this.newShape();
       // unable to update store wwithout async, not sure why ??
-      await Action(SCREEN_UPDATE, data);
+      await GameActions(SCREEN_UPDATE, data);
       // eslint-disable-next-line react/destructuring-assignment
       drawShape(this.canvasContextMajor, this.props.game);
     }
@@ -197,17 +197,18 @@ export class Game extends React.Component {
 
   // get the next shape ypos
   positionForecast = () => {
-    const { game } = this.props;
-    const copyOfActiveShape = Object.assign({}, game.activeShape);
-    copyOfActiveShape.yPosition += game.activeShape.unitBlockSize;
-    return copyOfActiveShape;
+    const { game: { activeShape } } = this.props;
+    return {
+      ...activeShape,
+      yPosition: activeShape.yPosition + activeShape.unitBlockSize
+    };
   };
 
   newShape = () => {
     // draw next shape on minor and send data of current shape to starttick()
-    const { game, GameActions: Action } = this.props;
+    const { game, GameActions } = this.props;
     const { randomShape, newShapeName, nextShapeInfo } = tetrisShapes.createNewShape(game);
-    Action(SET_NEXT_SHAPE, newShapeName);
+    GameActions(SET_NEXT_SHAPE, newShapeName);
     drawNextShape(this.canvasContextMinor, nextShapeInfo, game);
     // prepare activeshape data to send to starttick
     [randomShape.boundingBox, randomShape.absoluteVertices] = tetrisShapes.getDims(randomShape);
@@ -224,19 +225,19 @@ export class Game extends React.Component {
     return data;
   };
 
-  moveShape = (newPosition = this.positionForecast()) => {
-    const { game, GameActions: Action } = this.props;
+  moveShape = (newPosition) => {
+    const { game, GameActions } = this.props;
     drawScreen(
       {
-        updatedShape: newPosition,
+        updatedShape: newPosition || this.positionForecast(),
         canvasContextMajor: this.canvasContextMajor,
         endTick: this.endTick,
         startTick: this.startTick,
         gameOver: this.gameOver,
         redux: {
           game,
-          collide: data => Action(COLLISION, data),
-          updateScreen: data => Action(SCREEN_UPDATE, data),
+          collide: data => GameActions(COLLISION, data),
+          updateScreen: data => GameActions(SCREEN_UPDATE, data),
         },
         audio: {
           lineCleared: () => this.clearAudio.current.play(),
@@ -249,10 +250,10 @@ export class Game extends React.Component {
   /* Handle Player Events Below */
   handlePause = () => {
     const { buttonPause } = this.state;
-    const { GameActions: Action, game } = this.props;
+    const { GameActions, game } = this.props;
     this.setState(prevState => ({ buttonPause: !prevState.buttonPause }));
     this.canvasMajor.current.focus();
-    Action(PAUSE, !buttonPause);
+    GameActions(PAUSE, !buttonPause);
     if (game.paused) {
       // test if a new game or within a game
       if (game.activeShape.cells.length) this.startTick(false);
@@ -261,7 +262,7 @@ export class Game extends React.Component {
   };
 
   floorRaise = (f) => {
-    const { game, GameActions: Action } = this.props;
+    const { game, GameActions } = this.props;
     // Locate Shape on screen and then set .cell prop of activeShape
     const locatedShape = shapeLocator(
       this.canvasContextMajor,
@@ -277,13 +278,13 @@ export class Game extends React.Component {
       // right now can not raise floor and collide simultaneously
       console.log('Unable to move floor', collisionResult);
     } else {
-      Action(RAISE_FLOOR, game.rubble, { raiseBy: f });
+      GameActions(RAISE_FLOOR, game.rubble, { raiseBy: f });
     }
   };
 
-  gamePlay = (e) => {
+  gamePlay = ({ keyCode }) => {
     const { game } = this.props;
-    const ans = (playerMoves(e, game, this.canvasContextMajor));
+    const ans = playerMoves(keyCode, game, this.canvasContextMajor);
     if (ans) {
       if (ans === 'forcedown') {
         this.endTick('Down Key');

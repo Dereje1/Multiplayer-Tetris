@@ -12,9 +12,5 @@ export const audioTypes = {
 };
 
 export const Audio = ({ ...props }) => (
-  Object.keys(audioTypes).map(audio => (
-    <audio ref={props[audio]} key={audio} src={audioTypes[audio]}>
-      <track kind="captions" />
-    </audio>
-  ))
+  Object.keys(audioTypes).map(audio => <audio ref={props[audio]} key={audio} src={audioTypes[audio]} preload="auto" />)
 );

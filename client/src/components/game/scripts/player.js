@@ -17,7 +17,7 @@ const rotation = (state, ctx) => {
   // do crude wall kicks, ideally should translate with a recursive function
   if (
     rotatedShape.boundingBox[0] < 0
-        || rotatedShape.boundingBox[1] > state.canvas.canvasMajor.width
+    || rotatedShape.boundingBox[1] > state.canvas.canvasMajor.width
   ) { // side wall kicks
     const translateUnits = state.activeShape.name === 'shapeI' ? 2 : 1;
     if (rotatedShape.boundingBox[0] < 0) { // translate to the left
@@ -38,21 +38,21 @@ const rotation = (state, ctx) => {
   return null;
 };
 
-const playerMoves = (e, state, ctx) => {
+const playerMoves = (keyCode, state, ctx) => {
   if (state.paused) return null;
-  const left = e.keyCode === 37;
-  const right = e.keyCode === 39;
-  const up = e.keyCode === 38;
-  const down = e.keyCode === 40;
+  const left = keyCode === 37;
+  const right = keyCode === 39;
+  const up = keyCode === 38;
+  const down = keyCode === 40;
 
 
   if (!(left || right || up || down)) return null; // do nothing for any other keypress
 
   // check X boundaries
   const leftOutOfBound = left && (state.activeShape.boundingBox[0]
-       - state.activeShape.unitBlockSize) < 0;
+    - state.activeShape.unitBlockSize) < 0;
   const rightOutOfBound = right && (state.activeShape.boundingBox[1]
-      + state.activeShape.unitBlockSize) > state.canvas.canvasMajor.width;
+    + state.activeShape.unitBlockSize) > state.canvas.canvasMajor.width;
   if (leftOutOfBound || rightOutOfBound) return null;
 
   const copyOfActiveShape = Object.assign({}, state.activeShape);
@@ -69,7 +69,7 @@ const playerMoves = (e, state, ctx) => {
     // of collision with drawscreen produces problems
     copyOfActiveShape.yPosition += state.activeShape.unitBlockSize;
     [copyOfActiveShape.boundingBox,
-      copyOfActiveShape.absoluteVertices] = tetrisShapes.getDims(copyOfActiveShape);
+    copyOfActiveShape.absoluteVertices] = tetrisShapes.getDims(copyOfActiveShape);
     const locatedShape = shapeLocator(
       ctx,
       state.canvas.canvasMajor.width,

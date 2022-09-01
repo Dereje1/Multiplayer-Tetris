@@ -1,6 +1,6 @@
 import player from "../../../../../src/components/game/scripts/player";
 import * as collision from '../../../../../src/components/game/scripts/collision';
-import { gameStub,  stubShapeI } from '../../../../stub';
+import { gameStub, stubShapeI } from '../../../../stub';
 import * as shapeLocator from '../../../../../src/components/game/scripts/locateShape';
 
 collision.runCollisionTest = jest.fn();
@@ -12,7 +12,7 @@ describe('Player moves', () => {
         expect(ans).toBe(null)
     })
     test('will handle non-arrow keys', () => {
-        const ans = player({ keyCode: 44 }, { ...gameStub, paused: false })
+        const ans = player(44, { ...gameStub, paused: false })
         expect(ans).toBe(null)
     })
 
@@ -30,7 +30,7 @@ describe('Player moves', () => {
             },
             paused: false
         }
-        const ans = player({ keyCode: 37 }, updatedGameStub, {})
+        const ans = player(37, updatedGameStub, {})
         expect(ans).toBe(null)
     })
 
@@ -48,7 +48,7 @@ describe('Player moves', () => {
             },
             paused: false
         }
-        const ans = player({ keyCode: 39 }, updatedGameStub, {})
+        const ans = player(39, updatedGameStub, {})
         expect(ans).toBe(null)
     })
 
@@ -58,9 +58,9 @@ describe('Player moves', () => {
             paused: false
         }
         collision.getSideBlock.mockImplementation(() => true)
-        let ans = player({ keyCode: 37 }, updatedGameStub, {})
+        let ans = player(37, updatedGameStub, {})
         expect(ans).toBe(null)
-        ans = player({ keyCode: 39 }, updatedGameStub, {})
+        ans = player(39, updatedGameStub, {})
         expect(ans).toBe(null)
     })
 
@@ -70,7 +70,7 @@ describe('Player moves', () => {
             paused: false
         }
         collision.getSideBlock.mockImplementation(() => false)
-        const ans = player({ keyCode: 37 }, updatedGameStub, {})
+        const ans = player(37, updatedGameStub, {})
         expect(ans.xPosition).toBe(-1 * gameStub.activeShape.unitBlockSize)
     })
 
@@ -80,7 +80,7 @@ describe('Player moves', () => {
             paused: false
         }
         collision.getSideBlock.mockImplementation(() => false)
-        const ans = player({ keyCode: 39 }, updatedGameStub, {})
+        const ans = player(39, updatedGameStub, {})
         expect(ans.xPosition).toBe(gameStub.activeShape.unitBlockSize)
     })
 
@@ -92,7 +92,7 @@ describe('Player moves', () => {
         const spy1 = jest.spyOn(shapeLocator, 'default');
         collision.getSideBlock.mockImplementation(() => false)
         collision.runCollisionTest.mockImplementation(() => false)
-        const ans = player({ keyCode: 40 }, updatedGameStub, {})
+        const ans = player(40, updatedGameStub, {})
         expect(ans).toBe('forcedown')
         expect(spy1.mock.calls[0][3].yPosition).toBe(gameStub.activeShape.unitBlockSize)
     })
@@ -104,7 +104,7 @@ describe('Player moves', () => {
         }
         collision.getSideBlock.mockImplementation(() => false)
         collision.runCollisionTest.mockImplementation(() => true)
-        const ans = player({ keyCode: 40 }, updatedGameStub, {})
+        const ans = player(40, updatedGameStub, {})
         expect(ans).toBe(null)
     })
 
@@ -114,7 +114,7 @@ describe('Player moves', () => {
             activeShape: stubShapeI,
             paused: false
         }
-        const ans = player({ keyCode: 38 }, updatedGameStub, {})
+        const ans = player(38, updatedGameStub, {})
         expect(ans).toBe(null)
     })
 
@@ -125,7 +125,7 @@ describe('Player moves', () => {
             paused: false
         }
         collision.runCollisionTest.mockImplementation(() => false)
-        const ans = player({ keyCode: 38 }, updatedGameStub, {})
+        const ans = player(38, updatedGameStub, {})
         expect(ans).toEqual({
             name: 'shapeI',
             unitBlockSize: 30,
@@ -264,7 +264,7 @@ describe('Player moves', () => {
             paused: false
         }
         collision.runCollisionTest.mockImplementation(() => false)
-        const ans = player({ keyCode: 38 }, updatedGameStub, {})
+        const ans = player(38, updatedGameStub, {})
         expect(ans).toEqual({
             name: 'shapeI',
             unitBlockSize: 30,

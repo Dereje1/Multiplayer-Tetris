@@ -49,11 +49,14 @@ const OpponentDescription = ({
           icon={<GroupIcon />}
           label={usersLoggedIn}
           color={usersLoggedIn > 1 ? "success" : "error"}
-          sx={{marginBottom: 1}}
+          sx={{ marginBottom: 1 }}
         />
         <Typography sx={{ fontSize: 14 }} color="text.secondary">
           {
-            usersLoggedIn > 1 ? "Switch to multi player mode to find opponents" : null
+            usersLoggedIn > 1 ?
+              "Switch to multi player mode to find opponents"
+              :
+              "You are the only logged in user, ask some friends to login and play in dual mode"
           }
         </Typography>
       </CardContent>
