@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import toJson from 'enzyme-to-json';
 import Controls from '../../../../src/components/controls/controls'
-import {gameStub} from '../../../stub'
+import { gameStub } from '../../../stub'
 
 describe('The Controls', () => {
     let props;
@@ -12,13 +12,15 @@ describe('The Controls', () => {
             onMultiPlayer: jest.fn(),
             onFloorRaise: jest.fn(),
             onReset: jest.fn(),
-            minorCanvas:{},
-            game:gameStub,
-            multiPlayer:[],
+            onMute: jest.fn(),
+            minorCanvas: {},
+            game: gameStub,
+            multiPlayer: [],
             difficulty: 3,
             socketId: 'stub_socket_Id',
             pauseButtonState: false,
             allowMultiPlayer: false,
+            mute: false
         }
     })
     afterEach(() => {
@@ -30,13 +32,18 @@ describe('The Controls', () => {
     })
 
     test('Will render the controls for single player mode with an option to switch to multiplayer mode', () => {
-        const updatedProps = {...props, allowMultiPlayer: true}
+        const updatedProps = { ...props, allowMultiPlayer: true }
         const wrapper = shallow(<Controls  {...updatedProps} />)
         expect(toJson(wrapper)).toMatchSnapshot();
     })
 
     test('Will render the controls for multiplayer player mode', () => {
-        const updatedProps = {...props, multiPlayer:[true, false]}
+        const updatedProps = { ...props, multiPlayer: [true, false] }
+        const wrapper = shallow(<Controls  {...updatedProps} />)
+        expect(toJson(wrapper)).toMatchSnapshot();
+    })
+    test('Will render the controls for muted sound', () => {
+        const updatedProps = { ...props, mute: true }
         const wrapper = shallow(<Controls  {...updatedProps} />)
         expect(toJson(wrapper)).toMatchSnapshot();
     })

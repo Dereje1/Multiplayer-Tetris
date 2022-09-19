@@ -11,6 +11,8 @@ import IconButton from '@mui/material/IconButton';
 import PlayCircleFilledWhiteIcon from "@mui/icons-material/PlayCircleFilledWhite";
 import PauseIcon from "@mui/icons-material/Pause";
 import Button from '@mui/material/Button';
+import VolumeOffIcon from '@mui/icons-material/VolumeOff';
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
 
 const PlayControls = ({ pauseButtonState, onhandlePause, onReset, disabled }) => (
@@ -51,6 +53,8 @@ const Controls = ({
   socketId,
   pauseButtonState,
   allowMultiPlayer,
+  onMute,
+  mute
 }) => {
   if (!multiPlayer[0]) {
     return (
@@ -79,13 +83,30 @@ const Controls = ({
             )
             : null
         }
-        <Button
-          className="controls__raise"
-          variant="contained"
-          onClick={onFloorRaise}
-        >
-          Raise Floor
-        </Button>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Button
+            className="controls__raise"
+            variant="contained"
+            onClick={onFloorRaise}
+          >
+            Raise Floor
+          </Button>
+          <IconButton
+            aria-label="mute"
+            size="large"
+            onClick={onMute}
+            sx={{
+              ml: 1.5,
+              "&.MuiButtonBase-root:hover": {
+                bgcolor: "transparent"
+              }
+            }}
+          >
+            {mute ? <VolumeUpIcon sx={{ fontSize: 30, color: '#649559' }} /> : <VolumeOffIcon sx={{ fontSize: 30, color: '#f35959' }} />}
+          </IconButton>
+        </div>
+
+
         <span>Lines Cleared</span>
         <span>{game.points.totalLinesCleared}</span>
         <span>Level</span>
@@ -161,5 +182,7 @@ Controls.propTypes = {
   socketId: PropTypes.string,
   pauseButtonState: PropTypes.bool.isRequired,
   allowMultiPlayer: PropTypes.bool.isRequired,
+  onMute: PropTypes.func.isRequired,
+  mute: PropTypes.bool.isRequired
 };
 export default Controls;

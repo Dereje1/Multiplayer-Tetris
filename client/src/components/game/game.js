@@ -55,7 +55,8 @@ export class Game extends React.Component {
       updateFloor: false, // builds floor on next tick if true
       canvasLoaded: false, // loads only once per mount
       windowTooSmall: null,
-      requestAnimation: true, // used a switch to turn animation off/on
+      requestAnimation: true, // used a switch to turn animation off/on,
+      mute: false
     };
     this.canvasMajor = React.createRef();
     this.canvasMinor = React.createRef();
@@ -227,6 +228,7 @@ export class Game extends React.Component {
 
   moveShape = (newPosition) => {
     const { game, GameActions } = this.props;
+    const { mute } = this.state;
     drawScreen(
       {
         updatedShape: newPosition || this.positionForecast(),
@@ -240,8 +242,8 @@ export class Game extends React.Component {
           updateScreen: data => GameActions(SCREEN_UPDATE, data),
         },
         audio: {
-          lineCleared: () => this.clearAudio.current.play(),
-          maxLinesCleared: () => this.maxClearAudio.current.play(),
+          lineCleared: () => !mute && this.clearAudio.current.play(),
+          maxLinesCleared: () => !mute && this.maxClearAudio.current.play(),
         },
       },
     );
@@ -347,6 +349,7 @@ export class Game extends React.Component {
     const {
       difficulty, multiPlayer, inGameToggle,
       buttonPause, floorsRaised, windowTooSmall,
+      mute
     } = this.state;
     return (
       <div id="landing">
@@ -365,6 +368,8 @@ export class Game extends React.Component {
                 onFloorRaise={() => this.floorRaise(1)}
                 onMultiPlayer={() => this.handleMultiplayer()}
                 allowMultiPlayer={Boolean(Object.keys(socket).length) && socket.usersLoggedIn > 1}
+                onMute={() => this.setState({ mute: !mute }, () => this.canvasMajor.current.focus())}
+                mute={mute}
               />
               <canvas
                 ref={this.canvasMajor}

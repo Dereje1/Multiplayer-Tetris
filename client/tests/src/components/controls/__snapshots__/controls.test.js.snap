@@ -90,6 +90,80 @@ exports[`The Controls Will render the controls for multiplayer player mode 1`] =
 </div>
 `;
 
+exports[`The Controls Will render the controls for muted sound 1`] = `
+<div
+  className="controls"
+>
+  <canvas
+    height={150}
+    tabIndex="0"
+    width={210}
+  />
+  <div
+    className="controls__resetPause"
+  >
+    <PlayControls
+      onReset={[MockFunction]}
+      onhandlePause={[MockFunction]}
+      pauseButtonState={false}
+    />
+  </div>
+  <div
+    style={
+      Object {
+        "alignItems": "center",
+        "display": "flex",
+      }
+    }
+  >
+    <ForwardRef(Button)
+      className="controls__raise"
+      onClick={[MockFunction]}
+      variant="contained"
+    >
+      Raise Floor
+    </ForwardRef(Button)>
+    <ForwardRef(IconButton)
+      aria-label="mute"
+      onClick={[MockFunction]}
+      size="large"
+      sx={
+        Object {
+          "&.MuiButtonBase-root:hover": Object {
+            "bgcolor": "transparent",
+          },
+          "ml": 1.5,
+        }
+      }
+    >
+      <Memo(ForwardRef(VolumeUpIcon))
+        sx={
+          Object {
+            "color": "#649559",
+            "fontSize": 30,
+          }
+        }
+      />
+    </ForwardRef(IconButton)>
+  </div>
+  <span>
+    Lines Cleared
+  </span>
+  <span>
+    0
+  </span>
+  <span>
+    Level
+  </span>
+  <span>
+    0
+  </span>
+  <span>
+    Single Player Mode
+  </span>
+</div>
+`;
+
 exports[`The Controls Will render the controls for single player mode 1`] = `
 <div
   className="controls"
@@ -108,13 +182,44 @@ exports[`The Controls Will render the controls for single player mode 1`] = `
       pauseButtonState={false}
     />
   </div>
-  <ForwardRef(Button)
-    className="controls__raise"
-    onClick={[MockFunction]}
-    variant="contained"
+  <div
+    style={
+      Object {
+        "alignItems": "center",
+        "display": "flex",
+      }
+    }
   >
-    Raise Floor
-  </ForwardRef(Button)>
+    <ForwardRef(Button)
+      className="controls__raise"
+      onClick={[MockFunction]}
+      variant="contained"
+    >
+      Raise Floor
+    </ForwardRef(Button)>
+    <ForwardRef(IconButton)
+      aria-label="mute"
+      onClick={[MockFunction]}
+      size="large"
+      sx={
+        Object {
+          "&.MuiButtonBase-root:hover": Object {
+            "bgcolor": "transparent",
+          },
+          "ml": 1.5,
+        }
+      }
+    >
+      <Memo(ForwardRef(VolumeOffIcon))
+        sx={
+          Object {
+            "color": "#f35959",
+            "fontSize": 30,
+          }
+        }
+      />
+    </ForwardRef(IconButton)>
+  </div>
   <span>
     Lines Cleared
   </span>
@@ -192,13 +297,44 @@ exports[`The Controls Will render the controls for single player mode with an op
     titleId={null}
     transform={null}
   />
-  <ForwardRef(Button)
-    className="controls__raise"
-    onClick={[MockFunction]}
-    variant="contained"
+  <div
+    style={
+      Object {
+        "alignItems": "center",
+        "display": "flex",
+      }
+    }
   >
-    Raise Floor
-  </ForwardRef(Button)>
+    <ForwardRef(Button)
+      className="controls__raise"
+      onClick={[MockFunction]}
+      variant="contained"
+    >
+      Raise Floor
+    </ForwardRef(Button)>
+    <ForwardRef(IconButton)
+      aria-label="mute"
+      onClick={[MockFunction]}
+      size="large"
+      sx={
+        Object {
+          "&.MuiButtonBase-root:hover": Object {
+            "bgcolor": "transparent",
+          },
+          "ml": 1.5,
+        }
+      }
+    >
+      <Memo(ForwardRef(VolumeOffIcon))
+        sx={
+          Object {
+            "color": "#f35959",
+            "fontSize": 30,
+          }
+        }
+      />
+    </ForwardRef(IconButton)>
+  </div>
   <span>
     Lines Cleared
   </span>

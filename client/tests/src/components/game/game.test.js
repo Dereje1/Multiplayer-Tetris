@@ -323,6 +323,15 @@ describe('Sub-Component callbacks', () => {
         const controls = wrapper.find('Controls')
         expect(controls.props().allowMultiPlayer).toBe(true)
     });
+    test('Controls - will mute sounds', () => {
+        const wrapper = shallow(<Game {...props} />);
+        const controls = wrapper.find('Controls')
+        focus.mockClear()
+        expect(wrapper.state().mute).toBe(false)
+        controls.props().onMute()
+        expect(wrapper.state().mute).toBe(true)
+        expect(focus).toHaveBeenCalledTimes(1)
+    });
     test('Canvas - on Key Down', () => {
         const wrapper = shallow(<Game {...props} />);
         const canvas = wrapper.find('canvas')
