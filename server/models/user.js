@@ -1,14 +1,13 @@
 const mongoose = require('mongoose');
 
-const userSchema = mongoose.Schema({
-  google: {
-    id: String,
-    token: String,
-    displayName: String,
-    email: String,
-  },
+// define the schema for our user model
+const userSchema = new mongoose.Schema({
+  userId: String,
+  token: String,
+  displayName: String,
+  username: String,
+  service: String,
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
-
 module.exports = User;

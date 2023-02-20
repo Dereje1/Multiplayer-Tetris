@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const cookieSession = require('cookie-session');
+const { auth } = require('passportbundle')
+const User = require('./models/user');
 
 const app = express();
 // load root level middleware
@@ -19,13 +21,34 @@ app.use(cookieSession({
   maxAge: 21 * 24 * 60 * 60 * 1000,
   keys: [process.env.COOKIE_KEY],
 }));
+/*
+TODO; temp patch for passport 0.6.0 upgrade error, remove after passport resolves issue
+see: https://github.com/jaredhanson/passport/issues/904#issuecomment-1307558283
+register regenerate & save after the cookieSession middleware initialization
+*/
+/* istanbul ignore next */
+app.use((request, response, next) => {
+  if (request.session && !request.session.regenerate) {
+    // eslint-disable-next-line no-param-reassign
+    request.session.regenerate = (cb) => {
+      cb();
+    };
+  }
+  if (request.session && !request.session.save) {
+    // eslint-disable-next-line no-param-reassign
+    request.session.save = (cb) => {
+      cb();
+    };
+  }
+  next();
+});
 /* Build and deployment */
 app.use('/', express.static(path.join(__dirname, '../client/build')));
 // connect to db
 require('./models/db');
 // configure authentication
-require('./authentication/index')(app);
-
+// require('./authentication/index')(app);
+auth(app, User);
 // use crud routes
 app.use(require('./routes/crud').router);
 /* Build and deployment */
