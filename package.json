@@ -21,7 +21,7 @@
     "debug": "^4.1.1",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
-    "mongoose": "^6.4.4",
+    "mongoose": "^6.4.6",
     "morgan": "^1.9.1",
     "passportbundle": "latest",
     "path": "^0.12.7",
