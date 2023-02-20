@@ -19,7 +19,7 @@ describe('The Matches table', () => {
         const wrapper = shallow(<MatchesTable
             rows={stubProfile.userProfileResponse.matchStats}
             opponents={stubProfile.userProfileResponse.opponentNames}
-            userId={stubProfile.user.profile.username}
+            userId={stubProfile.user.profile.userId}
         />)
         expect(toJson(wrapper)).toMatchSnapshot();
     })
@@ -30,7 +30,7 @@ describe('The Matches table row', () => {
         const props = {
             row: stubProfile.userProfileResponse.matchStats[0],
             opponents: stubProfile.userProfileResponse.opponentNames,
-            userId: stubProfile.user.profile.username
+            userId: stubProfile.user.profile.userId
         }
         const wrapper = shallow(<Row {...props} />)
         expect(toJson(wrapper)).toMatchSnapshot();
@@ -40,7 +40,7 @@ describe('The Matches table row', () => {
         const props = {
             row: stubProfile.userProfileResponse.matchStats[1],
             opponents: stubProfile.userProfileResponse.opponentNames,
-            userId: stubProfile.user.profile.username
+            userId: stubProfile.user.profile.userId
         }
         const wrapper = shallow(<Row {...props} />)
         expect(toJson(wrapper)).toMatchSnapshot();
@@ -51,7 +51,7 @@ describe('The Matches table row', () => {
         const props = {
             row: stubProfile.userProfileResponse.matchStats[0],
             opponents: stubProfile.userProfileResponse.opponentNames,
-            userId: stubProfile.user.profile.username
+            userId: stubProfile.user.profile.userId
         }
         const wrapper = shallow(<Row {...props} />)
         const expandButton = wrapper.find({ 'aria-label': "expand row" })
@@ -64,7 +64,7 @@ describe('The Matches table row', () => {
         const props = {
             row: stubProfile.userProfileResponse.matchStats[0],
             opponents: stubProfile.userProfileResponse.opponentNames,
-            userId: stubProfile.user.profile.username
+            userId: stubProfile.user.profile.userId
         }
         const wrapper = shallow(<Row {...props} />)
         const expandButton = wrapper.find({ 'aria-label': "expand row" })

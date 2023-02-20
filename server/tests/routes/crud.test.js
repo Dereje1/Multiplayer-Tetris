@@ -8,19 +8,19 @@ describe('Saving single game results', () => {
     beforeEach(() => {
         json = jest.fn()
         Single.create = jest.fn().mockResolvedValue('single game result stored in db');
+        User.findById = jest.fn().mockResolvedValue({ userId: 'stub_google_id_1' })
     })
     afterEach(() => {
         json.mockClear()
         Single.create.mockClear()
+        User.findById.mockClear()
     })
 
     it('will not save results if ids do not match', async () => {
         const req = {
-            body: { googleId: 'stub_google_id_2' },
+            body: { _id: 'stub_google_id_2' },
             user: {
-                google: {
-                    id: 'stub_google_id_1'
-                }
+                _id: 'stub_google_id_1'
             }
         }
         const res = { json }
@@ -31,11 +31,9 @@ describe('Saving single game results', () => {
 
     it('will save results if ids match', async () => {
         const req = {
-            body: { googleId: 'stub_google_id_1' },
+            body: { _id: 'stub_google_id_1' },
             user: {
-                google: {
-                    id: 'stub_google_id_1'
-                }
+                _id: 'stub_google_id_1'
             }
         }
         const res = { json }
@@ -63,19 +61,19 @@ describe('Saving match results', () => {
     beforeEach(() => {
         json = jest.fn()
         Match.create = jest.fn().mockResolvedValue('match result stored in db');
+        User.findById = jest.fn().mockResolvedValue({ userId: 'stub_google_id_1' })
     })
     afterEach(() => {
         json.mockClear()
         Match.create.mockClear()
+        User.findById.mockClear()
     })
 
     it('will not save results if ids do not match', async () => {
         const req = {
             body: { winnerGoogleId: 'stub_google_id_2', looserGoogleId: 'stub_google_id_3' },
             user: {
-                google: {
-                    id: 'stub_google_id_1'
-                }
+                _id: 'stub_google_id_1'
             }
         }
         const res = { json }
@@ -88,9 +86,7 @@ describe('Saving match results', () => {
         const req = {
             body: { winnerGoogleId: 'stub_google_id_1', looserGoogleId: 'stub_google_id_3' },
             user: {
-                google: {
-                    id: 'stub_google_id_1'
-                }
+                _id: 'stub_google_id_1'
             }
         }
         const res = { json }
@@ -136,7 +132,7 @@ describe('Fetching User data', () => {
             where: jest.fn(() => ({
                 in: jest.fn(() => ({
                     exec: jest.fn().mockResolvedValue([
-                        { google: { id: 'stub opponent Id', displayName: 'stub opponent displayname' } }
+                        { userId: 'stub opponent Id', displayName: 'stub opponent displayName' }
                     ])
                 }))
             }))
@@ -152,9 +148,7 @@ describe('Fetching User data', () => {
     it('will fetch user data', async () => {
         const req = {
             user: {
-                google: {
-                    id: 'stub_google_id_1'
-                }
+                userId: 'stub_google_id_1'
             }
         }
         const res = { json }
@@ -167,7 +161,8 @@ describe('Fetching User data', () => {
                     looserGoogleId: 'stub looser Id'
                 }
             ],
-            opponentNames: { 'stub opponent Id': 'stub opponent displayname' }
+            opponentNames: { 'stub opponent Id': 'stub opponent displayName' },
+            googleId: "stub_google_id_1"
         })
         expect(Single.find).toHaveBeenCalledWith({ "googleId": "stub_google_id_1" })
         expect(Match.find).toHaveBeenCalled()
@@ -206,9 +201,7 @@ describe('Deleting single game results', () => {
         const req = {
             params: { _id: 'result_id' },
             user: {
-                google: {
-                    id: 'stub_google_id_1'
-                }
+                userId: 'stub_google_id_1'
             }
         }
         const res = { json }
@@ -224,9 +217,7 @@ describe('Deleting single game results', () => {
         const req = {
             params: { _id: 'result_id' },
             user: {
-                google: {
-                    id: 'stub_google_id_1'
-                }
+                userId: 'stub_google_id_1'
             }
         }
         const res = { json }
@@ -235,7 +226,7 @@ describe('Deleting single game results', () => {
         }));
         await deleteSingleResult(req, res)
         expect(json).toHaveBeenCalledWith("removed result")
-        expect(Single.findOneAndRemove).toHaveBeenCalledWith({"_id": "result_id"})
+        expect(Single.findOneAndRemove).toHaveBeenCalledWith({ "_id": "result_id" })
     })
 
     it('will catch and send errors', async () => {

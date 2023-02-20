@@ -23,8 +23,8 @@ describe('The header', () => {
                 profile: {
                     authenticated: false,
                     userip: "::ffff:127.0.0.1",
-                    username: null,
-                    displayname: null
+                    userId: null,
+                    displayName: null
                 }
             },
             socket: { mySocketId: 'stub_my_socket_id', usersLoggedIn: 0 },
@@ -59,8 +59,8 @@ describe('The header', () => {
         expect(socketSpy).toHaveBeenCalledWith("SEND_LOGGED_IN_USER", {
             authenticated: true,
             userip: "::ffff:127.0.0.1",
-            username: '0001',
-            displayname: 'Stub Display Name'
+            userId: '0001',
+            displayName: 'Stub Display Name'
         })
         expect(toJson(wrapper)).toMatchSnapshot();
     })
@@ -80,8 +80,8 @@ describe('The header', () => {
         expect(socketSpy).toHaveBeenCalledWith("USER_LOGGED_OUT", {
             authenticated: true,
             userip: "::ffff:127.0.0.1",
-            username: '0001',
-            displayname: 'Stub Display Name',
+            userId: '0001',
+            displayName: 'Stub Display Name',
             remove: true
         })
         expect(assign).toHaveBeenCalledWith('/auth/logout')
@@ -147,7 +147,7 @@ describe('Component updates (CDU)', () => {
                 ...props.socket,
                 temp: {
                     invitationFrom: {
-                        displayname: 'stub_Invite_from',
+                        displayName: 'stub_Invite_from',
                         difficulty: 3
                     }
                 }

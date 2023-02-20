@@ -3,16 +3,16 @@ const util = require('../../socket/utility')
 
 const stubUsers = () => [
     {
-        username: 'stub_user_ID_1',
-        displayname: 'stub_display_name_1',
+        userId: 'stub_user_ID_1',
+        displayName: 'stub_display_name_1',
         userip: 'stub_IP_1',
         socketId: 'stub_socket_ID_1',
         oponnentId: null,
         pending: null
     },
     {
-        username: 'stub_user_ID_2',
-        displayname: 'stub_display_name_2',
+        userId: 'stub_user_ID_2',
+        displayName: 'stub_display_name_2',
         userip: 'stub_IP_2',
         socketId: 'stub_socket_ID_2',
         oponnentId: null,
@@ -42,11 +42,11 @@ describe('Game play', () => {
         expect(gameCallback).toHaveBeenCalledWith(null, {
             data: [
                 {
-                    displayname: 'stub_display_name_1',
+                    displayName: 'stub_display_name_1',
                     socketId: 'stub_socket_ID_1'
                 },
                 {
-                    displayname: 'stub_display_name_2',
+                    displayName: 'stub_display_name_2',
                     socketId: 'stub_socket_ID_2'
                 }
             ], operation: "generateOpponentPool"
@@ -100,7 +100,7 @@ describe('Game play', () => {
                 operation: 'recieveInvite',
                 data: {
                     sender: {
-                        displayname: 'stub_display_name_1',
+                        displayName: 'stub_display_name_1',
                         socketId: 'stub_socket_ID_1',
                         difficulty: 3
                     },

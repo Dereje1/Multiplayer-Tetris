@@ -102,7 +102,10 @@ const Controls = ({
               }
             }}
           >
-            {mute ? <VolumeUpIcon sx={{ fontSize: 30, color: '#649559' }} /> : <VolumeOffIcon sx={{ fontSize: 30, color: '#f35959' }} />}
+            {mute ?
+              <VolumeUpIcon sx={{ fontSize: 30, color: '#649559' }} />
+              :
+              <VolumeOffIcon sx={{ fontSize: 30, color: '#f35959' }} />}
           </IconButton>
         </div>
 

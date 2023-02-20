@@ -385,8 +385,8 @@ export const stubProfile = {
         profile: {
             authenticated: true,
             userip: "::ffff:127.0.0.1",
-            username: "0001",
-            displayname: "Stub Display Name"
+            userId: "0001",
+            displayName: "Stub Display Name"
         }
     },
     userProfileResponse: {
@@ -442,6 +442,7 @@ export const stubProfile = {
         ],
         opponentNames: {
             "0002": "Stub oponent name"
-        }
+        },
+        googleId: "stub_google_id"
     }
 }

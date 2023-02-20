@@ -70,10 +70,10 @@ describe('The opponent info', () => {
             ...props,
             socketState: {
                 opponents: [{
-                    displayname: "stub opponent 1",
+                    displayName: "stub opponent 1",
                     socketId: "stub-opponent-1-socketID"
                 }, {
-                    displayname: "stub opponent 2",
+                    displayName: "stub opponent 2",
                     socketId: "stub-opponent-2-socketID"
                 }]
             }

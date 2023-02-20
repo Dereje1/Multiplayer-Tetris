@@ -80,7 +80,7 @@ exports[`The profile component will render for logged in user in match mode 1`] 
         },
       ]
     }
-    userId="0001"
+    userId="stub_google_id"
   />
 </ForwardRef(Box)>
 `;
