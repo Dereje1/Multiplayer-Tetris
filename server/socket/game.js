@@ -58,8 +58,8 @@ const gamePlay = (socket, callback) => {
       });
       return;
     }
-    const { displayname, socketId } = invitationSender;
-    const { displayname: displaynameReciever, socketId: socketIdReciever } = invitationReciever;
+    const { displayName, socketId } = invitationSender;
+    const { displayName: displaynameReciever, socketId: socketIdReciever } = invitationReciever;
 
     currentlyLoggedIn.forEach(
       (user) => {
@@ -77,7 +77,7 @@ const gamePlay = (socket, callback) => {
     callback(null, {
       operation: 'recieveInvite',
       data: {
-        sender: { displayname, socketId, difficulty },
+        sender: { displayName, socketId, difficulty },
         reciever: { displaynameReciever, socketIdReciever },
       },
     });
@@ -115,19 +115,19 @@ const gamePlay = (socket, callback) => {
     const reciever = { countdown: timeToGameStart, difficulty: data.invitationFrom.difficulty };
     currentlyLoggedIn.forEach(
       (user) => {
-        const { displayname } = user;
+        const { displayName } = user;
         // send opponent data to respective players.
         if (user.socketId === invitationSenderId) { // user that sent the invite;
           // change status from null on server
           user.oponnentId = socket.id;
           // for client usage
-          reciever.opponnetDisplayname = displayname;
+          reciever.opponnetDisplayname = displayName;
           sender.opponentSID = socket.id;
         }
         if (user.socketId === socket.id) { // user that accepted the invite
           user.oponnentId = invitationSenderId;
           // for client usage
-          sender.opponnetDisplayname = displayname;
+          sender.opponnetDisplayname = displayName;
           reciever.opponentSID = invitationSenderId;
         }
       },
@@ -195,11 +195,11 @@ const gamePlay = (socket, callback) => {
     let looserGoogleID = '';
     currentlyLoggedIn.forEach((user) => {
       if (user.socketId === winnerSID) {
-        winnerGoogleID = user.username;
+        winnerGoogleID = user.userId;
         user.oponnentId = null;
       }
       if (user.socketId === loosingSID) {
-        looserGoogleID = user.username;
+        looserGoogleID = user.userId;
         user.oponnentId = null;
       }
     });

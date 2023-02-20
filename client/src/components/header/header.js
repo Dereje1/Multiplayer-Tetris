@@ -40,8 +40,8 @@ export class Header extends React.Component {
     const { socket } = this.props;
     if (Object.keys(socket).includes('temp')) {
       if (Object.keys(socket.temp).includes('invitationFrom') && (!inviteReceived || !inviteReceived.length)) {
-        const { displayname, difficulty } = socket.temp.invitationFrom;
-        this.setState({ inviteReceived: [displayname.split(' ')[0], difficulty] });
+        const { displayName, difficulty } = socket.temp.invitationFrom;
+        this.setState({ inviteReceived: [displayName.split(' ')[0], difficulty] });
         this.audio.current.play()
           .then(() => {
             console.log('Played Audio');

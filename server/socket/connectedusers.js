@@ -13,7 +13,7 @@ const authorizedUsers = (socket, callback) => {
       // client has just logged in or has been logged in but refreshed app
       // If the google Id is already in main array disregard otherwise add
       const existsInPool = currentlyLoggedIn.some(
-        l => l.username === userProfile.username,
+        l => l.userId === userProfile.userId,
       );
       currentlyLoggedIn = !existsInPool
         ? [...currentlyLoggedIn, utility.modifyProfile(userProfile, socket.id)]
@@ -25,7 +25,7 @@ const authorizedUsers = (socket, callback) => {
     // client is logging out
     let currentlyLoggedIn = [...utility.getUsers()];
     const indexOfDeletion = currentlyLoggedIn.findIndex(
-      l => l.username === userProfile.username,
+      l => l.userId === userProfile.userId,
     );
       // remove from main array
     currentlyLoggedIn = [

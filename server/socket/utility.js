@@ -6,10 +6,10 @@ module.exports = {
     this.userArr = [...newUsers];
   },
   modifyProfile: (profile, socketId) => {
-    const { username, displayname, userIp } = profile;
+    const { userId, displayName, userIp } = profile;
     return {
-      username,
-      displayname,
+      userId,
+      displayName,
       userIp,
       socketId,
       oponnentId: null,
@@ -22,7 +22,7 @@ module.exports = {
 
     return currentlyLoggedIn
       .filter(users => users.socketId !== socket.id && !users.oponnentId && !users.pending)
-      .map(({ displayname, socketId }) => ({ displayname, socketId }))
+      .map(({ displayName, socketId }) => ({ displayName, socketId }))
       .slice(0, 4);
   },
   findUserBySocketId(socketID) {

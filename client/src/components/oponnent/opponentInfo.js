@@ -91,7 +91,7 @@ const OpponentDescription = ({
             size="large"
             onClick={() => requestInvite(p.socketId)}
           >
-            {p.displayname.split(' ')[0]}
+            {p.displayName.split(' ')[0]}
           </Button>
         ))}
       </ButtonGroup>

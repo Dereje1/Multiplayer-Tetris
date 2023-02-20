@@ -12,9 +12,9 @@ const disconnectedUsers = (socket, callback) => {
       // get the connection of the user the game was disconnected on
       const isPending = currentlyLoggedIn[indexOfDisconnected].pending;
       const isInGame = currentlyLoggedIn[indexOfDisconnected].oponnentId;
-      const looserGoogleID = currentlyLoggedIn[indexOfDisconnected].username;
+      const looserGoogleID = currentlyLoggedIn[indexOfDisconnected].userId;
       const winnerGoogleID = isInGame
-        ? currentlyLoggedIn.filter(u => u.socketId === isInGame)[0].username
+        ? currentlyLoggedIn.filter(u => u.socketId === isInGame)[0].userId
         : '';
       // pending is when an invitation has been accepted and countdown started
       if (isPending) {

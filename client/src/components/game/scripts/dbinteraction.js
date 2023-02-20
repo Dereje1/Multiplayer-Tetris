@@ -10,7 +10,7 @@ export const processMatch = async (oppLinesCleared, state, props, winnerAudio) =
     }, user, game,
   } = props;
   // test if client is winner
-  const iAmWinner = gameOver.winnerGoogleID === user.profile.username;
+  const iAmWinner = gameOver.winnerGoogleID === user.profile.userId;
   // get floor level of processing client
   const floorLevel = game.rubble.boundaryCells.length > 10
     ? Math.floor((game.rubble.boundaryCells.length - 10) / 10)
@@ -50,7 +50,7 @@ export const processMatch = async (oppLinesCleared, state, props, winnerAudio) =
 export const processSinglePlayer = async ({ game, user }) => {
   if (!user.profile.authenticated) return null;
   const singlePlayerObject = {
-    googleId: user.profile.username,
+    _id: user.profile.userId,
     linesCleared: game.points.totalLinesCleared,
     levelReached: game.points.level,
   };

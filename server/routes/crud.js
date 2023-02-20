@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const isLoggedIn = require('../authentication/isloggedin');
+const { isLoggedIn } = require('passportbundle');
 const Single = require('../models/single');
 const Match = require('../models/match');
 const User = require('../models/user');
@@ -21,14 +21,14 @@ const getOpponentNames = (googleId, data) => new Promise((resolve, reject) => {
   });
   const uniqueIds = Array.from(new Set(userIds));
   User.find()
-    .where('google.id')
+    .where('userId')
     .in(uniqueIds)
     .exec()
     .then((userData) => {
       const obj = {};
       userData.forEach((user) => {
-        const gId = user.google.id;
-        obj[gId] = user.google.displayName;
+        const gId = user.userId;
+        obj[gId] = user.displayName;
       });
       resolve(obj);
     })
@@ -47,11 +47,16 @@ const getMatchStats = googleId => new Promise((resolve, reject) => {
 const saveSingleGameResults = async (req, res) => {
   try {
     const newSingle = req.body;
-    const { id: googleId } = req.user.google;
-    if (googleId !== newSingle.googleId) {
+    const { _id } = req.user;
+    if (_id.toString() !== newSingle._id) {
       res.json({ error: 'Unable to match Ids, Data not saved!!' });
     } else {
-      const data = await Single.create(newSingle)
+      const user = await User.findById(_id)
+      const payload = {
+        ...newSingle,
+        googleId: user.userId
+      }
+      const data = await Single.create(payload)
       res.json(data)
     }
   } catch (err) {
@@ -62,11 +67,18 @@ const saveSingleGameResults = async (req, res) => {
 const saveMatchGameResults = async (req, res) => {
   try {
     const newMatch = req.body;
-    const { id: googleId } = req.user.google;
-    if (googleId !== newMatch.winnerGoogleId && googleId !== newMatch.looserGoogleId) {
+    const { _id } = req.user;
+    if (_id.toString() !== newMatch.winnerGoogleId && _id.toString() !== newMatch.looserGoogleId) {
       res.json({ error: 'Unable to match Ids, Data not saved!!' });
     } else {
-      const data = await Match.create(newMatch)
+      const {userId: winningId} = await User.findById(newMatch.winnerGoogleId)
+      const {userId: loosingId} = await User.findById(newMatch.looserGoogleId)
+      const payload = {
+        ...newMatch,
+        winnerGoogleId: winningId,
+        looserGoogleId: loosingId
+      }
+      const data = await Match.create(payload)
       res.json(data)
     }
   } catch (err) {
@@ -75,12 +87,12 @@ const saveMatchGameResults = async (req, res) => {
 }
 
 const fetchUserData = async (req, res) => {
-  const { id: googleId } = req.user.google;
+  const { userId: googleId } = req.user;
   try {
     const singleStats = await getSingleStats(googleId);
     const matchStats = await getMatchStats(googleId);
     const opponentNames = await getOpponentNames(googleId, matchStats);
-    res.json({ singleStats, matchStats, opponentNames });
+    res.json({ singleStats, matchStats, opponentNames, googleId });
   } catch (err) {
     res.status(400).send(err);
   }
@@ -88,7 +100,7 @@ const fetchUserData = async (req, res) => {
 
 const deleteSingleResult = async (req, res) => {
   try {
-    const { id: googleId } = req.user.google;
+    const { userId: googleId } = req.user;
     const query = { _id: req.params._id };
     const idToRemove = req.params._id;
     const singleResult = await Single.findById(idToRemove).exec();

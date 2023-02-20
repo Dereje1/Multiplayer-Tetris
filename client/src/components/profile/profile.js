@@ -81,7 +81,7 @@ export class Profile extends React.Component {
       >
         <Typography sx={{ fontSize: 22 }} color="primary">
           {
-            `Hi ${user.profile.displayname}`
+            `Hi ${user.profile.displayName}`
           }
         </Typography>
         <FormControl component="fieldset" variant="standard" >
@@ -99,7 +99,7 @@ export class Profile extends React.Component {
             <MatchesTable
               rows={userData.matchStats}
               opponents={userData.opponentNames}
-              userId={user.profile.username}
+              userId={userData.googleId}
             />
             :
             <SinglesTable rows={userData.singleStats} onDelete={this.deleteResult} />
@@ -119,7 +119,7 @@ Profile.defaultProps = {
 Profile.propTypes = {
   user: PropTypes.shape({
     profile: PropTypes.shape({
-      displayname: PropTypes.string,
+      displayName: PropTypes.string,
       username: PropTypes.string,
     }),
   }),
