@@ -251,8 +251,8 @@ describe('Game play', () => {
                 data: {
                     winnerSID: 'stub_socket_ID_1',
                     loosingSID: 'stub_socket_ID_2',
-                    winnerGoogleID: 'stub_user_ID_1',
-                    looserGoogleID: 'stub_user_ID_2'
+                    winnerUserId: 'stub_user_ID_1',
+                    looserUserId: 'stub_user_ID_2'
                 }
             }
         )

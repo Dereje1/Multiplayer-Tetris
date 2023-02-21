@@ -257,8 +257,8 @@ describe('Handling disconnected users callbacks', () => {
                 disconnectionStatus: {
                     inGame: true,
                     connection: 'stub_socket_ID_1',
-                    looserGoogleID: 'stub_user_ID_2',
-                    winnerGoogleID: 'stub_user_ID_1'
+                    looserUserId: 'stub_user_ID_2',
+                    winnerUserId: 'stub_user_ID_1'
                 },
                 data: []
             },
@@ -269,9 +269,9 @@ describe('Handling disconnected users callbacks', () => {
         expect(ioEmit).toHaveBeenCalledWith("FINISH_GAME",
             {
                 "disqualified": true,
-                "looserGoogleID": "stub_user_ID_2",
+                "looserUserId": "stub_user_ID_2",
                 "loosingSID": "stub_socket_ID_2",
-                "winnerGoogleID": "stub_user_ID_1",
+                "winnerUserId": "stub_user_ID_1",
                 "winnerSID": "stub_socket_ID_1"
             })
         expect(io.emit).toHaveBeenCalledWith("LOGGED_IN_USERS", 0)
@@ -284,8 +284,8 @@ describe('Handling disconnected users callbacks', () => {
                 disconnectionStatus: {
                     pending: true,
                     connection: 'stub_socket_ID_1',
-                    looserGoogleID: 'stub_user_ID_2',
-                    winnerGoogleID: 'stub_user_ID_1'
+                    looserUserId: 'stub_user_ID_2',
+                    winnerUserId: 'stub_user_ID_1'
                 },
                 data: []
             },

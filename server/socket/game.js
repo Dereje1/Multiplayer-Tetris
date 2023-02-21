@@ -190,16 +190,17 @@ const gamePlay = (socket, callback) => {
   socket.on(GAME_OVER, (data) => {
     const currentlyLoggedIn = [...utility.getUsers()];
     const winnerSID = data.temp.gameInProgress.info.opponentSID;
+    // looser always emits GAME_OVER event from client
     const loosingSID = data.mySocketId;
-    let winnerGoogleID = '';
-    let looserGoogleID = '';
+    let winnerUserId = '';
+    let looserUserId = '';
     currentlyLoggedIn.forEach((user) => {
       if (user.socketId === winnerSID) {
-        winnerGoogleID = user.userId;
+        winnerUserId = user.userId;
         user.oponnentId = null;
       }
       if (user.socketId === loosingSID) {
-        looserGoogleID = user.userId;
+        looserUserId = user.userId;
         user.oponnentId = null;
       }
     });
@@ -207,7 +208,7 @@ const gamePlay = (socket, callback) => {
     callback(null, {
       operation: 'gameFinished',
       data: {
-        winnerSID, loosingSID, winnerGoogleID, looserGoogleID,
+        winnerSID, loosingSID, winnerUserId, looserUserId,
       },
     });
   });

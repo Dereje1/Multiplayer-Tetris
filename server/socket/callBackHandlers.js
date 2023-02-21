@@ -27,8 +27,8 @@ const handleDisconnectedUsersCallBack = (err, returnedData, io, socket) => {
             .emit(FINISH_GAME, {
                 winnerSID: returnedData.disconnectionStatus.connection,
                 loosingSID: socket.id,
-                looserGoogleID: returnedData.disconnectionStatus.looserGoogleID,
-                winnerGoogleID: returnedData.disconnectionStatus.winnerGoogleID,
+                looserUserId: returnedData.disconnectionStatus.looserUserId,
+                winnerUserId: returnedData.disconnectionStatus.winnerUserId,
                 disqualified: true,
             });
     }

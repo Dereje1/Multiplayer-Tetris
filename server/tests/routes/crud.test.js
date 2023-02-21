@@ -71,7 +71,7 @@ describe('Saving match results', () => {
 
     it('will not save results if ids do not match', async () => {
         const req = {
-            body: { winnerGoogleId: 'stub_google_id_2', looserGoogleId: 'stub_google_id_3' },
+            body: { winnerUserId: 'stub_google_id_2', looserUserId: 'stub_google_id_3' },
             user: {
                 _id: 'stub_google_id_1'
             }
@@ -84,7 +84,7 @@ describe('Saving match results', () => {
 
     it('will save results if ids match', async () => {
         const req = {
-            body: { winnerGoogleId: 'stub_google_id_1', looserGoogleId: 'stub_google_id_3' },
+            body: { winnerUserId: 'stub_google_id_1', looserUserId: 'stub_google_id_3' },
             user: {
                 _id: 'stub_google_id_1'
             }

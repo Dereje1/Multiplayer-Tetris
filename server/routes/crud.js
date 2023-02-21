@@ -67,17 +67,17 @@ const saveSingleGameResults = async (req, res) => {
 
 const saveMatchGameResults = async (req, res) => {
   try {
-    const newMatch = req.body;
+    const { winnerUserId, looserUserId, ...rest } = req.body;
     const { _id } = req.user;
-    if (_id.toString() !== newMatch.winnerGoogleId && _id.toString() !== newMatch.looserGoogleId) {
+    if (_id.toString() !== winnerUserId && _id.toString() !== looserUserId) {
       res.json({ error: 'Unable to match Ids, Data not saved!!' });
     } else {
-      const {userId: winningId} = await User.findById(newMatch.winnerGoogleId)
-      const {userId: loosingId} = await User.findById(newMatch.looserGoogleId)
+      const { userId: winnerGoogleId } = await User.findById(winnerUserId)
+      const { userId: looserGoogleId } = await User.findById(looserUserId)
       const payload = {
-        ...newMatch,
-        winnerGoogleId: winningId,
-        looserGoogleId: loosingId
+        ...rest,
+        winnerGoogleId,
+        looserGoogleId
       }
       const data = await Match.create(payload)
       res.json(data)

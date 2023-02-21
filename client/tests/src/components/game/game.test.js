@@ -366,7 +366,7 @@ describe('Sub-Component callbacks', () => {
         const updatedProps = {
             ...props,
             socket: {
-                temp: { gameOver: { winnerGoogleID: 'stub Id' } }
+                temp: { gameOver: { winnerUserId: 'stub Id' } }
             },
             user: {
                 profile: {}
