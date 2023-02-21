@@ -50,7 +50,7 @@ export const processMatch = async (oppLinesCleared, state, props, winnerAudio) =
 export const processSinglePlayer = async ({ game, user }) => {
   if (!user.profile.authenticated) return null;
   const singlePlayerObject = {
-    _id: user.profile.userId,
+    playerUserId: user.profile.userId,
     linesCleared: game.points.totalLinesCleared,
     levelReached: game.points.level,
   };

@@ -46,14 +46,15 @@ const getMatchStats = googleId => new Promise((resolve, reject) => {
 
 const saveSingleGameResults = async (req, res) => {
   try {
-    const newSingle = req.body;
+    const { linesCleared, levelReached, playerUserId } = req.body;
     const { _id } = req.user;
-    if (_id.toString() !== newSingle._id) {
+    if (_id.toString() !== playerUserId) {
       res.json({ error: 'Unable to match Ids, Data not saved!!' });
     } else {
       const user = await User.findById(_id)
       const payload = {
-        ...newSingle,
+        linesCleared,
+        levelReached,
         googleId: user.userId
       }
       const data = await Single.create(payload)

@@ -18,7 +18,7 @@ describe('Saving single game results', () => {
 
     it('will not save results if ids do not match', async () => {
         const req = {
-            body: { _id: 'stub_google_id_2' },
+            body: { playerUserId: 'stub_google_id_2' },
             user: {
                 _id: 'stub_google_id_1'
             }
@@ -31,7 +31,7 @@ describe('Saving single game results', () => {
 
     it('will save results if ids match', async () => {
         const req = {
-            body: { _id: 'stub_google_id_1' },
+            body: { playerUserId: 'stub_google_id_1' },
             user: {
                 _id: 'stub_google_id_1'
             }
