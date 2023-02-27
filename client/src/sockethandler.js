@@ -87,21 +87,12 @@ export const handleServerSocketResponses = (event, ...args) => {
     return;
   }
   const [data, callback] = args;
-  switch (event) {
-    case SERVER_RESET:
-      return socketActionMap[event]();
-    case ACCEPTED_INVITATION:
-      socketActionMap[event](data);
-      break;
-    case GAME_STARTED:
-      socketActionMap[event](data, callback);
-      break;
-    case OPPONENT_SCREEN:
-      socketActionMap[event](data);
-      break;
-    default:
-      dispatch({ type: event, payload: data });
-      break;
+  const specialEvents = [SERVER_RESET, ACCEPTED_INVITATION, GAME_STARTED, OPPONENT_SCREEN]
+
+  if (specialEvents.includes(event)) {
+    return socketActionMap[event](data, callback);
+  } else {
+    dispatch({ type: event, payload: data });
   }
 }
 
