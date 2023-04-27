@@ -1,0 +1,21 @@
+#landing{
+    height: 'auto';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 40px;
+}
+.democontainer{
+    display:flex;
+    justify-content: center;
+    margin:auto;
+}
+#smallwindow::before{
+    display: block;
+    margin-left: 30px;
+    font-weight: bold;
+    font-size: 35px;
+    text-align: left;
+    content: 'This app is not designed for screens this size please check back later for updates';
+}  
+  
