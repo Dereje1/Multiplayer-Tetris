@@ -183,7 +183,7 @@ export class Game extends React.Component {
           updateFloor: false,
         }, () => drawFloor(game, this.canvasContextMajor));
       };
-      this.moveShape();
+      // this.moveShape();
     }
     // recursively call tick if animation state is still on,
     // there maybe a little slippage before it turns off

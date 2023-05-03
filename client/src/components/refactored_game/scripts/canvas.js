@@ -2,6 +2,15 @@
 import tetrisShapes from './shapes';
 import shapeLocator from './locateShape';
 
+export const getCoordinatesFromIndex = ({ index, width, cellSize }) => {
+  const cellsPerRow = width / cellSize;
+  const row = Math.floor(index / cellsPerRow);
+  const column = index % cellsPerRow;
+  const x = column * cellSize;
+  const y = row * cellSize;
+  return [x, y];
+};
+
 export const getBoundryHeight = (state, opponent = false) => {
   const yBoundary = state.rubble.boundaryCells.map(c => Number(c.split('-')[1]));
   const boundaryHeight = (Array.from(new Set(yBoundary)).length - 1)
@@ -34,16 +43,19 @@ export const clearCanvas = (canvasContext, clearHeight, caller) => {
 export const drawCells = (ctx, shape, opponent = false) => {
   const canvasContext = ctx;
   const b = shape.unitBlockSize;
-  shape.cells.forEach((c) => {
+  shape.unitVertices.forEach((c) => {
+    const [x,y] = getCoordinatesFromIndex({
+      index: c,
+      width: 300,
+      cellSize: b
+    })
     canvasContext.beginPath();
     canvasContext.lineWidth = '3';
     canvasContext.strokeStyle = 'grey';
-    canvasContext.rect(c[0] * b, c[1] * b, b, b);
+    canvasContext.rect(x, y, b, b);
     canvasContext.stroke();
-    if (opponent) {
-      canvasContext.fillStyle = tetrisShapes[shape.name].color;
-      canvasContext.fill();
-    }
+    canvasContext.fillStyle = tetrisShapes[shape.name].color;
+    canvasContext.fill();
   });
 };
 
@@ -117,6 +129,7 @@ export const drawBoundary = (ctx, state, opponent = false) => {
 };
 
 export const drawShape = (ctx, state, opponent = false) => {
+  console.log({state})
   const shapeToDraw = state.activeShape;
   const shapeYDirectionLowerBound = opponent
     ? shapeToDraw.boundingBox[3] / 2
@@ -132,18 +145,25 @@ export const drawShape = (ctx, state, opponent = false) => {
       drawRubble(ctx, state, opponent);
     }
   } else clearCanvas(ctx, shapeYDirectionLowerBound + borderOffset, opponent ? 'drawshape3' : null);
-
-  if (!opponent) {
-    const canvasContext = ctx;
-    canvasContext.beginPath();
-    canvasContext.fillStyle = tetrisShapes[shapeToDraw.name].color;
-    canvasContext.moveTo(shapeToDraw.xPosition, shapeToDraw.yPosition);
-    shapeToDraw.absoluteVertices.forEach((v) => {
-      canvasContext.lineTo(v[0], v[1]);
-    });
-    canvasContext.lineTo(shapeToDraw.xPosition, shapeToDraw.yPosition);
-    canvasContext.fill();
-  }
+console.log({shapeToDraw})
+  // if (!opponent) {
+  //   const canvasContext = ctx;
+  //   canvasContext.beginPath();
+  //   canvasContext.fillStyle = tetrisShapes[shapeToDraw.name].color;
+  //   canvasContext.moveTo(shapeToDraw.xPosition, shapeToDraw.yPosition);
+  //   shapeToDraw.unitVertices.forEach((v) => {
+  //     const [x,y] = getCoordinatesFromIndex({
+  //       index: v,
+  //       width: 300,
+  //       cellSize: shapeToDraw.unitBlockSize
+  //     })
+  //     console.log(x,y)
+  //     canvasContext.lineTo(x, y);
+  //   });
+    
+  //   canvasContext.lineTo(shapeToDraw.xPosition, shapeToDraw.yPosition);
+  //   canvasContext.fill();
+  // }
   drawCells(ctx, shapeToDraw, opponent);
 };
 
@@ -175,15 +195,21 @@ export const drawNextShape = async (ctx, newShape, state) => {
     specialshapes,
   );
   await Promise.resolve()
-  const canvasContext = ctx;
-  canvasContext.beginPath();
-  canvasContext.fillStyle = tetrisShapes[locatedShape.name].color;
-  canvasContext.moveTo(locatedShape.xPosition, locatedShape.yPosition);
-  locatedShape.absoluteVertices.forEach((v) => {
-    canvasContext.lineTo(v[0], v[1]);
-  });
-  canvasContext.lineTo(locatedShape.xPosition, locatedShape.yPosition);
-  canvasContext.fill();
+  // console.log({locatedShape})
+  // const canvasContext = ctx;
+  // canvasContext.beginPath();
+  // canvasContext.fillStyle = tetrisShapes[locatedShape.name].color;
+  // canvasContext.moveTo(locatedShape.xPosition, locatedShape.yPosition);
+  // locatedShape.unitVertices.forEach((v) => {
+  //   const [x,y] = getCoordinatesFromIndex({
+  //     index: v,
+  //     width: canvasWidth,
+  //     cellSize: locatedShape.unitBlockSize
+  //   })
+  //   canvasContext.lineTo(x, y);
+  // });
+  // canvasContext.lineTo(locatedShape.xPosition, locatedShape.yPosition);
+  // canvasContext.fill();
   drawCells(ctx, locatedShape);
 };
 
