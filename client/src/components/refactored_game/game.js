@@ -183,7 +183,7 @@ export class Game extends React.Component {
           updateFloor: false,
         }, () => drawFloor(game, this.canvasContextMajor));
       };
-      // this.moveShape();
+      this.moveShape();
     }
     // recursively call tick if animation state is still on,
     // there maybe a little slippage before it turns off
@@ -199,9 +199,10 @@ export class Game extends React.Component {
   // get the next shape ypos
   positionForecast = () => {
     const { game: { activeShape } } = this.props;
+    const newPos = activeShape.unitVertices.map((idx) => idx + 10)
     return {
       ...activeShape,
-      yPosition: activeShape.yPosition + activeShape.unitBlockSize
+      unitVertices: newPos
     };
   };
 

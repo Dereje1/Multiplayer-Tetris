@@ -1,3 +1,20 @@
+export const getCoordinatesFromIndex = ({ index, width, cellSize }) => {
+  const cellsPerRow = width / cellSize;
+  const row = Math.floor(index / cellsPerRow);
+  const column = index % cellsPerRow;
+  const x = column * cellSize;
+  const y = row * cellSize;
+  return [x, y];
+};
+
+export const getIndexFromCoordinates = ({ x, y, width, cellSize }) => {
+  const cellsPerRow = width / cellSize;
+  const xPos = Math.floor(x / cellSize);
+  const yPos = Math.floor(y / cellSize);
+  const index = xPos + yPos * cellsPerRow;
+  return index;
+};
+
 const tetrisShapes = {
   getRandShapeName: () => {
     const shapeList = ['shapeL', 'shapeZ', 'shapeT', 'shapeI', 'shapeJ', 'shapeO', 'shapeS'];
@@ -14,27 +31,11 @@ const tetrisShapes = {
 
     return [this.onBoundingBox(absoluteVertices), absoluteVertices];
   },
-  onRotate: (oldVertices) => {
-    /*
-        Trig coordinate transformation formula
-        x′=(x−p)cos(θ)−(y−q)sin(θ)+p,
-        y′=(x−p)sin(θ)+(y−q)cos(θ)+q.
-        where (p,q) point of rotation, and (x,y) are the pre-transformed points
-        https://math.stackexchange.com/questions/270194/how-to-find-the-vertices-angle-after-rotation
-
-        can reduce above formula since θ will always = 90 , so,
-        x′= q - y + p
-        y′= x − p + q
-        and since canvas will start drawing at origin = point of rotation, (p,q) = (0,0)
-        x′= -y
-        y′= x
-    */
-    const newVertices = oldVertices.map((v) => {
-      const xPrime = -v[1];
-      const yPrime = v[0];
-      return [xPrime, yPrime];
-    });
-    return newVertices;
+  onRotate: (shape) => {
+    const { name, rotationStage, unitVertices } = shape
+    const transformation = tetrisShapes[name].rotationStages[rotationStage]
+    const transformed = unitVertices.map((v, idx) => v + transformation[idx])
+    return transformed
   },
   onBoundingBox: (absoluteVertices) => {
     const xArr = absoluteVertices.map(v => v[0]);
@@ -80,32 +81,74 @@ const tetrisShapes = {
     return { randomShape, newShapeName, nextShapeInfo };
   },
   shapeI: {
-    vertices: [3,4,5,6],
+    vertices: [3, 4, 5, 6],
     color: 'cyan',
+    rotationStages: {
+      0: [-2, -11, -20, -29],
+      1: [2, 11, 20, 29],
+      2: [-2, -11, -20, -29],
+      3: [2, 11, 20, 29]
+    }
   },
   shapeJ: {
-    vertices: [3,13,14,15],
+    vertices: [3, 13, 14, 15],
     color: 'blue',
+    rotationStages: {
+      0: [-2, -2, -11, -9],
+      1: [1, -8, 0, 9],
+      2: [-1, -1, -9, -9],
+      3: [2, 11, 20, 9]
+    }
   },
   shapeL: {
-    vertices: [5,13,14,15],
+    vertices: [5, 13, 14, 15],
     color: 'orange',
+    rotationStages: {
+      0: [1, 8, -1, -10],
+      1: [-1, 1, 10, 10],
+      2: [-1, -10, -19, -12],
+      3: [1, 1, 10, 12]
+    }
   },
   shapeO: {
-    vertices: [4,5,14,15],
+    vertices: [4, 5, 14, 15],
     color: 'yellow',
+    rotationStages: {
+      0: [0, 0, 0, 0],
+      1: [0, 0, 0, 0],
+      2: [0, 0, 0, 0],
+      3: [0, 0, 0, 0]
+    }
   },
   shapeS: {
-    vertices: [5,6,14,15],
+    vertices: [5, 6, 14, 15],
     color: 'green',
+    rotationStages: {
+      0: [-20, -9, 0, 11],
+      1: [-1, 8, 1, 10],
+      2: [1, -10, -1, -12],
+      3: [20, 11, 0, -9]
+    }
   },
   shapeT: {
-    vertices: [4,13,14,15],
+    vertices: [4, 13, 14, 15],
     color: 'purple',
+    rotationStages: {
+      0: [0, 0, 0, -9],
+      1: [0, 1, 1, 9],
+      2: [-1, -10, -10, -10],
+      3: [1, 9, 9, 10]
+    }
   },
   shapeZ: {
-    vertices: [3,4,14,15],
+    vertices: [4, 5, 15, 16],
     color: 'red',
+    rotationStages: {
+      0: [-1, -10, 1, -8],
+      1: [1, 10, -1, 8],
+      2: [-1, -10, 1, -8],
+      3: [1, 10, -1, 8]
+    }
   },
 };
 

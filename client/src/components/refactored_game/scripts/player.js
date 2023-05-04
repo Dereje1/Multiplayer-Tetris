@@ -3,16 +3,16 @@ import tetrisShapes from './shapes';
 import shapeLocator from './locateShape';
 
 const rotation = (state, ctx) => {
-  const unitVerticesAfterRotation = tetrisShapes.onRotate(state.activeShape.unitVertices);
   const rotatedShape = Object.assign({}, state.activeShape);
   // assign new unit vertices and find bbox and absolutevertices
-  rotatedShape.unitVertices = unitVerticesAfterRotation;
-  [rotatedShape.boundingBox, rotatedShape.absoluteVertices] = tetrisShapes.getDims(rotatedShape);
 
   rotatedShape.rotationStage = rotatedShape.rotationStage > 2
     ? 0
     : rotatedShape.rotationStage + 1;
   rotatedShape.cells = [];
+
+  const unitVerticesAfterRotation = tetrisShapes.onRotate(rotatedShape);
+  rotatedShape.unitVertices = unitVerticesAfterRotation;
 
   // do crude wall kicks, ideally should translate with a recursive function
   if (
@@ -26,16 +26,9 @@ const rotation = (state, ctx) => {
       rotatedShape.xPosition -= (translateUnits * state.activeShape.unitBlockSize);
     }
   }
-  /* locate shape to get cell values and check for collision on rotation,
-     if collision detected do not rotate shape */
-  const locatedShape = shapeLocator(
-    ctx,
-    state.canvas.canvasMajor.width,
-    state.canvas.canvasMajor.height,
-    rotatedShape, false,
-  );
-  if (!runCollisionTest(state, locatedShape)) return rotatedShape;
-  return null;
+
+  // if (!runCollisionTest(state, locatedShape)) return rotatedShape;
+  return rotatedShape;
 };
 
 const playerMoves = (keyCode, state, ctx) => {
@@ -58,12 +51,18 @@ const playerMoves = (keyCode, state, ctx) => {
   const copyOfActiveShape = Object.assign({}, state.activeShape);
   if (left) {
     if (getSideBlock('L', state)) return null;
-    copyOfActiveShape.xPosition -= state.activeShape.unitBlockSize;
-    return copyOfActiveShape;
+    const newPos = copyOfActiveShape.unitVertices.map((idx) => idx - 1)
+    return {
+      ...copyOfActiveShape,
+      unitVertices: newPos
+    };
   } if (right) {
     if (getSideBlock('R', state)) return null;
-    copyOfActiveShape.xPosition += state.activeShape.unitBlockSize;
-    return copyOfActiveShape;
+    const newPos = copyOfActiveShape.unitVertices.map((idx) => idx + 1)
+    return {
+      ...copyOfActiveShape,
+      unitVertices: newPos
+    };
   } if (down) {
     // if next down is a collision then return null as dual processing
     // of collision with drawscreen produces problems
