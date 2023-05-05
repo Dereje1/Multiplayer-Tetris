@@ -2,33 +2,23 @@ import { runCollisionTest, getSideBlock } from './collision';
 import tetrisShapes from './shapes';
 import shapeLocator from './locateShape';
 
-const rotation = (state, ctx) => {
-  const rotatedShape = Object.assign({}, state.activeShape);
-  // assign new unit vertices and find bbox and absolutevertices
+const getCanvasEdge = ({ unitVertices, width, unitBlockSize }) => {
+  const cellsPerRow = width / unitBlockSize;
 
-  rotatedShape.rotationStage = rotatedShape.rotationStage > 2
-    ? 0
-    : rotatedShape.rotationStage + 1;
-  rotatedShape.cells = [];
-
-  const unitVerticesAfterRotation = tetrisShapes.onRotate(rotatedShape);
-  rotatedShape.unitVertices = unitVerticesAfterRotation;
-
-  // do crude wall kicks, ideally should translate with a recursive function
-  if (
-    rotatedShape.boundingBox[0] < 0
-    || rotatedShape.boundingBox[1] > state.canvas.canvasMajor.width
-  ) { // side wall kicks
-    const translateUnits = state.activeShape.name === 'shapeI' ? 2 : 1;
-    if (rotatedShape.boundingBox[0] < 0) { // translate to the left
-      rotatedShape.xPosition += (translateUnits * state.activeShape.unitBlockSize);
-    } else { // translate to the right
-      rotatedShape.xPosition -= (translateUnits * state.activeShape.unitBlockSize);
-    }
+  for (const idx of unitVertices) {
+    const column = idx % cellsPerRow;
+    if (column === 0) return 'leftEdge';
+    if (column === cellsPerRow - 1) return 'rightEdge';
   }
 
+  return 'noEdge'
+}
+
+const rotation = (state) => {
+  const { canvas: { canvasMajor: { width } }, activeShape } = state;
+  const updatedShape = tetrisShapes.onRotate({ activeShape, width });
   // if (!runCollisionTest(state, locatedShape)) return rotatedShape;
-  return rotatedShape;
+  return updatedShape;
 };
 
 const playerMoves = (keyCode, state, ctx) => {
@@ -40,13 +30,11 @@ const playerMoves = (keyCode, state, ctx) => {
 
 
   if (!(left || right || up || down)) return null; // do nothing for any other keypress
+  const { canvas: { canvasMajor: { width } }, activeShape: { unitBlockSize, unitVertices } } = state;
 
-  // check X boundaries
-  const leftOutOfBound = left && (state.activeShape.boundingBox[0]
-    - state.activeShape.unitBlockSize) < 0;
-  const rightOutOfBound = right && (state.activeShape.boundingBox[1]
-    + state.activeShape.unitBlockSize) > state.canvas.canvasMajor.width;
-  if (leftOutOfBound || rightOutOfBound) return null;
+  const edge = getCanvasEdge({ unitVertices, width, unitBlockSize });
+  if (left && edge === 'leftEdge') return null;
+  if (right && edge === 'rightEdge') return null;
 
   const copyOfActiveShape = Object.assign({}, state.activeShape);
   if (left) {

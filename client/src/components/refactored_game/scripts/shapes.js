@@ -7,18 +7,34 @@ export const getCoordinatesFromIndex = ({ index, width, cellSize }) => {
   return [x, y];
 };
 
-export const getIndexFromCoordinates = ({ x, y, width, cellSize }) => {
-  const cellsPerRow = width / cellSize;
-  const xPos = Math.floor(x / cellSize);
-  const yPos = Math.floor(y / cellSize);
-  const index = xPos + yPos * cellsPerRow;
-  return index;
-};
+// tests contiguity in x direction of tetrimino
+const isContiguous = ({
+  indices,
+  width,
+  cellSize
+}) => {
+
+  const xCoordinates = indices.map(idx => getCoordinatesFromIndex({ index: idx, width, cellSize })[0])
+  xCoordinates.sort((a, b) => a - b)
+  let prev = null;
+
+  for (const xCoord of xCoordinates) {
+    if (prev === null) {
+      prev = xCoord;
+      continue;
+    }
+    if ((xCoord - prev) > 30) return false
+    prev = xCoord
+  }
+
+  return true
+}
 
 const tetrisShapes = {
   getRandShapeName: () => {
     const shapeList = ['shapeL', 'shapeZ', 'shapeT', 'shapeI', 'shapeJ', 'shapeO', 'shapeS'];
     const randNum = Math.floor(Math.random() * (shapeList.length));
+    // return 'shapeS'
     return shapeList[randNum];
   },
   getDims(activeShape) {
@@ -31,11 +47,26 @@ const tetrisShapes = {
 
     return [this.onBoundingBox(absoluteVertices), absoluteVertices];
   },
-  onRotate: (shape) => {
-    const { name, rotationStage, unitVertices } = shape
-    const transformation = tetrisShapes[name].rotationStages[rotationStage]
-    const transformed = unitVertices.map((v, idx) => v + transformation[idx])
-    return transformed
+  onRotate: ({ activeShape, width }) => {
+    const { name, unitVertices, rotationStage } = activeShape
+
+    const newRotationStage = rotationStage > 2
+      ? 0
+      : rotationStage + 1;
+    const transformation = tetrisShapes[name].rotationStages[newRotationStage]
+    const transformedVertices = unitVertices.map((v, idx) => v + transformation[idx])
+
+    if (!isContiguous({
+      indices: transformedVertices,
+      width,
+      cellSize: activeShape.unitBlockSize
+    })) return activeShape;
+
+    return {
+      ...activeShape,
+      unitVertices: transformedVertices,
+      rotationStage: newRotationStage
+    }
   },
   onBoundingBox: (absoluteVertices) => {
     const xArr = absoluteVertices.map(v => v[0]);
