@@ -44,11 +44,8 @@ const initialState = { // determine what needs to go into state, a very small po
 const setBoundry = (unitBlockSize, width, height, boundryRowHeight) => {
   const boundry = [];
   const blocksPerRow = width / unitBlockSize;
-  const blocksPerColumn = height / unitBlockSize;
-  for (let j = 0; j < boundryRowHeight; j += 1) {
-    for (let i = 0; i < blocksPerRow; i += 1) {
-      boundry.push(`${i}-${blocksPerColumn - j}`);
-    }
+  for (let i = 0; i < blocksPerRow; i += 1) {
+    boundry.push(200 + i);
   }
   return boundry;
 };

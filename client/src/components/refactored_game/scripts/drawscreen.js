@@ -1,7 +1,6 @@
 // utility that checks for collision and refreshses screen data
 // custom functions
 import tetrisShapes from './shapes';
-import shapeLocator from './locateShape';
 import { runCollisionTest } from './collision';
 import {
   drawShape, drawRubble,
@@ -21,16 +20,8 @@ const drawScreen = ({
   const shapeToDraw = { ...updatedShape };
   [shapeToDraw.boundingBox, shapeToDraw.absoluteVertices] = tetrisShapes.getDims(updatedShape);
 
-  // Locate Shape on screen and then set .cell prop of activeShape
-  const locatedShape = shapeLocator(
-    canvasContextMajor,
-    game.canvas.canvasMajor.width,
-    game.canvas.canvasMajor.height,
-    shapeToDraw, false,
-  );
-
   // test for collision
-  const collisionResult = runCollisionTest(game, locatedShape);
+  const collisionResult = runCollisionTest(game, shapeToDraw);
   if (collisionResult && !collisionResult.length) {
     endTick('collision check - Game Over');
     return gameOver();
@@ -43,7 +34,7 @@ const drawScreen = ({
     // update redux with collision
     collide(collisionResult[0]);
     const collisionData = {
-      activeShape: locatedShape,
+      activeShape: shapeToDraw,
       rubble: collisionResult[0].rubble,
     };
     if (collisionResult[1]) { // winner found
@@ -65,7 +56,7 @@ const drawScreen = ({
   }
   /*  no collision is found, just do a screen refresh */
   const screenRefreshData = {
-    activeShape: locatedShape,
+    activeShape: shapeToDraw,
     rubble: {
       ...game.rubble,
       winRows: null // need to reset back to null incase of previous win

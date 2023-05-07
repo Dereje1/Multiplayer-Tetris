@@ -3,7 +3,7 @@ import tetrisShapes from './shapes';
 
 const winCheck = (newOccupied, state) => {
   // get a Ycoordinate array from occupied cells
-  const yCoord = newOccupied.map(c => Number(c[0].split('-')[1]));
+  const yCoord = newOccupied.map(c => c[0]);
   // find unique y coordinates
   const yUnique = Array.from(new Set(yCoord));
   // find how amny elements per row
@@ -13,7 +13,7 @@ const winCheck = (newOccupied, state) => {
   yUnique.forEach((u) => {
     let counter = 0;
     yCoord.forEach((c) => {
-      if (c === u)counter += 1;
+      if (c === u) counter += 1;
     });
     if (counter === rowSize) winners.push(u);
   });
@@ -40,7 +40,7 @@ const fillBlankRows = (occupied, state) => {
       // row is not empty so just go to next row
       if (xyCoord.includes(testCoord)) break;
       // row is empty , save empty row number and exit out of loop
-      if (!xyCoord.includes(testCoord) && x === screenWidth)blankFound = y;
+      if (!xyCoord.includes(testCoord) && x === screenWidth) blankFound = y;
     }
   }
 
@@ -70,7 +70,7 @@ const clearRows = (occupied, winners, state) => {
     const occupiedY = Number(oCell[0].split('-')[1]);
     return occupiedY === winners[w];
   };
-    // remove all winninig rows
+  // remove all winninig rows
   while (w < winners.length) {
     // find index and splice(mutate) each cell occupied
     const indexOfOccupied = occupied.findIndex(winnerRowcallBack);
@@ -78,7 +78,7 @@ const clearRows = (occupied, winners, state) => {
     // check if more of the winning row cells remain
     const checkO = occupied.filter(winnerRowcallBack);
     // if all cells of winning row are removed then go to next winning row
-    if (!checkO.length)w += 1;
+    if (!checkO.length) w += 1;
   }
   // run function to recursively fill the blank rows
   return fillBlankRows(occupied, state);
@@ -87,26 +87,27 @@ const clearRows = (occupied, winners, state) => {
 export const runCollisionTest = (state, shapeTested, floorTest = false) => {
   const occupiedCellLocations = floorTest
     ? floorTest[0].map(c => c[0])
-    : state.rubble.occupiedCells.map(c => c[0]);
+    : state.rubble.occupiedCells.map((o) => o[0]);
   // shape to test for collison
-  const testedShape = shapeTested.cells.map(c => c.join('-'));
+  const testedShape = [...shapeTested.unitVertices];
   // currently active shape
-  let preCollisionShape = state.activeShape.cells.map(c => c.join('-'));
+  let preCollisionShape = [...state.activeShape.unitVertices];
   // game play area occupied cells
   const isOccupied = testedShape.filter(c => (occupiedCellLocations.includes(c)));
+  console.log({testedShape, isOccupied, occupiedCellLocations})
   // bottom boundary occupied cells
-  const isLowerBoundary = floorTest
-    ? testedShape.filter(c => (floorTest[1].includes(c)))
-    : testedShape.filter(c => (state.rubble.boundaryCells.includes(c)));
+  const isLowerBoundary = Math.max(...testedShape) > 199;
   // upperBoundary ocupied cells
-  const isUpperBoundary = shapeTested.cells.filter(c => c[1] === 1);
-  if (isOccupied.length || isLowerBoundary.length) { // collision detected
+  const isUpperBoundary = testedShape.filter(c => c >= 0 && c <= 9);
+  if (isOccupied.length || isLowerBoundary) { // collision detected
     if (isUpperBoundary.length) return [];// game over
     let collisionData;
     // add color info to active shape
     preCollisionShape = preCollisionShape.map(c => [c, tetrisShapes[state.activeShape.name].color]);
+
     // add active shaped to occupied cells
     const newOccupied = [...state.rubble.occupiedCells, ...preCollisionShape];
+    console.log({ testedShape, isOccupied, isLowerBoundary, isUpperBoundary, preCollisionShape, newOccupied })
     // test for winner
     const winners = winCheck(newOccupied, state);
     const copyOfRubble = Object.assign({}, state.rubble);
@@ -132,6 +133,7 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
       points: copyOfPoints, // unchanged
     };
     // plain collision return
+    console.log({collisionData})
     return [collisionData, null, isLowerBoundary.length];
   }
   return null; // no collision return

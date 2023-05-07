@@ -34,7 +34,7 @@ const tetrisShapes = {
   getRandShapeName: () => {
     const shapeList = ['shapeL', 'shapeZ', 'shapeT', 'shapeI', 'shapeJ', 'shapeO', 'shapeS'];
     const randNum = Math.floor(Math.random() * (shapeList.length));
-    // return 'shapeS'
+   // return 'shapeJ'
     return shapeList[randNum];
   },
   getDims(activeShape) {
