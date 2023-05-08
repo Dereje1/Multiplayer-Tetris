@@ -12,13 +12,13 @@ export const getCoordinatesFromIndex = ({ index, width, cellSize }) => {
 };
 
 const rubbleHeight = (state, opponent) => {
-  if(!state.rubble.occupiedCells.length){
-    return opponent ? 300  : 600;
+  if (!state.rubble.occupiedCells.length) {
+    return opponent ? 300 : 600;
   }
   const occupiedIndices = state.rubble.occupiedCells.map(o => o[0])
   const minIndex = Math.min(...occupiedIndices)
 
-  const [, height] =  getCoordinatesFromIndex({
+  const [, height] = getCoordinatesFromIndex({
     index: minIndex,
     width: 300,
     cellSize: 30
@@ -46,7 +46,7 @@ export const getRubbleHeight = (state, opponent) => {
 // clear canvas
 // eslint-disable-next-line no-unused-vars
 export const clearCanvas = (canvasContext, clearHeight, caller) => {
-  console.log('clear called '  + caller)
+  console.log('clear called ' + caller)
   // if (canvasContext.canvas.clientHeight === 300) console.log(`clearing canvas ${caller} ${clearHeight}`);
   if (clearHeight === 'All') {
     canvasContext.clearRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
@@ -72,7 +72,6 @@ export const drawCells = (ctx, shape, opponent = false) => {
     canvasContext.strokeStyle = 'grey';
     canvasContext.stroke();
   });
-  console.log('done drawing cells')
 };
 
 export const drawGrid = (x, y, occupied, b, ctx) => {
@@ -105,7 +104,7 @@ export const drawRubble = (ctx, state, opponent = false) => {
   const b = state.activeShape.unitBlockSize;
   state.rubble.occupiedCells.forEach((cell) => {
     const [index, color] = cell;
-    const [x,y] = getCoordinatesFromIndex({
+    const [x, y] = getCoordinatesFromIndex({
       index,
       width: 300,
       cellSize: 30
@@ -120,7 +119,6 @@ export const drawRubble = (ctx, state, opponent = false) => {
     canvasContext.rect(x, y, b, b);
     canvasContext.stroke();
   });
-  console.log('done drawing rubble')
 };
 
 export const drawBoundary = (ctx, state, opponent = false) => {
@@ -207,36 +205,24 @@ export const drawNextShape = async (ctx, newShape, state) => {
 
 export const winRubble = (ctx, state, winners) => {
   const canvasContext = ctx;
-  // drawBoundary(canvasContext, state);
   const b = state.activeShape.unitBlockSize;
-  state.rubble.occupiedCells.forEach((cell) => {
-    const [cellString, color] = cell;
-    const x = Number(cellString.split('-')[0]);
-    const y = Number(cellString.split('-')[1]);
-    // filled rects
-    if (!winners.includes(y)) {
-      // filled rects
-      canvasContext.fillStyle = color;
-      canvasContext.fillRect(x * b, y * b, b, b);
-      // draw borders for rubble
-      canvasContext.beginPath();
-      canvasContext.lineWidth = '3';
-      canvasContext.strokeStyle = 'grey';
-      canvasContext.rect(x * b, y * b, b, b);
-      canvasContext.stroke();
-    }
-  });
   const blocksPerRow = state.canvas.canvasMajor.width / b;
-  winners.forEach((y) => {
-    for (let x = 0; x < blocksPerRow; x += 1) {
+  winners.forEach((row) => {
+    const index = Number(row) * blocksPerRow
+    const [x, y] = getCoordinatesFromIndex({
+      index: index,
+      width: 300,
+      cellSize: 30
+    })
+    for (let i = 0; i < blocksPerRow; i += 1) {
       // filled rects
       canvasContext.fillStyle = 'white';
-      canvasContext.fillRect(x * b, y * b, b, b);
+      canvasContext.fillRect(x + (i * b), y, b, b);
       // draw borders for rubble
       canvasContext.beginPath();
       canvasContext.lineWidth = '3';
       canvasContext.strokeStyle = 'grey';
-      canvasContext.rect(x * b, y * b, b, b);
+      canvasContext.rect(x + (i * b), y, b, b);
       canvasContext.stroke();
     }
   });

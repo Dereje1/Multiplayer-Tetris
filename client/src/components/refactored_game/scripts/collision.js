@@ -1,87 +1,75 @@
 import tetrisShapes from './shapes';
 
 
-const winCheck = (newOccupied, state) => {
-  // get a Ycoordinate array from occupied cells
-  const yCoord = newOccupied.map(c => c[0]);
-  // find unique y coordinates
-  const yUnique = Array.from(new Set(yCoord));
-  // find how amny elements per row
-  const rowSize = state.canvas.canvasMajor.width / state.activeShape.unitBlockSize;
-  const winners = [];
-  // test if new state would have a winnable row by comparing occupation with row size
-  yUnique.forEach((u) => {
-    let counter = 0;
-    yCoord.forEach((c) => {
-      if (c === u) counter += 1;
-    });
-    if (counter === rowSize) winners.push(u);
+const parseRubble = (newOccupied) => {
+  const CELLS_PER_ROW = 10;
+  const parsedRubble = {}
+  newOccupied.forEach((cell) => {
+    const row = Math.floor(cell[0] / CELLS_PER_ROW);
+    const indices = parsedRubble[row] ? [...parsedRubble[row].indices, cell] : [cell]
+    parsedRubble[row] = {
+      indices,
+      win: indices.length === CELLS_PER_ROW ? true : false
+    }
   });
-  return winners;
-};
 
-
-const fillBlankRows = (occupied, state) => {
-  // Isolate cell coordinates
-  const xyCoord = occupied.map(c => c[0]);
-  // Isolate Y values of cell coordinates
-  const yCoord = xyCoord.map(y => Number(y.split('-')[1]));
-  // find max height of all the occupied cells (since canvas positive y is down use min)
-  const heightOccupied = Math.min(...yCoord);
-  const screenWidth = (state.canvas.canvasMajor.width / state.activeShape.unitBlockSize) - 1;
-  let boundaryHeight = state.rubble.boundaryCells.map(c => Number(c.split('-')[1]));
-  boundaryHeight = Math.min(...boundaryHeight) - 1;
-  let blankFound;
-  // scan thru all the potential cells within occupied
-  for (let y = heightOccupied; y <= boundaryHeight; y += 1) {
-    if (blankFound) break;
-    for (let x = 0; x <= screenWidth; x += 1) {
-      const testCoord = `${x}-${y}`;
-      // row is not empty so just go to next row
-      if (xyCoord.includes(testCoord)) break;
-      // row is empty , save empty row number and exit out of loop
-      if (!xyCoord.includes(testCoord) && x === screenWidth) blankFound = y;
+  let hasWinners = false;
+  for (const row of Object.keys(parsedRubble)) {
+    if (parsedRubble[row].win) {
+      hasWinners = true;
+      break;
     }
   }
 
-  // If an emmpty row is found scoot down the next contingent row above
-  if (blankFound) {
-    const newOccupied = [];
-    occupied.forEach((c) => {
-      const oldY = Number(c[0].split('-')[1]);
-      if (oldY === (blankFound - 1)) {
-        const oldX = Number(c[0].split('-')[0]);
-        newOccupied.push([`${oldX}-${oldY + 1}`, c[1]]);
-      } else {
-        newOccupied.push(c);
-      }
-    });
-    // recursively run function again to fill any other blank rows
-    return fillBlankRows(newOccupied, state);
-  }
-
-  return occupied;
+  return hasWinners && parsedRubble;
 };
 
-const clearRows = (occupied, winners, state) => {
-  let w = 0;
-  // separated call back to avoid CRA lint error for 'calling function within while loop'
-  const winnerRowcallBack = (oCell) => {
-    const occupiedY = Number(oCell[0].split('-')[1]);
-    return occupiedY === winners[w];
-  };
-  // remove all winninig rows
-  while (w < winners.length) {
-    // find index and splice(mutate) each cell occupied
-    const indexOfOccupied = occupied.findIndex(winnerRowcallBack);
-    occupied.splice(indexOfOccupied, 1);
-    // check if more of the winning row cells remain
-    const checkO = occupied.filter(winnerRowcallBack);
-    // if all cells of winning row are removed then go to next winning row
-    if (!checkO.length) w += 1;
+
+const modifyHigherRows = (higherRows, obj) => {
+  const higherRowsObj = Object.keys(obj)
+    .filter(key => higherRows.includes(key))
+    .reduce((acc, key) => {
+      acc[key] = obj[key];
+      return acc;
+    }, {});
+
+  const loweredRows = Object.keys(higherRowsObj).reduce((acc, key) => {
+    acc[Number(key) + 1] = {
+      ...higherRowsObj[key],
+      indices: higherRowsObj[key].indices.map(val => [val[0] + 10, val[1]])
+    }
+    return acc;
+  }, {})
+  return loweredRows;
+}
+
+const clearRows = (parsedRubble) => {
+  let updatedRubble = { ...parsedRubble };
+  const winRows = Object.keys(parsedRubble).filter(row => Boolean(parsedRubble[row].win))
+  for (const row of winRows) {
+    const allRows = Object.keys(updatedRubble)
+    const higherRows = allRows.filter(r => r < row)
+    if (higherRows.length) {
+      const loweredRows = modifyHigherRows(higherRows, updatedRubble);
+      delete updatedRubble[allRows[0]]
+      updatedRubble = {
+        ...updatedRubble,
+        ...loweredRows
+      }
+    } else {
+      delete updatedRubble[allRows[0]]
+    }
   }
-  // run function to recursively fill the blank rows
-  return fillBlankRows(occupied, state);
+
+  const newRubble = Object.keys(updatedRubble).reduce((acc, row) => {
+    const { indices } = updatedRubble[row]
+    return [...acc, ...indices]
+  }, [])
+
+  return {
+    newRubble,
+    winRows
+  };
 };
 
 export const runCollisionTest = (state, shapeTested, floorTest = false) => {
@@ -94,7 +82,6 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
   let preCollisionShape = [...state.activeShape.unitVertices];
   // game play area occupied cells
   const isOccupied = testedShape.filter(c => (occupiedCellLocations.includes(c)));
-  console.log({testedShape, isOccupied, occupiedCellLocations})
   // bottom boundary occupied cells
   const isLowerBoundary = Math.max(...testedShape) > 199;
   // upperBoundary ocupied cells
@@ -107,25 +94,29 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
 
     // add active shaped to occupied cells
     const newOccupied = [...state.rubble.occupiedCells, ...preCollisionShape];
-    console.log({ testedShape, isOccupied, isLowerBoundary, isUpperBoundary, preCollisionShape, newOccupied })
+    // console.log({ testedShape, isOccupied, isLowerBoundary, isUpperBoundary, preCollisionShape, newOccupied })
     // test for winner
-    const winners = winCheck(newOccupied, state);
+    const parsedRubble = parseRubble(newOccupied);
     const copyOfRubble = Object.assign({}, state.rubble);
     const copyOfPoints = Object.assign({}, state.points);
-    if (winners.length) {
+    if (parsedRubble) {
       // assign points if winner found
-      copyOfPoints.totalLinesCleared = state.points.totalLinesCleared + winners.length;
+      const {
+        newRubble,
+        winRows
+      } = clearRows(parsedRubble);
+
+      copyOfRubble.occupiedCells = newRubble
+      copyOfPoints.totalLinesCleared = state.points.totalLinesCleared + winRows.length;
       copyOfPoints.level = Math.floor(copyOfPoints.totalLinesCleared / (state.points.levelUp));
-      // assign new rubble coordinates
-      copyOfRubble.occupiedCells = clearRows(newOccupied, winners, state);
-      copyOfRubble.winRows = winners;
+      copyOfRubble.winRows = [0];
 
       collisionData = {
         rubble: copyOfRubble,
         points: copyOfPoints,
       };
       // winner return
-      return [collisionData, winners, isLowerBoundary.length];
+      return [collisionData, winRows, isLowerBoundary.length];
     }
     copyOfRubble.occupiedCells = newOccupied;
     collisionData = {
@@ -133,7 +124,7 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
       points: copyOfPoints, // unchanged
     };
     // plain collision return
-    console.log({collisionData})
+    console.log({ collisionData })
     return [collisionData, null, isLowerBoundary.length];
   }
   return null; // no collision return

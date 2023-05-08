@@ -54,17 +54,10 @@ const playerMoves = (keyCode, state, ctx) => {
   } if (down) {
     // if next down is a collision then return null as dual processing
     // of collision with drawscreen produces problems
-    copyOfActiveShape.yPosition += state.activeShape.unitBlockSize;
-    [copyOfActiveShape.boundingBox,
-    copyOfActiveShape.absoluteVertices] = tetrisShapes.getDims(copyOfActiveShape);
-    const locatedShape = shapeLocator(
-      ctx,
-      state.canvas.canvasMajor.width,
-      state.canvas.canvasMajor.height,
-      copyOfActiveShape, false,
-    );
-
-    return runCollisionTest(state, locatedShape) ? null : 'forcedown';
+    return runCollisionTest(state, {
+      ...copyOfActiveShape,
+      unitVertices: copyOfActiveShape.unitVertices.map((idx) => idx + 10)
+    }) ? null : 'forcedown';
   }
 
   return rotation(state, ctx);
