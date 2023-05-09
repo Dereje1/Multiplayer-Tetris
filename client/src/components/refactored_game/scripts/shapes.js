@@ -34,72 +34,38 @@ const tetrisShapes = {
   getRandShapeName: () => {
     const shapeList = ['shapeL', 'shapeZ', 'shapeT', 'shapeI', 'shapeJ', 'shapeO', 'shapeS'];
     const randNum = Math.floor(Math.random() * (shapeList.length));
-   // return 'shapeJ'
     return shapeList[randNum];
   },
-  getDims(activeShape) {
-    const absoluteVertices = this.getAbsoluteVertices(
-      activeShape.unitBlockSize,
-      activeShape.xPosition,
-      activeShape.yPosition,
-      activeShape.unitVertices,
-    );
-
-    return [this.onBoundingBox(absoluteVertices), absoluteVertices];
-  },
   onRotate: ({ activeShape, width }) => {
-    const { name, unitVertices, rotationStage } = activeShape
+    const { name, indices, rotationStage } = activeShape
 
-    const newRotationStage = rotationStage > 2
-      ? 0
-      : rotationStage + 1;
+    const newRotationStage = rotationStage > 2 ? 0 : rotationStage + 1;
     const transformation = tetrisShapes[name].rotationStages[newRotationStage]
-    const transformedVertices = unitVertices.map((v, idx) => v + transformation[idx])
+    const transformedIndices = indices.map((v, idx) => v + transformation[idx])
 
     if (!isContiguous({
-      indices: transformedVertices,
+      indices: transformedIndices,
       width,
       cellSize: activeShape.unitBlockSize
     })) return activeShape;
 
     return {
       ...activeShape,
-      unitVertices: transformedVertices,
+      indices: transformedIndices,
       rotationStage: newRotationStage
     }
   },
-  onBoundingBox: (absoluteVertices) => {
-    const xArr = absoluteVertices.map(v => v[0]);
-    const yArr = absoluteVertices.map(v => v[1]);
-    return [Math.min(...xArr), Math.max(...xArr), Math.min(...yArr), Math.max(...yArr)];
-  },
-  getAbsoluteVertices: (blockSize, x, y, unitVertices) => (
-    unitVertices.map(v => [x + (v[0] * blockSize), y + (v[1] * blockSize)])
-  ),
   initializeShape(shapeName, game) {
     // finding intital y bound so it does not get cutoff
     const x = (shapeName !== 'shapeI' && shapeName !== 'shapeO')
       ? (game.canvas.canvasMajor.width / 2) + (game.activeShape.unitBlockSize / 2)
       : game.canvas.canvasMajor.width / 2;
 
-    const initialAbsoluteVertices = this.getAbsoluteVertices(
-      game.activeShape.unitBlockSize,
-      x,
-      0,
-      this[shapeName].vertices,
-    );
-
-    const initialBoundingBox = this.onBoundingBox(initialAbsoluteVertices);
     const activeShape = {
       name: shapeName,
       unitBlockSize: 30,
-      xPosition: x,
-      yPosition: -1 * initialBoundingBox[2],
-      unitVertices: this[shapeName].vertices,
-      absoluteVertices: initialAbsoluteVertices,
-      boundingBox: initialBoundingBox,
+      indices: this[shapeName].indices,
       rotationStage: 0,
-      cells: [],
     };
     return activeShape;
   },
@@ -112,7 +78,7 @@ const tetrisShapes = {
     return { randomShape, newShapeName, nextShapeInfo };
   },
   shapeI: {
-    vertices: [3, 4, 5, 6],
+    indices: [3, 4, 5, 6],
     color: 'cyan',
     rotationStages: {
       0: [-2, -11, -20, -29],
@@ -122,7 +88,7 @@ const tetrisShapes = {
     }
   },
   shapeJ: {
-    vertices: [3, 13, 14, 15],
+    indices: [3, 13, 14, 15],
     color: 'blue',
     rotationStages: {
       0: [-2, -2, -11, -9],
@@ -132,7 +98,7 @@ const tetrisShapes = {
     }
   },
   shapeL: {
-    vertices: [5, 13, 14, 15],
+    indices: [5, 13, 14, 15],
     color: 'orange',
     rotationStages: {
       0: [1, 8, -1, -10],
@@ -142,7 +108,7 @@ const tetrisShapes = {
     }
   },
   shapeO: {
-    vertices: [4, 5, 14, 15],
+    indices: [4, 5, 14, 15],
     color: 'yellow',
     rotationStages: {
       0: [0, 0, 0, 0],
@@ -152,7 +118,7 @@ const tetrisShapes = {
     }
   },
   shapeS: {
-    vertices: [5, 6, 14, 15],
+    indices: [5, 6, 14, 15],
     color: 'green',
     rotationStages: {
       0: [-20, -9, 0, 11],
@@ -162,7 +128,7 @@ const tetrisShapes = {
     }
   },
   shapeT: {
-    vertices: [4, 13, 14, 15],
+    indices: [4, 13, 14, 15],
     color: 'purple',
     rotationStages: {
       0: [0, 0, 0, -9],
@@ -172,7 +138,7 @@ const tetrisShapes = {
     }
   },
   shapeZ: {
-    vertices: [4, 5, 15, 16],
+    indices: [4, 5, 15, 16],
     color: 'red',
     rotationStages: {
       0: [-1, -10, 1, -8],

@@ -11,7 +11,6 @@ import { Audio, audioTypes } from './audio';
 // custom functions and scripts
 import boardReset from './scripts/boardreset';
 import tetrisShapes from './scripts/shapes';
-import shapeLocator from './scripts/locateShape';
 import { runCollisionTest } from './scripts/collision';
 import {
   clearCanvas, drawNextShape, drawFloor, drawShape,
@@ -199,10 +198,10 @@ export class Game extends React.Component {
   // get the next shape ypos
   positionForecast = () => {
     const { game: { activeShape } } = this.props;
-    const newPos = activeShape.unitVertices.map((idx) => idx + 10)
+    const newPos = activeShape.indices.map((idx) => idx + 10)
     return {
       ...activeShape,
-      unitVertices: newPos
+      indices: newPos
     };
   };
 
@@ -212,16 +211,8 @@ export class Game extends React.Component {
     const { randomShape, newShapeName, nextShapeInfo } = tetrisShapes.createNewShape(game);
     GameActions(SET_NEXT_SHAPE, newShapeName);
     drawNextShape(this.canvasContextMinor, nextShapeInfo, game);
-    // prepare activeshape data to send to starttick
-    [randomShape.boundingBox, randomShape.absoluteVertices] = tetrisShapes.getDims(randomShape);
-    const locatedShape = shapeLocator(
-      this.canvasContextMajor,
-      game.canvas.canvasMajor.width,
-      game.canvas.canvasMajor.height,
-      randomShape, false,
-    );
     const data = {
-      activeShape: locatedShape,
+      activeShape: randomShape,
       rubble: game.rubble,
     };
     return data;
@@ -259,23 +250,15 @@ export class Game extends React.Component {
     GameActions(PAUSE, !buttonPause);
     if (game.paused) {
       // test if a new game or within a game
-      if (game.activeShape.cells.length) this.startTick(false);
+      if (game.activeShape.indices.length) this.startTick(false);
       else this.resetBoard({});
     } else this.endTick('Manual Pause');
   };
 
   floorRaise = (f) => {
     const { game, GameActions } = this.props;
-    // Locate Shape on screen and then set .cell prop of activeShape
-    const locatedShape = shapeLocator(
-      this.canvasContextMajor,
-      game.canvas.canvasMajor.width,
-      game.canvas.canvasMajor.height,
-      this.positionForecast(),
-      false,
-    );
     const newFloor = getFloorRaiseBoundry(game.rubble, f);
-    const collisionResult = runCollisionTest(game, locatedShape, newFloor);
+    const collisionResult = runCollisionTest(game, game.activeShape, newFloor);
     this.canvasMajor.current.focus();
     if (collisionResult) {
       // right now can not raise floor and collide simultaneously

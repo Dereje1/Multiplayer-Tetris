@@ -18,7 +18,6 @@ const drawScreen = ({
 }) => {
   const { game, collide, updateScreen } = redux;
   const shapeToDraw = { ...updatedShape };
-  [shapeToDraw.boundingBox, shapeToDraw.absoluteVertices] = tetrisShapes.getDims(updatedShape);
 
   // test for collision
   const collisionResult = runCollisionTest(game, shapeToDraw);

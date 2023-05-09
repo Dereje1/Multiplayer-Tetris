@@ -1,11 +1,10 @@
 import { runCollisionTest, getSideBlock } from './collision';
 import tetrisShapes from './shapes';
-import shapeLocator from './locateShape';
 
-const getCanvasEdge = ({ unitVertices, width, unitBlockSize }) => {
+const getCanvasEdge = ({ indices, width, unitBlockSize }) => {
   const cellsPerRow = width / unitBlockSize;
 
-  for (const idx of unitVertices) {
+  for (const idx of indices) {
     const column = idx % cellsPerRow;
     if (column === 0) return 'leftEdge';
     if (column === cellsPerRow - 1) return 'rightEdge';
@@ -17,8 +16,7 @@ const getCanvasEdge = ({ unitVertices, width, unitBlockSize }) => {
 const rotation = (state) => {
   const { canvas: { canvasMajor: { width } }, activeShape } = state;
   const updatedShape = tetrisShapes.onRotate({ activeShape, width });
-  // if (!runCollisionTest(state, locatedShape)) return rotatedShape;
-  return updatedShape;
+  return runCollisionTest(state, updatedShape) ? activeShape : updatedShape;
 };
 
 const playerMoves = (keyCode, state, ctx) => {
@@ -30,33 +28,33 @@ const playerMoves = (keyCode, state, ctx) => {
 
 
   if (!(left || right || up || down)) return null; // do nothing for any other keypress
-  const { canvas: { canvasMajor: { width } }, activeShape: { unitBlockSize, unitVertices } } = state;
+  const { canvas: { canvasMajor: { width } }, activeShape: { unitBlockSize, indices } } = state;
 
-  const edge = getCanvasEdge({ unitVertices, width, unitBlockSize });
+  const edge = getCanvasEdge({ indices, width, unitBlockSize });
   if (left && edge === 'leftEdge') return null;
   if (right && edge === 'rightEdge') return null;
 
   const copyOfActiveShape = Object.assign({}, state.activeShape);
   if (left) {
     if (getSideBlock('L', state)) return null;
-    const newPos = copyOfActiveShape.unitVertices.map((idx) => idx - 1)
+    const newPos = copyOfActiveShape.indices.map((idx) => idx - 1)
     return {
       ...copyOfActiveShape,
-      unitVertices: newPos
+      indices: newPos
     };
   } if (right) {
     if (getSideBlock('R', state)) return null;
-    const newPos = copyOfActiveShape.unitVertices.map((idx) => idx + 1)
+    const newPos = copyOfActiveShape.indices.map((idx) => idx + 1)
     return {
       ...copyOfActiveShape,
-      unitVertices: newPos
+      indices: newPos
     };
   } if (down) {
     // if next down is a collision then return null as dual processing
     // of collision with drawscreen produces problems
     return runCollisionTest(state, {
       ...copyOfActiveShape,
-      unitVertices: copyOfActiveShape.unitVertices.map((idx) => idx + 10)
+      indices: copyOfActiveShape.indices.map((idx) => idx + 10)
     }) ? null : 'forcedown';
   }
 

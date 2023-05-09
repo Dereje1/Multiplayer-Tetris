@@ -1,7 +1,7 @@
 import tetrisShapes from './shapes';
 
 
-const parseRubble = (newOccupied) => {
+const parseRubbleChange = (newOccupied) => {
   const CELLS_PER_ROW = 10;
   const parsedRubble = {}
   newOccupied.forEach((cell) => {
@@ -25,21 +25,17 @@ const parseRubble = (newOccupied) => {
 };
 
 
-const modifyHigherRows = (higherRows, obj) => {
-  const higherRowsObj = Object.keys(obj)
+const modifyHigherRows = (higherRows, rubble) => {
+  const loweredRows = Object.keys(rubble)
     .filter(key => higherRows.includes(key))
     .reduce((acc, key) => {
-      acc[key] = obj[key];
+      acc[Number(key) + 1] = {
+        ...rubble[key],
+        indices: rubble[key].indices.map(val => [val[0] + 10, val[1]])
+      }
       return acc;
-    }, {});
+    }, {})
 
-  const loweredRows = Object.keys(higherRowsObj).reduce((acc, key) => {
-    acc[Number(key) + 1] = {
-      ...higherRowsObj[key],
-      indices: higherRowsObj[key].indices.map(val => [val[0] + 10, val[1]])
-    }
-    return acc;
-  }, {})
   return loweredRows;
 }
 
@@ -77,26 +73,23 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
     ? floorTest[0].map(c => c[0])
     : state.rubble.occupiedCells.map((o) => o[0]);
   // shape to test for collison
-  const testedShape = [...shapeTested.unitVertices];
+  const testedShape = [...shapeTested.indices];
   // currently active shape
-  let preCollisionShape = [...state.activeShape.unitVertices];
+  let preCollisionShape = [...state.activeShape.indices];
   // game play area occupied cells
   const isOccupied = testedShape.filter(c => (occupiedCellLocations.includes(c)));
   // bottom boundary occupied cells
   const isLowerBoundary = Math.max(...testedShape) > 199;
   // upperBoundary ocupied cells
-  const isUpperBoundary = testedShape.filter(c => c >= 0 && c <= 9);
+  const isUpperBoundary = testedShape.filter(c => c >= 0 && c <= 19);
   if (isOccupied.length || isLowerBoundary) { // collision detected
     if (isUpperBoundary.length) return [];// game over
     let collisionData;
     // add color info to active shape
     preCollisionShape = preCollisionShape.map(c => [c, tetrisShapes[state.activeShape.name].color]);
-
     // add active shaped to occupied cells
     const newOccupied = [...state.rubble.occupiedCells, ...preCollisionShape];
-    // console.log({ testedShape, isOccupied, isLowerBoundary, isUpperBoundary, preCollisionShape, newOccupied })
-    // test for winner
-    const parsedRubble = parseRubble(newOccupied);
+    const parsedRubble = parseRubbleChange(newOccupied);
     const copyOfRubble = Object.assign({}, state.rubble);
     const copyOfPoints = Object.assign({}, state.points);
     if (parsedRubble) {
@@ -109,7 +102,6 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
       copyOfRubble.occupiedCells = newRubble
       copyOfPoints.totalLinesCleared = state.points.totalLinesCleared + winRows.length;
       copyOfPoints.level = Math.floor(copyOfPoints.totalLinesCleared / (state.points.levelUp));
-      copyOfRubble.winRows = [0];
 
       collisionData = {
         rubble: copyOfRubble,
@@ -124,7 +116,6 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
       points: copyOfPoints, // unchanged
     };
     // plain collision return
-    console.log({ collisionData })
     return [collisionData, null, isLowerBoundary.length];
   }
   return null; // no collision return
@@ -133,13 +124,11 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
 
 export const getSideBlock = (direction, state) => {
   // checks for player x-direction movement obstructions
-  const cellCheck = state.activeShape.cells.map((c) => {
-    if (direction === 'L') {
-      return [c[0] - 1, c[1]].join('-');
-    }
-    return [c[0] + 1, c[1]].join('-');
-  });
-  const occupiedCellLocations = state.rubble.occupiedCells.map(c => c[0]);
-  const blocked = cellCheck.filter(c => occupiedCellLocations.includes(c));
-  return !!blocked.length;
+  const { activeShape, rubble: { occupiedCells } } = state;
+  const foreCastedIndices = activeShape.indices.map((idx) => direction === 'L' ? idx - 1 : idx + 1);
+  const occupiedIndices = occupiedCells.map(c => c[0])
+  for (const index of foreCastedIndices) {
+    if (occupiedIndices.includes(index)) return true
+  }
+  return false
 };

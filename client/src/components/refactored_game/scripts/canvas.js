@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import tetrisShapes from './shapes';
-import shapeLocator from './locateShape';
 
 export const getCoordinatesFromIndex = ({ index, width, cellSize }) => {
   const cellsPerRow = width / cellSize;
@@ -57,8 +56,8 @@ export const clearCanvas = (canvasContext, clearHeight, caller) => {
 
 export const drawCells = (ctx, shape, opponent = false) => {
   const canvasContext = ctx;
-  const { unitBlockSize, unitVertices } = shape;
-  unitVertices.forEach((c) => {
+  const { unitBlockSize, indices } = shape;
+  indices.forEach((c) => {
     const [x, y] = getCoordinatesFromIndex({
       index: c,
       width: 300,
@@ -172,24 +171,13 @@ export const drawNextShape = async (ctx, newShape, state) => {
     initiailizedShape.yPosition -= (initiailizedShape.unitBlockSize / 2);
   }
 
-  [initiailizedShape.boundingBox,
-  initiailizedShape.absoluteVertices] = tetrisShapes.getDims(initiailizedShape);
-
-  const locatedShape = shapeLocator(
-    ctx,
-    canvasWidth,
-    canvasHeight,
-    initiailizedShape,
-    false,
-    specialshapes,
-  );
   await Promise.resolve()
   // console.log({locatedShape})
   // const canvasContext = ctx;
   // canvasContext.beginPath();
   // canvasContext.fillStyle = tetrisShapes[locatedShape.name].color;
   // canvasContext.moveTo(locatedShape.xPosition, locatedShape.yPosition);
-  // locatedShape.unitVertices.forEach((v) => {
+  // locatedShape.indices.forEach((v) => {
   //   const [x,y] = getCoordinatesFromIndex({
   //     index: v,
   //     width: canvasWidth,
@@ -199,7 +187,7 @@ export const drawNextShape = async (ctx, newShape, state) => {
   // });
   // canvasContext.lineTo(locatedShape.xPosition, locatedShape.yPosition);
   // canvasContext.fill();
-  drawCells(ctx, locatedShape);
+  drawCells(ctx, initiailizedShape);
 };
 
 

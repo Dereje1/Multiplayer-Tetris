@@ -30,13 +30,8 @@ const initialState = { // determine what needs to go into state, a very small po
   activeShape: { // all geometric info of active shape
     name: 'shapeZ',
     unitBlockSize: 30,
-    xPosition: 0,
-    yPosition: 0,
-    unitVertices: [],
-    absoluteVertices: [],
-    boundingBox: [],
+    indices: [],
     rotationStage: 0,
-    cells: [],
   },
 };
 
