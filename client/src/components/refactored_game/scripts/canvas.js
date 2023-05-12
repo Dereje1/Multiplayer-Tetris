@@ -28,7 +28,7 @@ export const drawCells = (ctx, shape, opponent = false) => {
   indices.forEach((c) => {
     const [x, y] = getCoordinatesFromIndex({
       index: c,
-      width: 300,
+      width: ctx.canvas.width,
       cellSize: unitBlockSize
     })
     canvasContext.beginPath();
@@ -50,8 +50,8 @@ export const drawRubble = (ctx, state, opponent = false) => {
     const [index, color] = cell;
     const [x, y] = getCoordinatesFromIndex({
       index,
-      width: 300,
-      cellSize: 30
+      width: ctx.canvas.width,
+      cellSize: b
     })
     // filled rects
     canvasContext.fillStyle = color;
@@ -74,36 +74,12 @@ export const refreshCanvas = (ctx, state, opponent = false) => {
 
 export const drawNextShape = async (ctx, newShape, state) => {
   clearCanvas(ctx, 'All', 'drawNextShape');
-  const initiailizedShape = newShape;
-  const canvasWidth = state.canvas.canvasMinor.width;
-  const canvasHeight = state.canvas.canvasMinor.height;
-  let specialshapes = false;
-  if (initiailizedShape.name !== 'shapeI' && initiailizedShape.name !== 'shapeO') {
-    initiailizedShape.xPosition = canvasWidth / 2;
-    initiailizedShape.yPosition = canvasHeight / 2;
-  } else {
-    specialshapes = true;
-    initiailizedShape.xPosition = (canvasWidth / 2) + (initiailizedShape.unitBlockSize / 2);
-    initiailizedShape.yPosition += (canvasHeight / 2);
-    initiailizedShape.yPosition -= (initiailizedShape.unitBlockSize / 2);
+  const initiailizedShape = {
+    ...newShape,
+    indices: newShape.indices.map(i => i + 40),
+    unitBlockSize: 21
   }
-
   await Promise.resolve()
-  // console.log({locatedShape})
-  // const canvasContext = ctx;
-  // canvasContext.beginPath();
-  // canvasContext.fillStyle = tetrisShapes[locatedShape.name].color;
-  // canvasContext.moveTo(locatedShape.xPosition, locatedShape.yPosition);
-  // locatedShape.indices.forEach((v) => {
-  //   const [x,y] = getCoordinatesFromIndex({
-  //     index: v,
-  //     width: canvasWidth,
-  //     cellSize: locatedShape.unitBlockSize
-  //   })
-  //   canvasContext.lineTo(x, y);
-  // });
-  // canvasContext.lineTo(locatedShape.xPosition, locatedShape.yPosition);
-  // canvasContext.fill();
   drawCells(ctx, initiailizedShape);
 };
 
@@ -116,8 +92,8 @@ export const winRubble = (ctx, state, winners) => {
     const index = Number(row) * blocksPerRow
     const [x, y] = getCoordinatesFromIndex({
       index: index,
-      width: 300,
-      cellSize: 30
+      width: ctx.canvas.width,
+      cellSize: b
     })
     for (let i = 0; i < blocksPerRow; i += 1) {
       // filled rects
@@ -152,7 +128,7 @@ export const drawFloor = (game, canvasContextMajor, opponent) => {
   floorIndices.forEach((cell) => {
     const [x, y] = getCoordinatesFromIndex({
       index: cell,
-      width: 300,
+      width: canvasContextMajor.canvas.width,
       cellSize: 30
     })
     // filled rects

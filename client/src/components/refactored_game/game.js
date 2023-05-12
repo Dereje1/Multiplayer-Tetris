@@ -131,7 +131,7 @@ export class Game extends React.Component {
     const canvasMinor = this.canvasMinor.current;
     canvasMajor.focus();
     canvasMajor.style.backgroundColor = 'black';
-    canvasMinor.style.backgroundColor = 'black';
+    canvasMinor.style.backgroundColor = '#e7e2e2';
     this.canvasContextMajor = canvasMajor.getContext('2d');
     this.canvasContextMinor = canvasMinor.getContext('2d');
     this.canvasMajor.current.focus();
