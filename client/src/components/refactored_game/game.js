@@ -13,7 +13,7 @@ import boardReset from './scripts/boardreset';
 import tetrisShapes from './scripts/shapes';
 import { runCollisionTest } from './scripts/collision';
 import {
-  clearCanvas, drawNextShape, drawFloor, drawShape,
+  clearCanvas, drawNextShape, drawFloor
 } from './scripts/canvas';
 import drawScreen from './scripts/drawscreen';
 import playerMoves from './scripts/player';
@@ -93,7 +93,7 @@ export class Game extends React.Component {
     }
 
     /* draws floor or sets state to do so before the next tick */
-    if (game.rubble.boundaryCells.length > 10
+    if (game.rubble.boundaryCells && game.rubble.boundaryCells.length > 10
       && prevGame.rubble.boundaryCells.length !== game.rubble.boundaryCells.length) {
       if (!game.activeShape.cells.length || game.paused) drawFloor(game, this.canvasContextMajor);
       else this.setState({ updateFloor: true });
@@ -139,6 +139,7 @@ export class Game extends React.Component {
   };
 
   resetBoard = (config) => {
+    console.log({config})
     const { game, GameActions } = this.props;
     const resetObject = {
       config,
@@ -162,13 +163,9 @@ export class Game extends React.Component {
       // unable to update store wwithout async, not sure why ??
       await GameActions(SCREEN_UPDATE, data);
       // eslint-disable-next-line react/destructuring-assignment
-      drawShape(this.canvasContextMajor, this.props.game);
     }
     // setTimeout so not too immediately start the animation after new shape
-    setTimeout(() => {
-      this.setState({ requestAnimation: true });
-      this.animationId = requestAnimationFrame(this.tick);
-    }, 50);
+    this.setState({ requestAnimation: true }, () => this.animationId = requestAnimationFrame(this.tick));
   };
 
   tick = (timeStamp) => {
@@ -257,14 +254,24 @@ export class Game extends React.Component {
 
   floorRaise = (f) => {
     const { game, GameActions } = this.props;
-    const newFloor = getFloorRaiseBoundry(game.rubble, f);
-    const collisionResult = runCollisionTest(game, game.activeShape, newFloor);
+    const { raisedOccupiedCells, floorIndices, floorHeight } = getFloorRaiseBoundry(game, f);
+    const collisionResult = runCollisionTest(game, game.activeShape, raisedOccupiedCells);
     this.canvasMajor.current.focus();
     if (collisionResult) {
       // right now can not raise floor and collide simultaneously
       console.log('Unable to move floor', collisionResult);
     } else {
-      GameActions(RAISE_FLOOR, game.rubble, { raiseBy: f });
+      GameActions(RAISE_FLOOR, game, { raiseBy: f });
+      // only manually draw raised floor if game has no active cells
+      !game.activeShape.indices.length && drawFloor({
+        ...game,
+        floor: {
+          floorHeight,
+          floorIndices
+        }
+      },
+        this.canvasContextMajor
+      )
     }
   };
 

@@ -1,52 +1,50 @@
 import tetrisShapes from './shapes';
 
-
+// turn rubble into object to ease parsing of winners
 const parseRubbleChange = (newOccupied) => {
   const CELLS_PER_ROW = 10;
   const parsedRubble = {}
+  let hasWinners = false;
   newOccupied.forEach((cell) => {
     const row = Math.floor(cell[0] / CELLS_PER_ROW);
     const indices = parsedRubble[row] ? [...parsedRubble[row].indices, cell] : [cell]
+    const win = indices.length === CELLS_PER_ROW
+    // turn true for first winner in occupied cells
+    if (!hasWinners) {
+      hasWinners = win;
+    }
     parsedRubble[row] = {
       indices,
-      win: indices.length === CELLS_PER_ROW ? true : false
+      win
     }
   });
-
-  let hasWinners = false;
-  for (const row of Object.keys(parsedRubble)) {
-    if (parsedRubble[row].win) {
-      hasWinners = true;
-      break;
-    }
-  }
-
   return hasWinners && parsedRubble;
 };
 
-
+// lowers all rows that are higher than the winning row
 const modifyHigherRows = (higherRows, rubble) => {
   const loweredRows = Object.keys(rubble)
     .filter(key => higherRows.includes(key))
     .reduce((acc, key) => {
       acc[Number(key) + 1] = {
         ...rubble[key],
-        indices: rubble[key].indices.map(val => [val[0] + 10, val[1]])
+        indices: rubble[key].indices.map(([index, color]) => [index + 10, color])
       }
       return acc;
     }, {})
-
   return loweredRows;
 }
 
 const clearRows = (parsedRubble) => {
   let updatedRubble = { ...parsedRubble };
   const winRows = Object.keys(parsedRubble).filter(row => Boolean(parsedRubble[row].win))
+  winRows.sort((a,b) => Number(a) - Number(b))
   for (const row of winRows) {
     const allRows = Object.keys(updatedRubble)
-    const higherRows = allRows.filter(r => r < row)
-    if (higherRows.length) {
+    const higherRows = allRows.filter(r => Number(r) < row)
+    if (higherRows.length > 0) {
       const loweredRows = modifyHigherRows(higherRows, updatedRubble);
+      // delete top row and merge lowered rows
       delete updatedRubble[allRows[0]]
       updatedRubble = {
         ...updatedRubble,
@@ -56,7 +54,7 @@ const clearRows = (parsedRubble) => {
       delete updatedRubble[allRows[0]]
     }
   }
-
+  // reassemble rubble into original config
   const newRubble = Object.keys(updatedRubble).reduce((acc, row) => {
     const { indices } = updatedRubble[row]
     return [...acc, ...indices]
@@ -70,7 +68,7 @@ const clearRows = (parsedRubble) => {
 
 export const runCollisionTest = (state, shapeTested, floorTest = false) => {
   const occupiedCellLocations = floorTest
-    ? floorTest[0].map(c => c[0])
+    ? floorTest.map(c => c[0])
     : state.rubble.occupiedCells.map((o) => o[0]);
   // shape to test for collison
   const testedShape = [...shapeTested.indices];
@@ -79,7 +77,7 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
   // game play area occupied cells
   const isOccupied = testedShape.filter(c => (occupiedCellLocations.includes(c)));
   // bottom boundary occupied cells
-  const isLowerBoundary = Math.max(...testedShape) > 199;
+  const isLowerBoundary = Math.max(...testedShape) > (199 - (state.floor.floorHeight * 10));
   // upperBoundary ocupied cells
   const isUpperBoundary = testedShape.filter(c => c >= 0 && c <= 19);
   if (isOccupied.length || isLowerBoundary) { // collision detected
@@ -87,19 +85,19 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
     let collisionData;
     // add color info to active shape
     preCollisionShape = preCollisionShape.map(c => [c, tetrisShapes[state.activeShape.name].color]);
-    // add active shaped to occupied cells
+    // add active shape to occupied cells
     const newOccupied = [...state.rubble.occupiedCells, ...preCollisionShape];
     const parsedRubble = parseRubbleChange(newOccupied);
     const copyOfRubble = Object.assign({}, state.rubble);
     const copyOfPoints = Object.assign({}, state.points);
-    if (parsedRubble) {
-      // assign points if winner found
+    if (parsedRubble) { // winning row/s found
       const {
         newRubble,
         winRows
       } = clearRows(parsedRubble);
 
       copyOfRubble.occupiedCells = newRubble
+      // assign points if winner found
       copyOfPoints.totalLinesCleared = state.points.totalLinesCleared + winRows.length;
       copyOfPoints.level = Math.floor(copyOfPoints.totalLinesCleared / (state.points.levelUp));
 
@@ -108,7 +106,7 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
         points: copyOfPoints,
       };
       // winner return
-      return [collisionData, winRows, isLowerBoundary.length];
+      return [collisionData, winRows];
     }
     copyOfRubble.occupiedCells = newOccupied;
     collisionData = {
@@ -116,7 +114,7 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
       points: copyOfPoints, // unchanged
     };
     // plain collision return
-    return [collisionData, null, isLowerBoundary.length];
+    return [collisionData, null];
   }
   return null; // no collision return
 };

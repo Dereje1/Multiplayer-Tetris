@@ -64,7 +64,7 @@ const tetrisShapes = {
     const activeShape = {
       name: shapeName,
       unitBlockSize: 30,
-      indices: this[shapeName].indices,
+      indices: this[shapeName].indices.map(idx => idx - 10), // move cells up to start at canvas top
       rotationStage: 0,
     };
     return activeShape;

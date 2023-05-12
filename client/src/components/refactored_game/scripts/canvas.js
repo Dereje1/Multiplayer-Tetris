@@ -10,38 +10,6 @@ export const getCoordinatesFromIndex = ({ index, width, cellSize }) => {
   return [x, y];
 };
 
-const rubbleHeight = (state, opponent) => {
-  if (!state.rubble.occupiedCells.length) {
-    return opponent ? 300 : 600;
-  }
-  const occupiedIndices = state.rubble.occupiedCells.map(o => o[0])
-  const minIndex = Math.min(...occupiedIndices)
-
-  const [, height] = getCoordinatesFromIndex({
-    index: minIndex,
-    width: 300,
-    cellSize: 30
-  })
-  return height
-}
-
-export const getBoundryHeight = (state, opponent = false) => {
-
-
-  return opponent ? 300 - rubbleHeight(state) : 600 - rubbleHeight(state);
-};
-export const getRubbleHeight = (state, opponent) => {
-  // since rubble height is inclusive of floor height, return
-  // floor height if no rubble.
-  if (state.rubble.occupiedCells.length) {
-    const yBoundary = state.rubble.occupiedCells.map(c => c[0]);
-    const rubbleHeight = yBoundary.length
-      ? Math.min.apply(null, yBoundary) * state.activeShape.unitBlockSize
-      : getBoundryHeight(state, opponent);
-    return getBoundryHeight(state, opponent);
-  }
-  return getBoundryHeight(state, opponent);
-};
 // clear canvas
 // eslint-disable-next-line no-unused-vars
 export const clearCanvas = (canvasContext, clearHeight, caller) => {
@@ -73,29 +41,6 @@ export const drawCells = (ctx, shape, opponent = false) => {
   });
 };
 
-export const drawGrid = (x, y, occupied, b, ctx) => {
-  const canvasContext = ctx;
-  const col = occupied ? 'grey' : 'white';
-  canvasContext.beginPath();
-  canvasContext.lineWidth = '3';
-  canvasContext.strokeStyle = col;
-  canvasContext.rect(x, y, b, b);
-  canvasContext.stroke();
-};
-
-export const drawGridSpecial = (x, y, occupied, b, ctx) => {
-  const canvasContext = ctx;
-  if (x === 0) {
-    canvasContext.beginPath();
-    canvasContext.lineWidth = '3';
-    canvasContext.strokeStyle = 'black';
-    canvasContext.rect(x, y, b, b);
-    canvasContext.stroke();
-    canvasContext.fillStyle = 'black';
-    canvasContext.rect(x, y, b, b);
-    canvasContext.fill();
-  }
-};
 
 export const drawRubble = (ctx, state, opponent = false) => {
   if (opponent) console.log('Opponent Drawing rubble');
@@ -120,39 +65,11 @@ export const drawRubble = (ctx, state, opponent = false) => {
   });
 };
 
-export const drawBoundary = (ctx, state, opponent = false) => {
-  // console.log('Drawing Boundry');
-  const canvasContext = ctx;
-  const b = state.activeShape.unitBlockSize;
-  canvasContext.clearRect(
-    0,
-    getRubbleHeight(state),
-    canvasContext.canvas.width,
-    canvasContext.canvas.height
-  );
-  state.rubble.boundaryCells.forEach((cell) => {
-    // filled rects
-    const [x, y] = getCoordinatesFromIndex({
-      index: cell,
-      width: 300,
-      cellSize: b
-    })
-    canvasContext.fillStyle = 'rgba(93, 149, 221, 0.403921568627451)';
-    canvasContext.fillRect(x * b, y * b, b, b);
-    // draw borders for rubble
-    canvasContext.beginPath();
-    canvasContext.lineWidth = opponent ? '1' : '4';
-    canvasContext.strokeStyle = 'white';
-    canvasContext.rect(x * b, y * b, b, b);
-    canvasContext.stroke();
-  });
-  return opponent ? drawRubble(ctx, state, true) : null;
-};
-
-export const drawShape = (ctx, state, opponent = false) => {
-  clearCanvas(ctx, 'All', 'drawShape')
+export const refreshCanvas = (ctx, state, opponent = false) => {
+  clearCanvas(ctx, 'All', 'refreshCanvas')
   drawCells(ctx, state.activeShape, opponent);
   drawRubble(ctx, state)
+  drawFloor(state, ctx, opponent)
 };
 
 export const drawNextShape = async (ctx, newShape, state) => {
@@ -230,8 +147,22 @@ export const drawGameOver = (ctx, ctxMinor, state, opponent) => {
   canvasContext.fillText(textC, 5, 450);
 };
 
-export const drawFloor = (game, canvasContextMajor) => {
-  drawBoundary(canvasContextMajor, game);
-  drawRubble(canvasContextMajor, game);
-  drawShape(canvasContextMajor, game);
+export const drawFloor = (game, canvasContextMajor, opponent) => {
+  const { floor: { floorIndices }, activeShape: { unitBlockSize } } = game;
+  floorIndices.forEach((cell) => {
+    const [x, y] = getCoordinatesFromIndex({
+      index: cell,
+      width: 300,
+      cellSize: 30
+    })
+    // filled rects
+    canvasContextMajor.fillStyle = 'grey';
+    canvasContextMajor.fillRect(x, y, unitBlockSize, unitBlockSize);
+    // draw borders
+    canvasContextMajor.beginPath();
+    canvasContextMajor.lineWidth = opponent ? '2' : '3';
+    canvasContextMajor.strokeStyle = 'white';
+    canvasContextMajor.rect(x, y, unitBlockSize, unitBlockSize);
+    canvasContextMajor.stroke();
+  });
 };

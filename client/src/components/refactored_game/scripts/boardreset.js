@@ -18,7 +18,12 @@ const boardReset = ({
     gameReset(1);
     return;
   }
-  const floorHeight = game.rubble && keepFloor ? game.rubble.boundaryCells.length / 10 : 1;
+  const floorHeight = game.floor.floorHeight > 0 && reStart ? { floor: game.floor } : {
+    floor: {
+      floorHeight: 0,
+      floorIndices: []
+    }
+  };
   gameReset(floorHeight);
   if (animationId) endTick('reset Board');
   if (reStart) { // fresh game

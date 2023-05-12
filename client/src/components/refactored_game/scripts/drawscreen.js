@@ -1,9 +1,8 @@
 // utility that checks for collision and refreshses screen data
 // custom functions
-import tetrisShapes from './shapes';
 import { runCollisionTest } from './collision';
 import {
-  drawShape, drawRubble,
+  refreshCanvas,
   winRubble,
 } from './canvas';
 
@@ -32,10 +31,6 @@ const drawScreen = ({
     endTick(debug);
     // update redux with collision
     collide(collisionResult[0]);
-    const collisionData = {
-      activeShape: shapeToDraw,
-      rubble: collisionResult[0].rubble,
-    };
     if (collisionResult[1]) { // winner found
       // audio
       if (collisionResult[1].length === 4) audio.maxLinesCleared();
@@ -43,12 +38,10 @@ const drawScreen = ({
       // animation timeout
       winRubble(canvasContextMajor, game, collisionResult[1]);
       const inter = setTimeout(() => {
-        drawRubble(canvasContextMajor, collisionData);
         startTick();
         clearTimeout(inter);
       }, 250);
     } else { // no winner found
-      drawRubble(canvasContextMajor, collisionData);
       startTick();
     }
     return null;
@@ -60,10 +53,13 @@ const drawScreen = ({
       ...game.rubble,
       winRows: null // need to reset back to null incase of previous win
     },
+    floor: {
+      ...game.floor,
+    },
     paused: false,
   };
   updateScreen(screenRefreshData);
-  return drawShape(canvasContextMajor, screenRefreshData);
+  return refreshCanvas(canvasContextMajor, screenRefreshData);
 };
 
 export default drawScreen;
