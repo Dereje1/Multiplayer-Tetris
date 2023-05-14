@@ -100,9 +100,7 @@ describe('The Game component', () => {
         expect(props.GameActions).toHaveBeenNthCalledWith(2,
             "RAISE_FLOOR",
             {
-                "boundaryCells": ["0-20", "1-20", "2-20", "3-20", "4-20", "5-20", "6-20", "7-20", "8-20", "9-20"],
-                "occupiedCells": [],
-                "winRows": null
+                ...gameStub
             },
             { "raiseBy": 1 }
         )
@@ -119,15 +117,10 @@ describe('The Game component', () => {
         const spy1 = jest.spyOn(wrapper.instance(), 'moveShape');
         wrapper.instance().gamePlay({ keyCode: 37 })
         expect(spy1).toHaveBeenCalledWith({
-            "absoluteVertices": [],
-            "boundingBox": [],
-            "cells": [],
             "name": "shapeZ",
             "rotationStage": 0,
             "unitBlockSize": 30,
-            "unitVertices": [],
-            "xPosition": -30,
-            "yPosition": 0
+            "indices": [],
         })
     });
     test('will handle game over', async () => {

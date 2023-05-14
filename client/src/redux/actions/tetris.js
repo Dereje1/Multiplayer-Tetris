@@ -25,70 +25,55 @@ const initialState = { // determine what needs to go into state, a very small po
   },
   rubble: { // all screen info of rubble
     occupiedCells: [],
-    winRows: null,
   },
   activeShape: { // all geometric info of active shape
     name: 'shapeZ',
     unitBlockSize: 30,
-    xPosition: 0,
-    yPosition: 0,
-    unitVertices: [],
-    absoluteVertices: [],
-    boundingBox: [],
+    indices: [],
     rotationStage: 0,
-    cells: [],
   },
-};
-
-// Utility functions to transform payload
-const setBoundry = (unitBlockSize, width, height, boundryRowHeight) => {
-  const boundry = [];
-  const blocksPerRow = width / unitBlockSize;
-  const blocksPerColumn = height / unitBlockSize;
-  for (let j = 0; j < boundryRowHeight; j += 1) {
-    for (let i = 0; i < blocksPerRow; i += 1) {
-      boundry.push(`${i}-${blocksPerColumn - j}`);
-    }
+  floor: {
+    floorHeight: 0,
+    floorIndices: []
   }
-  return boundry;
 };
 
-export const getFloorRaiseBoundry = (oldRubble, raiseBy = 1) => {
-  const newOccupied = oldRubble.occupiedCells.map((c) => {
-    const oldY = Number(c[0].split('-')[1]);
-    const oldX = Number(c[0].split('-')[0]);
-    return ([`${oldX}-${oldY - raiseBy}`, c[1]]);
+export const getFloorRaiseBoundry = (game, raiseBy = 1) => {
+  const { rubble, floor: { floorHeight } } = game;
+  const newFloorHeight = floorHeight + raiseBy;
+  const raisedOccupiedCells = rubble.occupiedCells.map(([index, color]) => {
+    // remove old floorheight first and add again
+    const newIndex = index - (10 * raiseBy)
+    return [newIndex, color];
   });
 
-  const yBoundary = oldRubble.boundaryCells.map(c => Number(c.split('-')[1]));
-  const oldHeight = Array.from(new Set(yBoundary)).length;
-  const newBoundary = setBoundry(
-    initialState.activeShape.unitBlockSize,
-    initialState.canvas.canvasMajor.width,
-    initialState.canvas.canvasMajor.height,
-    oldHeight + raiseBy,
-  );
-  return [newOccupied, newBoundary];
+  const floorIndices = [];
+  const maxCells = 199;
+  for (let indices = maxCells; indices > (maxCells - (newFloorHeight * 10)); indices -= 1) {
+    floorIndices.push(indices)
+  }
+  return { raisedOccupiedCells, floorIndices, floorHeight: newFloorHeight };
 };
 // Actions with transform != null will update payload here
 const updatePayload = (type, payload, transfom) => {
   switch (type) {
     case RAISE_FLOOR: {
-      const newFloor = getFloorRaiseBoundry(payload, transfom.raiseBy);
+      const { raisedOccupiedCells, floorIndices, floorHeight } = getFloorRaiseBoundry(payload, transfom.raiseBy);
       return {
-        occupiedCells: newFloor[0],
-        boundaryCells: newFloor[1],
-        winRows: null,
+        rubble: {
+          occupiedCells: raisedOccupiedCells,
+        },
+        floor: {
+          floorHeight,
+          floorIndices
+        }
       };
     }
     case INITIALIZE_GAME: {
-      initialState.rubble.boundaryCells = setBoundry(
-        initialState.activeShape.unitBlockSize,
-        initialState.canvas.canvasMajor.width,
-        initialState.canvas.canvasMajor.height,
-        payload,
-      );
-      return initialState;
+      return {
+        ...initialState,
+        ...payload
+      };
     }
     default:
       return payload;
@@ -98,6 +83,6 @@ const updatePayload = (type, payload, transfom) => {
 export const GameActions = (type, payload, transfom = null) => (
   {
     type,
-    payload: transfom ? updatePayload(type, payload, transfom) : payload,
+    payload: updatePayload(type, payload, transfom),
   }
 );

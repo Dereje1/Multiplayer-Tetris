@@ -23,12 +23,30 @@ describe('The game reducer', () => {
         expect(state).toEqual({ activeShape: 'activeShape', paused: 'paused', rubble: 'rubble' })
     })
     test('will update for a raised floor', () => {
-        const state = gameReducer({}, { type: game.RAISE_FLOOR, payload: 'new rubble' })
-        expect(state).toEqual({ rubble: 'new rubble' })
+        const state = gameReducer({}, {
+            type: game.RAISE_FLOOR, payload: {
+                rubble: {
+                    occupiedCells: []
+                },
+                floor: {
+                    floorHeight: 1,
+                    floorIndices: []
+                }
+            }
+        })
+        expect(state).toEqual({
+            rubble: {
+                occupiedCells: []
+            },
+            floor: {
+                floorHeight: 1,
+                floorIndices: []
+            }
+        })
     })
     test('will update for a collision', () => {
         const state = gameReducer({}, { type: game.COLLISION, payload: { points: 10, rubble: 'rubble' } })
-        expect(state).toEqual({  points: 10, rubble: 'rubble' })
+        expect(state).toEqual({ points: 10, rubble: 'rubble' })
     })
     test('will return existing state for everything else', () => {
         const state = gameReducer({}, {})

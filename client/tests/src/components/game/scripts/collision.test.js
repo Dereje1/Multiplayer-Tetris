@@ -18,19 +18,19 @@ describe('collisions', () => {
                 ...gameStub.rubble,
                 occupiedCells: [
                     [
-                        "3-1",
+                        1,
                         "yellow"
                     ],
                     [
-                        "4-1",
+                        11,
                         "yellow"
                     ],
                     [
-                        "5-1",
+                        21,
                         "yellow"
                     ],
                     [
-                        "6-1",
+                        31,
                         "yellow"
                     ]
                 ]
@@ -38,24 +38,6 @@ describe('collisions', () => {
         }
         const updatedShapeLocation = {
             ...shapeStub,
-            cells: [
-                [
-                    3,
-                    1
-                ],
-                [
-                    4,
-                    1
-                ],
-                [
-                    5,
-                    1
-                ],
-                [
-                    6,
-                    1
-                ]
-            ]
         }
         args = [updatedGame, updatedShapeLocation]
         const ans = runCollisionTest(...args)
@@ -64,24 +46,7 @@ describe('collisions', () => {
     test('will detect a collision for no lines cleared', () => {
         const updatedShapeLocation = {
             ...shapeStub,
-            cells: [
-                [
-                    3,
-                    20
-                ],
-                [
-                    4,
-                    20
-                ],
-                [
-                    5,
-                    20
-                ],
-                [
-                    6,
-                    20
-                ]
-            ]
+            indices: [201, 202, 203, 204]
         }
         args = [gameStub, updatedShapeLocation]
         const ans = runCollisionTest(...args)
@@ -89,19 +54,10 @@ describe('collisions', () => {
             {
                 rubble: {
                     occupiedCells: [],
-                    winRows: null,
-                    boundaryCells: [
-                        '0-20', '1-20',
-                        '2-20', '3-20',
-                        '4-20', '5-20',
-                        '6-20', '7-20',
-                        '8-20', '9-20'
-                    ]
                 },
                 points: { totalLinesCleared: 0, level: 0, levelUp: 5 }
             },
             null,
-            4
         ])
     })
     test('will detect a collision for lines cleared', () => {
@@ -111,109 +67,51 @@ describe('collisions', () => {
                 ...gameStub.rubble,
                 occupiedCells: [
                     [
-                        "0-19",
+                        190,
                         "yellow"
                     ],
                     [
-                        "1-19",
+                        191,
                         "yellow"
                     ],
                     [
-                        "5-19",
+                        192,
                         "yellow"
                     ],
                     [
-                        "0-18",
+                        193,
                         "yellow"
                     ],
                     [
-                        "1-18",
+                        194,
                         "yellow"
                     ],
                     [
-                        "2-18",
+                        195,
                         "yellow"
                     ],
                     [
-                        "3-18",
+                        196,
                         "yellow"
                     ],
                     [
-                        "4-18",
+                        197,
                         "yellow"
                     ],
                     [
-                        "5-18",
+                        198,
                         "yellow"
                     ],
-                    [
-                        "6-18",
-                        "yellow"
-                    ],
-                    [
-                        "7-18",
-                        "yellow"
-                    ],
-                    [
-                        "8-18",
-                        "yellow"
-                    ],
-                    [
-                        "9-18",
-                        "yellow"
-                    ],
-                    [
-                        "8-17",
-                        "yellow"
-                    ],
-                    [
-                        "9-17",
-                        "yellow"
-                    ]
                 ]
             },
             activeShape: {
                 ...gameStub.activeShape,
-                cells: [
-                    [
-                        4,
-                        17
-                    ],
-                    [
-                        5,
-                        17
-                    ],
-                    [
-                        6,
-                        17
-                    ],
-                    [
-                        7,
-                        17
-                    ]
-                ]
+                indices: [159, 169, 179, 199]
             }
         }
         const updatedShapeLocation = {
             ...shapeStub,
-            cells: [
-                [
-                    4,
-                    18
-                ],
-                [
-                    5,
-                    18
-                ],
-                [
-                    6,
-                    18
-                ],
-                [
-                    7,
-                    18
-                ]
-            ]
+            indices: [179, 189, 199, 209]
         }
         args = [updatedGame, updatedShapeLocation]
         const ans = runCollisionTest(...args)
@@ -221,29 +119,24 @@ describe('collisions', () => {
             {
                 rubble: {
                     occupiedCells: [
-                        ['0-19', 'yellow'],
-                        ['1-19', 'yellow'],
-                        ['5-19', 'yellow'],
-                        ['8-18', 'yellow'],
-                        ['9-18', 'yellow'],
-                        ['4-18', 'red'],
-                        ['5-18', 'red'],
-                        ['6-18', 'red'],
-                        ['7-18', 'red']
+                        [169, 'red'],
+                        [179, 'red'],
+                        [189, 'red'],
+                        [190, 'yellow'],
+                        [191, 'yellow'],
+                        [192, 'yellow'],
+                        [193, 'yellow'],
+                        [194, 'yellow'],
+                        [195, 'yellow'],
+                        [196, 'yellow'],
+                        [197, 'yellow'],
+                        [198, 'yellow'],
+                        [199, 'red']
                     ],
-                    winRows: [18],
-                    boundaryCells: [
-                        '0-20', '1-20',
-                        '2-20', '3-20',
-                        '4-20', '5-20',
-                        '6-20', '7-20',
-                        '8-20', '9-20'
-                    ]
                 },
                 points: { totalLinesCleared: 1, level: 0, levelUp: 5 }
             },
-            [18],
-            0
+            ["19"]
         ])
     })
 })
@@ -256,31 +149,18 @@ describe('side block obstructions', () => {
                 ...gameStub.rubble,
                 occupiedCells: [
                     [
-                        "3-17",
+                        180,
+                        "yellow"
+                    ],
+                    [
+                        190,
                         "yellow"
                     ]
                 ]
             },
             activeShape: {
                 ...gameStub.activeShape,
-                cells: [
-                    [
-                        4,
-                        17
-                    ],
-                    [
-                        5,
-                        17
-                    ],
-                    [
-                        6,
-                        17
-                    ],
-                    [
-                        7,
-                        17
-                    ]
-                ]
+                indices: [181, 182, 183, 184]
             }
         }
         const ans = getSideBlock('L', updatedGame)
@@ -293,31 +173,18 @@ describe('side block obstructions', () => {
                 ...gameStub.rubble,
                 occupiedCells: [
                     [
-                        "8-17",
+                        185,
+                        "yellow"
+                    ],
+                    [
+                        195,
                         "yellow"
                     ]
                 ]
             },
             activeShape: {
                 ...gameStub.activeShape,
-                cells: [
-                    [
-                        4,
-                        17
-                    ],
-                    [
-                        5,
-                        17
-                    ],
-                    [
-                        6,
-                        17
-                    ],
-                    [
-                        7,
-                        17
-                    ]
-                ]
+                indices: [181, 182, 183, 184]
             }
         }
         const ans = getSideBlock('R', updatedGame)

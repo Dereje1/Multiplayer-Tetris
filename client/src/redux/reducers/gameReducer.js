@@ -29,7 +29,8 @@ const gameReducer = (state = {}, action) => {
       });
     case RAISE_FLOOR:
       return Object.assign({}, state, {
-        rubble: action.payload,
+        rubble: action.payload.rubble,
+        floor:  action.payload.floor
       });
     case COLLISION:
       return Object.assign({}, state, {

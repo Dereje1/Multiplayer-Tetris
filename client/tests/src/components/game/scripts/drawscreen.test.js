@@ -92,15 +92,10 @@ describe('drawing the screen', () => {
             paused: false,
             activeShape: {
                 ...shapeStub,
-                absoluteVertices: [
-                    [120, 60], [90, 60],
-                    [90, 30], [120, 30],
-                    [150, 30], [180, 30],
-                    [210, 30], [210, 60],
-                    [180, 60]
-                ],
-                cells: [[3, 1], [4, 1], [5, 1], [6, 1]],
-                boundingBox: [90, 210, 30, 60]
+            },
+            floor: {
+                floorHeight: 0,
+                floorIndices: []
             }
         })
         expect(ans).toBe(undefined)

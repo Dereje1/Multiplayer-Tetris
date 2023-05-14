@@ -19,139 +19,24 @@ export const gameStub = {
     },
     "rubble": {
         "occupiedCells": [],
-        "winRows": null,
-        "boundaryCells": [
-            "0-20",
-            "1-20",
-            "2-20",
-            "3-20",
-            "4-20",
-            "5-20",
-            "6-20",
-            "7-20",
-            "8-20",
-            "9-20"
-        ]
     },
     "activeShape": {
         "name": "shapeZ",
         "unitBlockSize": 30,
-        "xPosition": 0,
-        "yPosition": 0,
-        "unitVertices": [],
-        "absoluteVertices": [],
-        "boundingBox": [],
+        "indices": [],
         "rotationStage": 0,
-        "cells": []
+    },
+    floor: {
+      floorHeight: 0,
+      floorIndices: []
     }
 }
 
 export const shapeStub = {
     "name": "shapeI",
     "unitBlockSize": 30,
-    "xPosition": 150,
-    "yPosition": 60,
-    "unitVertices": [
-        [
-            -1,
-            0
-        ],
-        [
-            -2,
-            0
-        ],
-        [
-            -2,
-            -1
-        ],
-        [
-            -1,
-            -1
-        ],
-        [
-            0,
-            -1
-        ],
-        [
-            1,
-            -1
-        ],
-        [
-            2,
-            -1
-        ],
-        [
-            2,
-            0
-        ],
-        [
-            1,
-            0
-        ]
-    ],
-    "absoluteVertices": [
-        [
-            120,
-            30
-        ],
-        [
-            90,
-            30
-        ],
-        [
-            90,
-            0
-        ],
-        [
-            120,
-            0
-        ],
-        [
-            150,
-            0
-        ],
-        [
-            180,
-            0
-        ],
-        [
-            210,
-            0
-        ],
-        [
-            210,
-            30
-        ],
-        [
-            180,
-            30
-        ]
-    ],
-    "boundingBox": [
-        90,
-        210,
-        0,
-        30
-    ],
+    "indices": [1, 2, 3, 4],
     "rotationStage": 0,
-    "cells": [
-        [
-            3,
-            0
-        ],
-        [
-            4,
-            0
-        ],
-        [
-            5,
-            0
-        ],
-        [
-            6,
-            0
-        ]
-    ]
 }
 
 export const noWinCollisionStub = [
@@ -275,109 +160,8 @@ export const winCollisionStub = [
 export const stubShapeI = {
     "name": "shapeI",
     "unitBlockSize": 30,
-    "xPosition": 150,
-    "yPosition": 30,
-    "unitVertices": [
-        [
-            -1,
-            0
-        ],
-        [
-            -2,
-            0
-        ],
-        [
-            -2,
-            -1
-        ],
-        [
-            -1,
-            -1
-        ],
-        [
-            0,
-            -1
-        ],
-        [
-            1,
-            -1
-        ],
-        [
-            2,
-            -1
-        ],
-        [
-            2,
-            0
-        ],
-        [
-            1,
-            0
-        ]
-    ],
-    "absoluteVertices": [
-        [
-            120,
-            30
-        ],
-        [
-            90,
-            30
-        ],
-        [
-            90,
-            0
-        ],
-        [
-            120,
-            0
-        ],
-        [
-            150,
-            0
-        ],
-        [
-            180,
-            0
-        ],
-        [
-            210,
-            0
-        ],
-        [
-            210,
-            30
-        ],
-        [
-            180,
-            30
-        ]
-    ],
-    "boundingBox": [
-        90,
-        210,
-        0,
-        30
-    ],
     "rotationStage": 0,
-    "cells": [
-        [
-            3,
-            0
-        ],
-        [
-            4,
-            0
-        ],
-        [
-            5,
-            0
-        ],
-        [
-            6,
-            0
-        ]
-    ]
+    "indices": [1, 2, 3, 4],
 }
 
 export const stubProfile = {
