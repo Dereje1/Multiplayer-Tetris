@@ -93,11 +93,10 @@ export class Game extends React.Component {
     }
 
     /* draws floor or sets state to do so before the next tick */
-    if (game.rubble.boundaryCells && game.rubble.boundaryCells.length > 10
-      && prevGame.rubble.boundaryCells.length !== game.rubble.boundaryCells.length) {
-      if (!game.activeShape.cells.length || game.paused) drawFloor(game, this.canvasContextMajor);
-      else this.setState({ updateFloor: true });
-    }
+    // if (prevGame.floor.floorHeight !== game.floor.floorHeight) {
+    //   if (!game.activeShape.cells.length || game.paused) drawFloor(game, this.canvasContextMajor);
+    //   else this.setState({ updateFloor: true });
+    // }
 
     /* an Invitation from another client has been accepted */
     if (!multiPlayer && socket.temp) {
@@ -139,7 +138,6 @@ export class Game extends React.Component {
   };
 
   resetBoard = (config) => {
-    console.log({config})
     const { game, GameActions } = this.props;
     const resetObject = {
       config,
@@ -187,7 +185,7 @@ export class Game extends React.Component {
   };
 
   endTick = (sentBy) => {
-    if (process.env.NODE_ENV === 'development') console.log(sentBy);
+    if (process.env.NODE_ENV === 'development') console.log(`Ending Tick - ${sentBy}`);
     this.setState({ requestAnimation: false });
     cancelAnimationFrame(this.animationId);
   };

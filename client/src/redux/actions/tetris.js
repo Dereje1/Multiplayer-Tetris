@@ -44,7 +44,7 @@ export const getFloorRaiseBoundry = (game, raiseBy = 1) => {
   const newFloorHeight = floorHeight + raiseBy;
   const raisedOccupiedCells = rubble.occupiedCells.map(([index, color]) => {
     // remove old floorheight first and add again
-    const newIndex = (index + (10 * floorHeight)) - (10 * newFloorHeight)
+    const newIndex = index - (10 * raiseBy)
     return [newIndex, color];
   });
 

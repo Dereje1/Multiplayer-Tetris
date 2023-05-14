@@ -38,7 +38,7 @@ const modifyHigherRows = (higherRows, rubble) => {
 const clearRows = (parsedRubble) => {
   let updatedRubble = { ...parsedRubble };
   const winRows = Object.keys(parsedRubble).filter(row => Boolean(parsedRubble[row].win))
-  winRows.sort((a,b) => Number(a) - Number(b))
+  winRows.sort((a, b) => Number(a) - Number(b))
   for (const row of winRows) {
     const allRows = Object.keys(updatedRubble)
     const higherRows = allRows.filter(r => Number(r) < row)
@@ -66,10 +66,8 @@ const clearRows = (parsedRubble) => {
   };
 };
 
-export const runCollisionTest = (state, shapeTested, floorTest = false) => {
-  const occupiedCellLocations = floorTest
-    ? floorTest.map(c => c[0])
-    : state.rubble.occupiedCells.map((o) => o[0]);
+export const runCollisionTest = (state, shapeTested) => {
+  const occupiedCellLocations = state.rubble.occupiedCells.map(([index]) => index);
   // shape to test for collison
   const testedShape = [...shapeTested.indices];
   // currently active shape
@@ -79,7 +77,7 @@ export const runCollisionTest = (state, shapeTested, floorTest = false) => {
   // bottom boundary occupied cells
   const isLowerBoundary = Math.max(...testedShape) > (199 - (state.floor.floorHeight * 10));
   // upperBoundary ocupied cells
-  const isUpperBoundary = testedShape.filter(c => c >= 0 && c <= 19);
+  const isUpperBoundary = testedShape.filter(c => c <= 9);
   if (isOccupied.length || isLowerBoundary) { // collision detected
     if (isUpperBoundary.length) return [];// game over
     let collisionData;

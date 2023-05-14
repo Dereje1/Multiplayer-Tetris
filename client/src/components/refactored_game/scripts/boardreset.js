@@ -15,7 +15,13 @@ const boardReset = ({
   stateReset({ floorsRaised: 0 });
   if (gameover) {
     drawGameOver(canvasContextMajor, canvasContextMajor, game, opponent);
-    gameReset(1);
+    gameReset({
+      floor: {
+        floorHeight: 0,
+        floorIndices: []
+      }
+    });
+    endTick('Game over');
     return;
   }
   const floorHeight = game.floor.floorHeight > 0 && reStart ? { floor: game.floor } : {

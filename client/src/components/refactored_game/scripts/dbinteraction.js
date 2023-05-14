@@ -12,9 +12,7 @@ export const processMatch = async (oppLinesCleared, state, props, winnerAudio) =
   // test if client is winner
   const iAmWinner = gameOver.winnerUserId === user.profile.userId;
   // get floor level of processing client
-  const floorLevel = game.rubble.boundaryCells.length > 10
-    ? Math.floor((game.rubble.boundaryCells.length - 10) / 10)
-    : 0;
+  const floorLevel = game.floor.floorHeight;
   // message for canvas display
   let multiplayerMessage;
   // prepare match object for db, only winner will send results

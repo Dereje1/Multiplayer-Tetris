@@ -129,7 +129,7 @@ export const drawFloor = (game, canvasContextMajor, opponent) => {
     const [x, y] = getCoordinatesFromIndex({
       index: cell,
       width: canvasContextMajor.canvas.width,
-      cellSize: 30
+      cellSize: unitBlockSize
     })
     // filled rects
     canvasContextMajor.fillStyle = 'grey';

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { clientEmitter } from '../../sockethandler';
 import { socket as socketConstants } from '../../constants/index';
-import { drawShape, drawBoundary } from '../game/scripts/canvas';
+import { refreshCanvas } from '../refactored_game/scripts/canvas';
 // custom components
 import OpponentDescription from './opponentInfo';
 import './styles/opponentdescription.scss';
@@ -155,7 +155,7 @@ export class Opponent extends React.Component {
     if (opp && prevOpp) this.processFloorRaise(opp, prevOpp);
     if (this.canvasOpponentContext.canvas.hidden) this.canvasOpponentContext.canvas.hidden = false;
     opp.activeShape.unitBlockSize /= 2;
-    drawShape(this.canvasOpponentContext, opp, true);
+    refreshCanvas(this.canvasOpponentContext, opp, true);
   };
 
   setDifficulty = (val) => {
@@ -178,18 +178,18 @@ export class Opponent extends React.Component {
     } = this.props;
     const {
       points: { totalLinesCleared: previouslyClearedLines },
-      rubble: { boundaryCells: prevBoundryCells },
+      floor: { floorHeight: prevFloorHeight }
     } = previousGame;
     const {
       points: { totalLinesCleared },
-      rubble: { boundaryCells },
+      floor: { floorHeight }
     } = currentGame;
     // draw boundry in opponent screen if floor raise
-    if (boundaryCells.length !== prevBoundryCells.length) {
+    if (floorHeight !== prevFloorHeight) {
       const copyOfGame = JSON.parse(JSON.stringify(currentGame));
       copyOfGame.activeShape.unitBlockSize /= 2;
-      drawBoundary(this.canvasOpponentContext, copyOfGame, true);
-      floorsRaisedOnOpp((boundaryCells.length - prevBoundryCells.length) / 10);
+      // drawBoundary(this.canvasOpponentContext, copyOfGame, true);
+      floorsRaisedOnOpp(floorHeight - prevFloorHeight);
     }
     const linesCleared = totalLinesCleared - previouslyClearedLines;
     // return if no new lines have been cleared
