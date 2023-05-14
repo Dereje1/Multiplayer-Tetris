@@ -11,10 +11,9 @@ import { Audio, audioTypes } from './audio';
 // custom functions and scripts
 import boardReset from './scripts/boardreset';
 import tetrisShapes from './scripts/shapes';
-import shapeLocator from './scripts/locateShape';
 import { runCollisionTest } from './scripts/collision';
 import {
-  clearCanvas, drawNextShape, drawFloor, drawShape,
+  clearCanvas, drawNextShape, drawFloor
 } from './scripts/canvas';
 import drawScreen from './scripts/drawscreen';
 import playerMoves from './scripts/player';
@@ -94,11 +93,10 @@ export class Game extends React.Component {
     }
 
     /* draws floor or sets state to do so before the next tick */
-    if (game.rubble.boundaryCells.length > 10
-      && prevGame.rubble.boundaryCells.length !== game.rubble.boundaryCells.length) {
-      if (!game.activeShape.cells.length || game.paused) drawFloor(game, this.canvasContextMajor);
-      else this.setState({ updateFloor: true });
-    }
+    // if (prevGame.floor.floorHeight !== game.floor.floorHeight) {
+    //   if (!game.activeShape.cells.length || game.paused) drawFloor(game, this.canvasContextMajor);
+    //   else this.setState({ updateFloor: true });
+    // }
 
     /* an Invitation from another client has been accepted */
     if (!multiPlayer && socket.temp) {
@@ -132,7 +130,7 @@ export class Game extends React.Component {
     const canvasMinor = this.canvasMinor.current;
     canvasMajor.focus();
     canvasMajor.style.backgroundColor = 'black';
-    canvasMinor.style.backgroundColor = 'black';
+    canvasMinor.style.backgroundColor = '#e7e2e2';
     this.canvasContextMajor = canvasMajor.getContext('2d');
     this.canvasContextMinor = canvasMinor.getContext('2d');
     this.canvasMajor.current.focus();
@@ -163,13 +161,9 @@ export class Game extends React.Component {
       // unable to update store wwithout async, not sure why ??
       await GameActions(SCREEN_UPDATE, data);
       // eslint-disable-next-line react/destructuring-assignment
-      drawShape(this.canvasContextMajor, this.props.game);
     }
     // setTimeout so not too immediately start the animation after new shape
-    setTimeout(() => {
-      this.setState({ requestAnimation: true });
-      this.animationId = requestAnimationFrame(this.tick);
-    }, 50);
+    this.setState({ requestAnimation: true }, () => this.animationId = requestAnimationFrame(this.tick));
   };
 
   tick = (timeStamp) => {
@@ -191,7 +185,7 @@ export class Game extends React.Component {
   };
 
   endTick = (sentBy) => {
-    if (process.env.NODE_ENV === 'development') console.log(sentBy);
+    if (process.env.NODE_ENV === 'development') console.log(`Ending Tick - ${sentBy}`);
     this.setState({ requestAnimation: false });
     cancelAnimationFrame(this.animationId);
   };
@@ -199,9 +193,10 @@ export class Game extends React.Component {
   // get the next shape ypos
   positionForecast = () => {
     const { game: { activeShape } } = this.props;
+    const newPos = activeShape.indices.map((idx) => idx + 10)
     return {
       ...activeShape,
-      yPosition: activeShape.yPosition + activeShape.unitBlockSize
+      indices: newPos
     };
   };
 
@@ -211,16 +206,8 @@ export class Game extends React.Component {
     const { randomShape, newShapeName, nextShapeInfo } = tetrisShapes.createNewShape(game);
     GameActions(SET_NEXT_SHAPE, newShapeName);
     drawNextShape(this.canvasContextMinor, nextShapeInfo, game);
-    // prepare activeshape data to send to starttick
-    [randomShape.boundingBox, randomShape.absoluteVertices] = tetrisShapes.getDims(randomShape);
-    const locatedShape = shapeLocator(
-      this.canvasContextMajor,
-      game.canvas.canvasMajor.width,
-      game.canvas.canvasMajor.height,
-      randomShape, false,
-    );
     const data = {
-      activeShape: locatedShape,
+      activeShape: randomShape,
       rubble: game.rubble,
     };
     return data;
@@ -258,29 +245,31 @@ export class Game extends React.Component {
     GameActions(PAUSE, !buttonPause);
     if (game.paused) {
       // test if a new game or within a game
-      if (game.activeShape.cells.length) this.startTick(false);
+      if (game.activeShape.indices.length) this.startTick(false);
       else this.resetBoard({});
     } else this.endTick('Manual Pause');
   };
 
   floorRaise = (f) => {
     const { game, GameActions } = this.props;
-    // Locate Shape on screen and then set .cell prop of activeShape
-    const locatedShape = shapeLocator(
-      this.canvasContextMajor,
-      game.canvas.canvasMajor.width,
-      game.canvas.canvasMajor.height,
-      this.positionForecast(),
-      false,
-    );
-    const newFloor = getFloorRaiseBoundry(game.rubble, f);
-    const collisionResult = runCollisionTest(game, locatedShape, newFloor);
+    const { raisedOccupiedCells, floorIndices, floorHeight } = getFloorRaiseBoundry(game, f);
+    const collisionResult = runCollisionTest(game, game.activeShape, raisedOccupiedCells);
     this.canvasMajor.current.focus();
     if (collisionResult) {
       // right now can not raise floor and collide simultaneously
       console.log('Unable to move floor', collisionResult);
     } else {
-      GameActions(RAISE_FLOOR, game.rubble, { raiseBy: f });
+      GameActions(RAISE_FLOOR, game, { raiseBy: f });
+      // only manually draw raised floor if game has no active cells
+      !game.activeShape.indices.length && drawFloor({
+        ...game,
+        floor: {
+          floorHeight,
+          floorIndices
+        }
+      },
+        this.canvasContextMajor
+      )
     }
   };
 

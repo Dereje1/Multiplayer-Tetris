@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { clientEmitter } from '../../sockethandler';
 import { socket as socketConstants } from '../../constants/index';
-import { refreshCanvas } from '../refactored_game/scripts/canvas';
+import { refreshCanvas } from '../game/scripts/canvas';
 // custom components
 import OpponentDescription from './opponentInfo';
 import './styles/opponentdescription.scss';
