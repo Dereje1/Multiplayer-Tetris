@@ -51,7 +51,6 @@ const drawScreen = ({
     activeShape: shapeToDraw,
     rubble: {
       ...game.rubble,
-      winRows: null // need to reset back to null incase of previous win
     },
     floor: {
       ...game.floor,

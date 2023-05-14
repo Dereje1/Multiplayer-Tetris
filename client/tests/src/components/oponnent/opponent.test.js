@@ -251,7 +251,7 @@ describe('Component updates (CDU, CWU)', () => {
 
 describe('Updating the opponent screen/canvas', () => {
     let props
-    let useRefSpy, socketSpy, drawShapeSpy, drawBoundarySpy;
+    let useRefSpy, socketSpy, refreshCanvasSpy;
     beforeEach(() => {
         props = {
             game: gameStub,
@@ -262,15 +262,13 @@ describe('Updating the opponent screen/canvas', () => {
         }
         useRefSpy = getRefSpy();
         socketSpy = jest.spyOn(socketActions, 'clientEmitter');
-        drawShapeSpy = jest.spyOn(canvas, 'drawShape');
-        drawBoundarySpy = jest.spyOn(canvas, 'drawBoundary');
+        refreshCanvasSpy = jest.spyOn(canvas, 'refreshCanvas');
     })
     afterEach(() => {
         props = null
         useRefSpy = null
         socketSpy.mockClear()
-        drawShapeSpy.mockClear()
-        drawBoundarySpy.mockClear()
+        refreshCanvasSpy.mockClear()
     })
     test('will do nothing when no opponent screen info', () => {
         const wrapper = shallow(<Opponent {...props} />);
@@ -313,8 +311,7 @@ describe('Updating the opponent screen/canvas', () => {
         }), JSON.stringify({ ...gameStub }))
         expect(wrapper.state().opponentLinesCleared).toBe(1);
         expect(wrapper.state().levelsRaised).toBe(1);
-        expect(drawShapeSpy).toHaveBeenCalledTimes(1)
-        expect(drawBoundarySpy).toBeCalledTimes(0)
+        expect(refreshCanvasSpy).toHaveBeenCalledTimes(1)
     })
 
     test('will draw floor raise on opponent if diff in boundary', () => {
@@ -341,13 +338,15 @@ describe('Updating the opponent screen/canvas', () => {
             },
             rubble:{
                 ...gameStub.rubble,
-                boundaryCells:[...gameStub.rubble.boundaryCells, ...gameStub.rubble.boundaryCells]
+            },
+            floor:{
+                floorHeight: 1,
+                floorIndices: []
             }
         }), JSON.stringify({ ...gameStub }))
         expect(wrapper.state().opponentLinesCleared).toBe(1);
         expect(wrapper.state().levelsRaised).toBe(1);
-        expect(drawShapeSpy).toHaveBeenCalledTimes(1)
-        expect(drawBoundarySpy).toBeCalledTimes(1)
+        expect(refreshCanvasSpy).toHaveBeenCalledTimes(1)
         expect(updatedProps.floorsRaisedOnOpp).toHaveBeenCalledWith(1)
     })
 })

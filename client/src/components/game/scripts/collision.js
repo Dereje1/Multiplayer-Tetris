@@ -85,6 +85,8 @@ export const runCollisionTest = (state, shapeTested) => {
     preCollisionShape = preCollisionShape.map(c => [c, tetrisShapes[state.activeShape.name].color]);
     // add active shape to occupied cells
     const newOccupied = [...state.rubble.occupiedCells, ...preCollisionShape];
+
+    
     const parsedRubble = parseRubbleChange(newOccupied);
     const copyOfRubble = Object.assign({}, state.rubble);
     const copyOfPoints = Object.assign({}, state.points);
@@ -93,7 +95,6 @@ export const runCollisionTest = (state, shapeTested) => {
         newRubble,
         winRows
       } = clearRows(parsedRubble);
-
       copyOfRubble.occupiedCells = newRubble
       // assign points if winner found
       copyOfPoints.totalLinesCleared = state.points.totalLinesCleared + winRows.length;

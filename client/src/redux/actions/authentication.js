@@ -13,9 +13,7 @@ export const getUser = path => async (dispatch) => {
   } catch (err) {
     dispatch({
       type: 'GET_USER_STATUS_REJECTED',
-      payload: {
-        authenticated: false
-      },
+      payload: err,
     });
   }
 };

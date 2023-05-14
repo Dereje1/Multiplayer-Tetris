@@ -25,7 +25,6 @@ const initialState = { // determine what needs to go into state, a very small po
   },
   rubble: { // all screen info of rubble
     occupiedCells: [],
-    winRows: null,
   },
   activeShape: { // all geometric info of active shape
     name: 'shapeZ',
@@ -63,7 +62,6 @@ const updatePayload = (type, payload, transfom) => {
       return {
         rubble: {
           occupiedCells: raisedOccupiedCells,
-          winRows: null,
         },
         floor: {
           floorHeight,

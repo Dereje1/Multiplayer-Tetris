@@ -23,15 +23,10 @@ exports[`The Game component will display the game for allowed screen sizes 1`] =
       game={
         Object {
           "activeShape": Object {
-            "absoluteVertices": Array [],
-            "boundingBox": Array [],
-            "cells": Array [],
+            "indices": Array [],
             "name": "shapeZ",
             "rotationStage": 0,
             "unitBlockSize": 30,
-            "unitVertices": Array [],
-            "xPosition": 0,
-            "yPosition": 0,
           },
           "canvas": Object {
             "canvasMajor": Object {
@@ -43,6 +38,10 @@ exports[`The Game component will display the game for allowed screen sizes 1`] =
               "width": 210,
             },
           },
+          "floor": Object {
+            "floorHeight": 0,
+            "floorIndices": Array [],
+          },
           "nextShape": "",
           "paused": true,
           "points": Object {
@@ -51,20 +50,7 @@ exports[`The Game component will display the game for allowed screen sizes 1`] =
             "totalLinesCleared": 0,
           },
           "rubble": Object {
-            "boundaryCells": Array [
-              "0-20",
-              "1-20",
-              "2-20",
-              "3-20",
-              "4-20",
-              "5-20",
-              "6-20",
-              "7-20",
-              "8-20",
-              "9-20",
-            ],
             "occupiedCells": Array [],
-            "winRows": null,
           },
           "timerInterval": 700,
         }
@@ -100,7 +86,7 @@ exports[`The Game component will display the game for allowed screen sizes 1`] =
             },
             "getContext": [Function],
             "style": Object {
-              "backgroundColor": "black",
+              "backgroundColor": "#e7e2e2",
             },
           },
         }
