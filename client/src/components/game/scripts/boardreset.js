@@ -7,14 +7,14 @@ const boardReset = ({
 }) => {
   const { game, gameReset } = redux;
   const {
-    reStart = true, keepFloor = false, gameover = false, opponent = null,
+    reStart = true, gameover = false, opponent = null, authenticated
   } = config;
   const {
     canvasContextMajor, canvasContextMinor, animationId, endTick, startTick,
   } = classItems;
   stateReset({ floorsRaised: 0 });
   if (gameover) {
-    drawGameOver(canvasContextMajor, canvasContextMajor, game, opponent);
+    drawGameOver(canvasContextMajor, canvasContextMinor, game, opponent, authenticated);
     gameReset({
       floor: {
         floorHeight: 0,

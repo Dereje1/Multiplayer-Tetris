@@ -138,9 +138,10 @@ export class Game extends React.Component {
   };
 
   resetBoard = (config) => {
-    const { game, GameActions } = this.props;
+    const { game, GameActions, user } = this.props;
+    const updatedConfig = { ...config, authenticated: user.profile?.authenticated }
     const resetObject = {
-      config,
+      config: updatedConfig,
       stateReset: stateItem => this.setState(stateItem),
       redux: { game, gameReset: floorHeight => GameActions(INITIALIZE_GAME, floorHeight, true) },
       classItems: {
@@ -206,11 +207,9 @@ export class Game extends React.Component {
     const { randomShape, newShapeName, nextShapeInfo } = tetrisShapes.createNewShape(game);
     GameActions(SET_NEXT_SHAPE, newShapeName);
     drawNextShape(this.canvasContextMinor, nextShapeInfo, game);
-    const data = {
+    return {
       activeShape: randomShape,
-      rubble: game.rubble,
     };
-    return data;
   };
 
   moveShape = (newPosition) => {

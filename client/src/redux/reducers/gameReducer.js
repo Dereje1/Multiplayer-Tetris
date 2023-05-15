@@ -22,11 +22,7 @@ const gameReducer = (state = {}, action) => {
         nextShape: action.payload,
       });
     case SCREEN_UPDATE:
-      return Object.assign({}, state, {
-        activeShape: action.payload.activeShape,
-        rubble: action.payload.rubble,
-        paused: action.payload.paused,
-      });
+      return Object.assign({}, state, {...action.payload});
     case RAISE_FLOOR:
       return Object.assign({}, state, {
         rubble: action.payload.rubble,

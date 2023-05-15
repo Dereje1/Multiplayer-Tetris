@@ -88,15 +88,11 @@ describe('drawing the screen', () => {
         expect(args.endTick).not.toHaveBeenCalled()
         expect(args.redux.collide).not.toHaveBeenCalled()
         expect(args.redux.updateScreen).toHaveBeenCalledWith({
-            rubble: gameStub.rubble,
+            ...gameStub,
             paused: false,
             activeShape: {
                 ...shapeStub,
             },
-            floor: {
-                floorHeight: 0,
-                floorIndices: []
-            }
         })
         expect(ans).toBe(undefined)
     })

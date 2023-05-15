@@ -55,13 +55,13 @@ const clearRows = (parsedRubble) => {
     }
   }
   // reassemble rubble into original config
-  const newRubble = Object.keys(updatedRubble).reduce((acc, row) => {
+  const winRubble = Object.keys(updatedRubble).reduce((acc, row) => {
     const { indices } = updatedRubble[row]
     return [...acc, ...indices]
   }, [])
 
   return {
-    newRubble,
+    winRubble,
     winRows
   };
 };
@@ -80,38 +80,42 @@ export const runCollisionTest = (state, shapeTested) => {
   const isUpperBoundary = testedShape.filter(c => c <= 9);
   if (isOccupied.length || isLowerBoundary) { // collision detected
     if (isUpperBoundary.length) return [];// game over
-    let collisionData;
     // add color info to active shape
     preCollisionShape = preCollisionShape.map(c => [c, tetrisShapes[state.activeShape.name].color]);
     // add active shape to occupied cells
     const newOccupied = [...state.rubble.occupiedCells, ...preCollisionShape];
-
     
     const parsedRubble = parseRubbleChange(newOccupied);
-    const copyOfRubble = Object.assign({}, state.rubble);
-    const copyOfPoints = Object.assign({}, state.points);
+    //object to update redux store with
+    let collisionData = {
+      rubble: {
+        ...state.rubble,
+        occupiedCells: newOccupied
+      },
+      points: {...state.points}, // unchanged
+    };
+
     if (parsedRubble) { // winning row/s found
       const {
-        newRubble,
+        winRubble,
         winRows
       } = clearRows(parsedRubble);
-      copyOfRubble.occupiedCells = newRubble
-      // assign points if winner found
-      copyOfPoints.totalLinesCleared = state.points.totalLinesCleared + winRows.length;
-      copyOfPoints.level = Math.floor(copyOfPoints.totalLinesCleared / (state.points.levelUp));
 
+      const totalLinesCleared = collisionData.points.totalLinesCleared + winRows.length;
+      const level = Math.floor(totalLinesCleared / (collisionData.points.levelUp))
       collisionData = {
-        rubble: copyOfRubble,
-        points: copyOfPoints,
+        rubble: {
+          occupiedCells: winRubble
+        },
+        points: {
+          ...collisionData.points,
+          totalLinesCleared,
+          level
+        },
       };
       // winner return
       return [collisionData, winRows];
     }
-    copyOfRubble.occupiedCells = newOccupied;
-    collisionData = {
-      rubble: copyOfRubble,
-      points: copyOfPoints, // unchanged
-    };
     // plain collision return
     return [collisionData, null];
   }

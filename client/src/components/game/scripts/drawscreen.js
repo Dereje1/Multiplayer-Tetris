@@ -48,13 +48,8 @@ const drawScreen = ({
   }
   /*  no collision is found, just do a screen refresh */
   const screenRefreshData = {
+    ...game,
     activeShape: shapeToDraw,
-    rubble: {
-      ...game.rubble,
-    },
-    floor: {
-      ...game.floor,
-    },
     paused: false,
   };
   updateScreen(screenRefreshData);

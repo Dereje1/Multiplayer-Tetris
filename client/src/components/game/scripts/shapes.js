@@ -1,49 +1,48 @@
-export const getCoordinatesFromIndex = ({ index, width, cellSize }) => {
-  const cellsPerRow = width / cellSize;
-  const row = Math.floor(index / cellsPerRow);
-  const column = index % cellsPerRow;
-  const x = column * cellSize;
-  const y = row * cellSize;
-  return [x, y];
-};
-
-// tests contiguity in x direction of tetrimino
-const isContiguous = ({
-  indices,
-  width,
-  cellSize
-}) => {
-
-  const xCoordinates = indices.map(idx => getCoordinatesFromIndex({ index: idx, width, cellSize })[0])
-  xCoordinates.sort((a, b) => a - b)
-  let prev = null;
-
-  for (const xCoord of xCoordinates) {
-    if (prev === null) {
-      prev = xCoord;
-      continue;
-    }
-    if ((xCoord - prev) > 30) return false
-    prev = xCoord
-  }
-
-  return true
-}
-
 const tetrisShapes = {
   getRandShapeName: () => {
     const shapeList = ['shapeL', 'shapeZ', 'shapeT', 'shapeI', 'shapeJ', 'shapeO', 'shapeS'];
     const randNum = Math.floor(Math.random() * (shapeList.length));
     return shapeList[randNum];
   },
-  onRotate: ({ activeShape, width }) => {
+  // given an index will return coordinates on canvas
+  getCoordinatesFromIndex({ index, width, cellSize }) {
+    const cellsPerRow = width / cellSize;
+    const row = Math.floor(index / cellsPerRow);
+    const column = index % cellsPerRow;
+    const x = column * cellSize;
+    const y = row * cellSize;
+    return [x, y];
+  },
+  // tests contiguity in x direction of tetrimino
+  isContiguous({
+    indices,
+    width,
+    cellSize
+  }) {
+
+    const xCoordinates = indices.map(idx => this.getCoordinatesFromIndex({ index: idx, width, cellSize })[0])
+    xCoordinates.sort((a, b) => a - b)
+    let prev = null;
+
+    for (const xCoord of xCoordinates) {
+      if (prev === null) {
+        prev = xCoord;
+        continue;
+      }
+      if ((xCoord - prev) > 30) return false
+      prev = xCoord
+    }
+
+    return true
+  },
+  onRotate({ activeShape, width }) {
     const { name, indices, rotationStage } = activeShape
 
     const newRotationStage = rotationStage > 2 ? 0 : rotationStage + 1;
-    const transformation = tetrisShapes[name].rotationStages[newRotationStage]
+    const transformation = this[name].rotationStages[newRotationStage]
     const transformedIndices = indices.map((v, idx) => v + transformation[idx])
 
-    if (!isContiguous({
+    if (!this.isContiguous({
       indices: transformedIndices,
       width,
       cellSize: activeShape.unitBlockSize
@@ -56,11 +55,6 @@ const tetrisShapes = {
     }
   },
   initializeShape(shapeName, game) {
-    // finding intital y bound so it does not get cutoff
-    const x = (shapeName !== 'shapeI' && shapeName !== 'shapeO')
-      ? (game.canvas.canvasMajor.width / 2) + (game.activeShape.unitBlockSize / 2)
-      : game.canvas.canvasMajor.width / 2;
-
     const activeShape = {
       name: shapeName,
       unitBlockSize: 30,

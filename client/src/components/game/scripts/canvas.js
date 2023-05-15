@@ -1,15 +1,5 @@
 /* eslint-disable max-len */
 import tetrisShapes from './shapes';
-
-export const getCoordinatesFromIndex = ({ index, width, cellSize }) => {
-  const cellsPerRow = width / cellSize;
-  const row = Math.floor(index / cellsPerRow);
-  const column = index % cellsPerRow;
-  const x = column * cellSize;
-  const y = row * cellSize;
-  return [x, y];
-};
-
 // clear canvas
 // eslint-disable-next-line no-unused-vars
 export const clearCanvas = (canvasContext, clearHeight, caller) => {
@@ -26,7 +16,7 @@ export const drawCells = (ctx, shape, opponent = false) => {
   const canvasContext = ctx;
   const { unitBlockSize, indices } = shape;
   indices.forEach((c) => {
-    const [x, y] = getCoordinatesFromIndex({
+    const [x, y] = tetrisShapes.getCoordinatesFromIndex({
       index: c,
       width: ctx.canvas.width,
       cellSize: unitBlockSize
@@ -48,7 +38,7 @@ export const drawRubble = (ctx, state, opponent = false) => {
   const b = state.activeShape.unitBlockSize;
   state.rubble.occupiedCells.forEach((cell) => {
     const [index, color] = cell;
-    const [x, y] = getCoordinatesFromIndex({
+    const [x, y] = tetrisShapes.getCoordinatesFromIndex({
       index,
       width: ctx.canvas.width,
       cellSize: b
@@ -90,7 +80,7 @@ export const winRubble = (ctx, state, winners) => {
   const blocksPerRow = state.canvas.canvasMajor.width / b;
   winners.forEach((row) => {
     const index = Number(row) * blocksPerRow
-    const [x, y] = getCoordinatesFromIndex({
+    const [x, y] = tetrisShapes.getCoordinatesFromIndex({
       index: index,
       width: ctx.canvas.width,
       cellSize: b
@@ -109,7 +99,8 @@ export const winRubble = (ctx, state, winners) => {
   });
 };
 
-export const drawGameOver = (ctx, ctxMinor, state, opponent) => {
+export const drawGameOver = (ctx, ctxMinor, state, opponent, authenticated) => {
+  console.log({authenticated})
   const canvasContext = ctx;
   clearCanvas(ctx, 'All', 'draw game over Major');
   clearCanvas(ctxMinor, 'All', 'draw game over Minor');
@@ -118,15 +109,18 @@ export const drawGameOver = (ctx, ctxMinor, state, opponent) => {
   canvasContext.fillText(opponent ? opponent.message : 'Game Over', 14, 100);
   const textB = `${state.points.totalLinesCleared} Lines Cleared`;
   const textC = opponent ? `${opponent.floors}` : `     Reached Level ${state.points.level}`;
+  const textD = authenticated ? '' : `Login to save your scores!`
   canvasContext.font = '30px serif';
   canvasContext.fillText(textB, 55, 300);
   canvasContext.fillText(textC, 5, 450);
+  canvasContext.font = '25px serif';
+  canvasContext.fillText(textD, 15, 550);
 };
 
 export const drawFloor = (game, canvasContextMajor, opponent) => {
   const { floor: { floorIndices }, activeShape: { unitBlockSize } } = game;
   floorIndices.forEach((cell) => {
-    const [x, y] = getCoordinatesFromIndex({
+    const [x, y] = tetrisShapes.getCoordinatesFromIndex({
       index: cell,
       width: canvasContextMajor.canvas.width,
       cellSize: unitBlockSize
