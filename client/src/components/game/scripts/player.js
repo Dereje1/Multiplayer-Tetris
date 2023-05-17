@@ -19,37 +19,45 @@ const rotation = (state) => {
   return runCollisionTest(state, updatedShape) ? activeShape : updatedShape;
 };
 
-const playerMoves = (keyCode, state, ctx) => {
+const playerMoves = (keyCode, state) => {
   if (state.paused) return null;
-  const left = keyCode === 37;
-  const right = keyCode === 39;
-  const up = keyCode === 38;
-  const down = keyCode === 40;
 
+  const keyActions = {
+    37: 'left',
+    38: 'up',
+    39: 'right',
+    40: 'down'
+  };
 
-  if (!(left || right || up || down)) return null; // do nothing for any other keypress
+  const action = keyActions[keyCode];
+
+  if (!action) return null; // do nothing for any other keypress
+
   const { canvas: { canvasMajor: { width } }, activeShape: { unitBlockSize, indices } } = state;
 
   const edge = getCanvasEdge({ indices, width, unitBlockSize });
-  if (left && edge === 'leftEdge') return null;
-  if (right && edge === 'rightEdge') return null;
+
+  if ((action === 'left' && edge === 'leftEdge') || (action === 'right' && edge === 'rightEdge')) return null;
 
   const copyOfActiveShape = Object.assign({}, state.activeShape);
-  if (left) {
+
+  if (action === 'left') {
     if (getSideBlock('L', state)) return null;
     const newPos = copyOfActiveShape.indices.map((idx) => idx - 1)
     return {
       ...copyOfActiveShape,
       indices: newPos
     };
-  } if (right) {
+  }
+  if (action === 'right') {
     if (getSideBlock('R', state)) return null;
     const newPos = copyOfActiveShape.indices.map((idx) => idx + 1)
     return {
       ...copyOfActiveShape,
       indices: newPos
     };
-  } if (down) {
+  }
+  if (action === 'down') {
     // if next down is a collision then return null as dual processing
     // of collision with drawscreen produces problems
     return runCollisionTest(state, {
@@ -58,7 +66,7 @@ const playerMoves = (keyCode, state, ctx) => {
     }) ? null : 'forcedown';
   }
 
-  return rotation(state, ctx);
+  return rotation(state);
 };
 
 export default playerMoves;
