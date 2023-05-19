@@ -116,7 +116,7 @@ export class Game extends React.Component {
     window.removeEventListener('resize', () => { });
   }
 
-  audioProps = () => {
+  getAudioProps = () => {
     const props = {};
     Object.keys(audioTypes).forEach((audio) => {
       props[audio] = this[audio];
@@ -143,7 +143,7 @@ export class Game extends React.Component {
     const resetObject = {
       config: updatedConfig,
       stateReset: stateItem => this.setState(stateItem),
-      redux: { game, gameReset: floorHeight => GameActions(INITIALIZE_GAME, floorHeight, true) },
+      redux: { game, gameReset: floor => GameActions(INITIALIZE_GAME, floor) },
       classItems: {
         canvasContextMajor: this.canvasContextMajor,
         canvasContextMinor: this.canvasContextMinor,
@@ -249,16 +249,16 @@ export class Game extends React.Component {
     } else this.endTick('Manual Pause');
   };
 
-  floorRaise = (f) => {
+  floorRaise = () => {
     const { game, GameActions } = this.props;
-    const { raisedOccupiedCells, floorIndices, floorHeight } = getFloorRaiseBoundry(game, f);
+    const { raisedOccupiedCells, floorIndices, floorHeight } = getFloorRaiseBoundry(game);
     const collisionResult = runCollisionTest(game, game.activeShape, raisedOccupiedCells);
     this.canvasMajor.current.focus();
     if (collisionResult) {
       // right now can not raise floor and collide simultaneously
       console.log('Unable to move floor', collisionResult);
     } else {
-      GameActions(RAISE_FLOOR, game, { raiseBy: f });
+      GameActions(RAISE_FLOOR, game);
       // only manually draw raised floor if game has no active cells
       !game.activeShape.indices.length && drawFloor({
         ...game,
@@ -353,7 +353,7 @@ export class Game extends React.Component {
                 pauseButtonState={buttonPause}
                 onReset={b => this.resetBoard({ reStart: b })}
                 onhandlePause={() => this.handlePause()}
-                onFloorRaise={() => this.floorRaise(1)}
+                onFloorRaise={() => this.floorRaise()}
                 onMultiPlayer={() => this.handleMultiplayer()}
                 allowMultiPlayer={Boolean(Object.keys(socket).length) && socket.usersLoggedIn > 1}
                 onMute={() => this.setState({ mute: !mute }, () => this.canvasMajor.current.focus())}
@@ -380,7 +380,7 @@ export class Game extends React.Component {
                 multiPlayer={multiPlayer}
               />
 
-              <Audio {...this.audioProps()} />
+              <Audio {...this.getAudioProps()} />
             </div>
             :
             <div id="smallwindow" />

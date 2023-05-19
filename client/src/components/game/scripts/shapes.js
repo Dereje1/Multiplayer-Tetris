@@ -54,7 +54,7 @@ const tetrisShapes = {
       rotationStage: newRotationStage
     }
   },
-  initializeShape(shapeName, game) {
+  initializeShape(shapeName) {
     const activeShape = {
       name: shapeName,
       unitBlockSize: 30,
@@ -65,10 +65,10 @@ const tetrisShapes = {
   },
   createNewShape(game) {
     const randomShape = game.nextShape
-      ? this.initializeShape(game.nextShape, game)
-      : this.initializeShape(this.getRandShapeName(), game);
+      ? this.initializeShape(game.nextShape)
+      : this.initializeShape(this.getRandShapeName());
     const newShapeName = this.getRandShapeName();
-    const nextShapeInfo = this.initializeShape(newShapeName, game);
+    const nextShapeInfo = this.initializeShape(newShapeName);
     return { randomShape, newShapeName, nextShapeInfo };
   },
   shapeI: {

@@ -42,7 +42,6 @@ export const getFloorRaiseBoundry = (game, raiseBy = 1) => {
   const { rubble, floor: { floorHeight } } = game;
   const newFloorHeight = floorHeight + raiseBy;
   const raisedOccupiedCells = rubble.occupiedCells.map(([index, color]) => {
-    // remove old floorheight first and add again
     const newIndex = index - (10 * raiseBy)
     return [newIndex, color];
   });
@@ -55,10 +54,10 @@ export const getFloorRaiseBoundry = (game, raiseBy = 1) => {
   return { raisedOccupiedCells, floorIndices, floorHeight: newFloorHeight };
 };
 // Actions with transform != null will update payload here
-const updatePayload = (type, payload, transfom) => {
+const updatePayload = (type, payload) => {
   switch (type) {
     case RAISE_FLOOR: {
-      const { raisedOccupiedCells, floorIndices, floorHeight } = getFloorRaiseBoundry(payload, transfom.raiseBy);
+      const { raisedOccupiedCells, floorIndices, floorHeight } = getFloorRaiseBoundry(payload);
       return {
         rubble: {
           occupiedCells: raisedOccupiedCells,
@@ -80,9 +79,9 @@ const updatePayload = (type, payload, transfom) => {
   }
 };
 
-export const GameActions = (type, payload, transfom = null) => (
+export const GameActions = (type, payload) => (
   {
     type,
-    payload: updatePayload(type, payload, transfom),
+    payload: updatePayload(type, payload),
   }
 );

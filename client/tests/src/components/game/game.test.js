@@ -102,7 +102,6 @@ describe('The Game component', () => {
             {
                 ...gameStub
             },
-            { "raiseBy": 1 }
         )
     });
     test('will handle key strokes', async () => {
@@ -289,7 +288,7 @@ describe('Sub-Component callbacks', () => {
         const controls = wrapper.find('Controls')
         const spy1 = jest.spyOn(wrapper.instance(), 'floorRaise');
         controls.props().onFloorRaise()
-        expect(spy1).toHaveBeenCalledWith(1)
+        expect(spy1).toHaveBeenCalledWith()
     });
     test('Controls - will handle multiplayer', () => {
         const updatedProps = {

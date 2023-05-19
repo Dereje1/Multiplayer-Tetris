@@ -10,8 +10,8 @@ const parseRubbleChange = (newOccupied) => {
     const indices = parsedRubble[row] ? [...parsedRubble[row].indices, cell] : [cell]
     const win = indices.length === CELLS_PER_ROW
     // turn true for first winner in occupied cells
-    if (!hasWinners) {
-      hasWinners = win;
+    if (!hasWinners && win) {
+      hasWinners = true;
     }
     parsedRubble[row] = {
       indices,
@@ -39,19 +39,15 @@ const clearRows = (parsedRubble) => {
   let updatedRubble = { ...parsedRubble };
   const winRows = Object.keys(parsedRubble).filter(row => Boolean(parsedRubble[row].win))
   winRows.sort((a, b) => Number(a) - Number(b))
-  for (const row of winRows) {
+  for (const winRow of winRows) {
     const allRows = Object.keys(updatedRubble)
-    const higherRows = allRows.filter(r => Number(r) < row)
-    if (higherRows.length > 0) {
-      const loweredRows = modifyHigherRows(higherRows, updatedRubble);
-      // delete top row and merge lowered rows
-      delete updatedRubble[allRows[0]]
-      updatedRubble = {
-        ...updatedRubble,
-        ...loweredRows
-      }
-    } else {
-      delete updatedRubble[allRows[0]]
+    const higherRows = allRows.filter(r => Number(r) < winRow)
+    const loweredRows = modifyHigherRows(higherRows, updatedRubble);
+    // delete top row and merge lowered rows
+    delete updatedRubble[allRows[0]]
+    updatedRubble = {
+      ...updatedRubble,
+      ...loweredRows
     }
   }
   // reassemble rubble into original config
@@ -84,7 +80,7 @@ export const runCollisionTest = (state, shapeTested) => {
     preCollisionShape = preCollisionShape.map(c => [c, tetrisShapes[state.activeShape.name].color]);
     // add active shape to occupied cells
     const newOccupied = [...state.rubble.occupiedCells, ...preCollisionShape];
-    
+
     const parsedRubble = parseRubbleChange(newOccupied);
     //object to update redux store with
     let collisionData = {
@@ -92,7 +88,7 @@ export const runCollisionTest = (state, shapeTested) => {
         ...state.rubble,
         occupiedCells: newOccupied
       },
-      points: {...state.points}, // unchanged
+      points: { ...state.points }, // unchanged
     };
 
     if (parsedRubble) { // winning row/s found
