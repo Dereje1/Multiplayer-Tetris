@@ -71,17 +71,6 @@ exports[`The Matches table row will render a collapsed row for a loosing user 1`
             }
           }
         >
-          <ForwardRef(Typography)
-            component="div"
-            gutterBottom={true}
-            sx={
-              Object {
-                "fontWeight": "bold",
-              }
-            }
-          >
-            Details
-          </ForwardRef(Typography)>
           <ForwardRef(Table)
             aria-label="purchases"
             size="small"
@@ -237,17 +226,6 @@ exports[`The Matches table row will render a collapsed row for a winning user 1`
             }
           }
         >
-          <ForwardRef(Typography)
-            component="div"
-            gutterBottom={true}
-            sx={
-              Object {
-                "fontWeight": "bold",
-              }
-            }
-          >
-            Details
-          </ForwardRef(Typography)>
           <ForwardRef(Table)
             aria-label="purchases"
             size="small"
@@ -403,17 +381,6 @@ exports[`The Matches table row will render an expanded row 1`] = `
             }
           }
         >
-          <ForwardRef(Typography)
-            component="div"
-            gutterBottom={true}
-            sx={
-              Object {
-                "fontWeight": "bold",
-              }
-            }
-          >
-            Details
-          </ForwardRef(Typography)>
           <ForwardRef(Table)
             aria-label="purchases"
             size="small"

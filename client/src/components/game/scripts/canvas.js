@@ -12,6 +12,25 @@ export const clearCanvas = (canvasContext, clearHeight, caller) => {
   canvasContext.clearRect(0, 0, canvasContext.canvas.width, clearHeight);
 };
 
+const drawGrid = ({ context, cellSize }) => {
+  const canvasWidth = context.canvas.width;
+  const canvasHeight = context.canvas.height;
+  for (let x = 0; x <= canvasWidth; x += cellSize) {
+    context.beginPath();
+    context.moveTo(x, 0);
+    context.lineTo(x, canvasHeight);
+    context.strokeStyle = '#2F2F2F';
+    context.stroke();
+  }
+  for (let y = 0; y <= canvasHeight; y += cellSize) {
+    context.beginPath();
+    context.moveTo(0, y);
+    context.lineTo(canvasWidth, y);
+    context.strokeStyle = '#2F2F2F';
+    context.stroke();
+  }
+};
+
 export const drawCells = (ctx, shape, opponent = false) => {
   const canvasContext = ctx;
   const { unitBlockSize, indices } = shape;
@@ -57,6 +76,7 @@ export const drawRubble = (ctx, state, opponent = false) => {
 
 export const refreshCanvas = (ctx, state, opponent = false) => {
   clearCanvas(ctx, 'All', 'refreshCanvas')
+  drawGrid({ context: ctx, cellSize: state.activeShape.unitBlockSize })
   drawCells(ctx, state.activeShape, opponent);
   drawRubble(ctx, state)
   drawFloor(state, ctx, opponent)
@@ -100,7 +120,7 @@ export const winRubble = (ctx, state, winners) => {
 };
 
 export const drawGameOver = (ctx, ctxMinor, state, opponent, authenticated) => {
-  console.log({authenticated})
+  console.log({ authenticated })
   const canvasContext = ctx;
   clearCanvas(ctx, 'All', 'draw game over Major');
   clearCanvas(ctxMinor, 'All', 'draw game over Minor');

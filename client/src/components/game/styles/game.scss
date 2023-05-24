@@ -1,21 +1,26 @@
-#landing{
+#landing {
     height: 'auto';
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 40px;
 }
-.democontainer{
-    display:flex;
+
+.democontainer {
+    display: flex;
     justify-content: center;
-    margin:auto;
+    margin: auto;
 }
-#smallwindow::before{
+
+#smallwindow::before {
     display: block;
     margin-left: 30px;
     font-weight: bold;
     font-size: 35px;
     text-align: left;
     content: 'This app is not designed for screens this size please check back later for updates';
-}  
-  
+}
+
+canvas:focus-visible {
+    outline: 0px solid black;
+}
