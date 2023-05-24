@@ -1,6 +1,6 @@
 import { handleServerSocketResponses } from '../../src/sockethandler'
 import { socket as socketConstants } from '../../src/constants/index';
-import store from '../../src/redux/store';
+import {store} from '../../src/store';
 
 const {
     serverEmit: {
@@ -9,7 +9,7 @@ const {
 } = socketConstants;
 
 
-jest.mock('../../src/redux/store');
+jest.mock('../../src/store');
 
 describe('Handling the server socket responses', () => {
     afterEach(() => {
@@ -42,14 +42,14 @@ describe('Handling the server socket responses', () => {
             }
         }))
         handleServerSocketResponses(ACCEPTED_INVITATION, 2)
-        expect(store.dispatch).toHaveBeenNthCalledWith(1, { payload: 2, type: "ACCEPTED_INVITATION" })
+        expect(store.dispatch).toHaveBeenNthCalledWith(1, { payload: 2, type: "socket/ACCEPTED_INVITATION" })
     })
 
     test('will start a game', () => {
         store.dispatch.mockImplementationOnce(() => jest.fn())
         const cb = jest.fn()
         handleServerSocketResponses(GAME_STARTED, 'opponent data', cb)
-        expect(store.dispatch).toHaveBeenCalledWith({ payload: 'opponent data', type: "GAME_STARTED" })
+        expect(store.dispatch).toHaveBeenCalledWith({ payload: 'opponent data', type: "socket/GAME_STARTED" })
         expect(cb).toHaveBeenCalledWith('Game Start Recieved and dispacthed by Client!!')
     })
 
@@ -61,13 +61,13 @@ describe('Handling the server socket responses', () => {
         }))
         store.dispatch.mockImplementationOnce(() => jest.fn())
         handleServerSocketResponses(OPPONENT_SCREEN, 'opponent screen data')
-        expect(store.dispatch).toHaveBeenCalledWith({ payload: 'opponent screen data', type: "OPPONENT_SCREEN" })
+        expect(store.dispatch).toHaveBeenCalledWith({ payload: 'opponent screen data', type: "socket/OPPONENT_SCREEN" })
     })
 
     test('will dispatch all other allowed server events', () => {
         store.dispatch.mockImplementationOnce(() => jest.fn())
         handleServerSocketResponses(socketConstants.serverEmit.OPPONENT_POOL, 'opponent pool data')
-        expect(store.dispatch).toHaveBeenCalledWith({ payload: 'opponent pool data', type: "OPPONENT_POOL" })
+        expect(store.dispatch).toHaveBeenCalledWith({ payload: 'opponent pool data', type: "socket/OPPONENT_POOL" })
     })
 
     test('will do nothing on server events that are not allowed', () => {

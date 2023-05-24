@@ -1,4 +1,4 @@
-import { getUser } from '../../../../src/redux/actions/authentication';
+import { getUser } from '../../../../src/redux/userSlice';
 import {stubProfile} from '../../../stub'
 import RESTcall from '../../../../src/crud'
 
@@ -19,7 +19,7 @@ describe('authentication', () => {
         await profile(dispatch);
         expect(dispatch).toHaveBeenCalledWith({
             payload: {...stubProfile.user.profile},
-            type: 'GET_LOGIN_STATUS',
+            type: 'user/getLoginStatus',
         });
     });
 
@@ -28,8 +28,8 @@ describe('authentication', () => {
         const profile = getUser('profile_get_reject');
         await profile(dispatch);
         expect(dispatch).toHaveBeenCalledWith({
-            payload: Error('Requested method:get and path: profile_get_reject not mocked!!'),
-            type: 'GET_USER_STATUS_REJECTED',
+            payload: undefined,
+            type: 'user/rejectAuthentication',
         });
     });
 

@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import store from './redux/store';
+import { store } from './store';
 import { socket as socketConstants } from './constants/index';
 
 const {
@@ -38,7 +38,7 @@ const startCountDown = counter => (dispatchTimeLeft) => {
     secondsOfTimer -= 1;
     if (secondsOfTimer <= 0) clearInterval(intervalId);
     dispatchTimeLeft({
-      type: GAME_COUNTDOWN,
+      type: `socket/${GAME_COUNTDOWN}`,
       payload: secondsOfTimer,
     });
   }, 1000);
@@ -68,16 +68,16 @@ FINISH_GAME: triggered by: GAME_OVER
 const socketActionMap = {
   SERVER_RESET: () => serverReset(),
   ACCEPTED_INVITATION: (data) => {
-    const acceptDispatch = dispatch({ type: ACCEPTED_INVITATION, payload: data });
+    const acceptDispatch = dispatch({ type: `socket/${ACCEPTED_INVITATION}`, payload: data });
     const timeToCountDown = acceptDispatch.payload.countdown;
     dispatch(startCountDown(timeToCountDown));
   },
   GAME_STARTED: (opponentData, callback) => {
-    dispatch({ type: GAME_STARTED, payload: opponentData });
+    dispatch({ type: `socket/${GAME_STARTED}`, payload: opponentData });
     callback('Game Start Recieved and dispacthed by Client!!');
   },
   OPPONENT_SCREEN: screen => (isGameInProgress()
-    ? dispatch({ type: OPPONENT_SCREEN, payload: screen })
+    ? dispatch({ type: `socket/${OPPONENT_SCREEN}`, payload: screen })
     : null),
 };
 
@@ -92,7 +92,7 @@ export const handleServerSocketResponses = (event, ...args) => {
   if (specialEvents.includes(event)) {
     return socketActionMap[event](data, callback);
   } else {
-    dispatch({ type: event, payload: data });
+    dispatch({ type: `socket/${event}`, payload: data });
   }
 }
 

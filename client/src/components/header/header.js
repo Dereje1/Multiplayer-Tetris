@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Redirect, withRouter } from 'react-router-dom';
-import getUser from '../../redux/actions/authentication';
+import { getUser } from '../../redux/userSlice';
 import { clientEmitter } from '../../sockethandler';
 import { socket as socketConstants } from '../../constants/index';
 import Menu from '../menu/menu';

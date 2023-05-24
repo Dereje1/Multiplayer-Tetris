@@ -6,7 +6,7 @@ import './styles/game.scss';
 import { connect } from 'react-redux';
 import {
   getFloorRaiseBoundry, GameActions,
-} from '../../redux/actions/tetris';
+} from '../../redux/gameSlice';
 import { Audio, audioTypes } from './audio';
 // custom functions and scripts
 import boardReset from './scripts/boardreset';
