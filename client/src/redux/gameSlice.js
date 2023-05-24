@@ -1,10 +1,39 @@
-import { game } from '../../constants/index';
+import { createSlice } from '@reduxjs/toolkit';
+import { game } from '../constants/index';
 
+const initialState = {};
 const {
   INITIALIZE_GAME, RAISE_FLOOR,
 } = game;
 
-const initialState = { // determine what needs to go into state, a very small portion here
+export const gameSlice = createSlice({
+  name: 'game',
+  initialState,
+  reducers: {
+    INITIALIZE_GAME: (state, action) => action.payload,
+    LEVEL_UP: (state, action) => {
+      state.timerInterval = state.timerInterval - action.payload
+    },
+    PAUSE: (state, action) => {
+      state.paused = action.payload
+    },
+    SET_NEXT_SHAPE: (state, action) => {
+      state.nextShape = action.payload
+    },
+    SCREEN_UPDATE: (state, action) => ({ ...state, ...action.payload }),
+    RAISE_FLOOR: (state, action) => {
+      state.rubble = action.payload.rubble
+      state.floor = action.payload.floor
+    },
+    COLLISION: (state, action) => {
+      state.rubble = action.payload.rubble
+      state.points = action.payload.points
+    },
+  },
+});
+
+
+const initialGameState = { // determine what needs to go into state, a very small portion here
   timerInterval: 700,
   paused: true,
   nextShape: '',
@@ -53,7 +82,7 @@ export const getFloorRaiseBoundry = (game, raiseBy = 1) => {
   }
   return { raisedOccupiedCells, floorIndices, floorHeight: newFloorHeight };
 };
-// Actions with transform != null will update payload here
+
 const updatePayload = (type, payload) => {
   switch (type) {
     case RAISE_FLOOR: {
@@ -70,7 +99,7 @@ const updatePayload = (type, payload) => {
     }
     case INITIALIZE_GAME: {
       return {
-        ...initialState,
+        ...initialGameState,
         ...payload
       };
     }
@@ -79,9 +108,8 @@ const updatePayload = (type, payload) => {
   }
 };
 
-export const GameActions = (type, payload) => (
-  {
-    type,
-    payload: updatePayload(type, payload),
-  }
-);
+export const GameActions = (type, payload) => gameSlice.actions[type](updatePayload(type, payload));
+
+
+
+export default gameSlice.reducer;
