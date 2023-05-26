@@ -3,8 +3,7 @@ import tetrisShapes from './shapes';
 // clear canvas
 // eslint-disable-next-line no-unused-vars
 export const clearCanvas = (canvasContext, clearHeight, caller) => {
-  console.log('clear called ' + caller)
-  // if (canvasContext.canvas.clientHeight === 300) console.log(`clearing canvas ${caller} ${clearHeight}`);
+  // console.log('clear called ' + caller)
   if (clearHeight === 'All') {
     canvasContext.clearRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
     return;
@@ -120,7 +119,6 @@ export const winRubble = (ctx, state, winners) => {
 };
 
 export const drawGameOver = (ctx, ctxMinor, state, opponent, authenticated) => {
-  console.log({ authenticated })
   const canvasContext = ctx;
   clearCanvas(ctx, 'All', 'draw game over Major');
   clearCanvas(ctxMinor, 'All', 'draw game over Minor');

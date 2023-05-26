@@ -4,7 +4,6 @@ import Header from '../components/header/header';
 import Profile from '../components/profile/profile';
 import Footer from '../components/footer/footer';
 import Game from '../components/game/game'
-// import routerTester from '../components/testRouter';
 
 const Router = () => (
   <BrowserRouter>
@@ -12,7 +11,7 @@ const Router = () => (
       <Header />
       <Switch>
         <Route path="/" exact component={Game} />
-        <Route Path="/profile" component={Profile} />
+        <Route path="/profile" component={Profile} />
       </Switch>
       <Footer />
     </React.Fragment>

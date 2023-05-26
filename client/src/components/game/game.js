@@ -230,8 +230,8 @@ export class Game extends React.Component {
           updateScreen: data => GameActions(SCREEN_UPDATE, data),
         },
         audio: {
-          lineCleared: () => !mute && this.clearAudio.current.play(),
-          maxLinesCleared: () => !mute && this.maxClearAudio.current.play(),
+          lineCleared: async () => !mute && await this.clearAudio.current.play(),
+          maxLinesCleared: async () => !mute && await this.maxClearAudio.current.play(),
         },
       },
     );

@@ -149,8 +149,6 @@ exports[`The Menu will render the expanded menu 1`] = `
       </p>
     </div>
     <NavLink
-      activeClassName="active"
-      aria-current="page"
       className="menuitems"
       exact={true}
       onClick={[Function]}
@@ -202,8 +200,6 @@ exports[`The Menu will render the expanded menu 1`] = `
     </NavLink>
     <div>
       <NavLink
-        activeClassName="active"
-        aria-current="page"
         className="menuitems"
         exact={true}
         onClick={[Function]}

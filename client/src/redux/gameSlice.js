@@ -1,39 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { game } from '../constants/index';
 
-const initialState = {};
-const {
-  INITIALIZE_GAME, RAISE_FLOOR,
-} = game;
-
-export const gameSlice = createSlice({
-  name: 'game',
-  initialState,
-  reducers: {
-    INITIALIZE_GAME: (state, action) => action.payload,
-    LEVEL_UP: (state, action) => {
-      state.timerInterval = state.timerInterval - action.payload
-    },
-    PAUSE: (state, action) => {
-      state.paused = action.payload
-    },
-    SET_NEXT_SHAPE: (state, action) => {
-      state.nextShape = action.payload
-    },
-    SCREEN_UPDATE: (state, action) => ({ ...state, ...action.payload }),
-    RAISE_FLOOR: (state, action) => {
-      state.rubble = action.payload.rubble
-      state.floor = action.payload.floor
-    },
-    COLLISION: (state, action) => {
-      state.rubble = action.payload.rubble
-      state.points = action.payload.points
-    },
-  },
-});
-
-
-const initialGameState = { // determine what needs to go into state, a very small portion here
+const initialState = { // determine what needs to go into state, a very small portion here
   timerInterval: 700,
   paused: true,
   nextShape: '',
@@ -66,6 +34,35 @@ const initialGameState = { // determine what needs to go into state, a very smal
     floorIndices: []
   }
 };
+const {
+  INITIALIZE_GAME, RAISE_FLOOR,
+} = game;
+
+export const gameSlice = createSlice({
+  name: 'game',
+  initialState,
+  reducers: {
+    INITIALIZE_GAME: (state, action) => action.payload,
+    LEVEL_UP: (state, action) => {
+      state.timerInterval = state.timerInterval - action.payload
+    },
+    PAUSE: (state, action) => {
+      state.paused = action.payload
+    },
+    SET_NEXT_SHAPE: (state, action) => {
+      state.nextShape = action.payload
+    },
+    SCREEN_UPDATE: (state, action) => ({ ...state, ...action.payload }),
+    RAISE_FLOOR: (state, action) => {
+      state.rubble = action.payload.rubble
+      state.floor = action.payload.floor
+    },
+    COLLISION: (state, action) => {
+      state.rubble = action.payload.rubble
+      state.points = action.payload.points
+    },
+  },
+});
 
 export const getFloorRaiseBoundry = (game, raiseBy = 1) => {
   const { rubble, floor: { floorHeight } } = game;
@@ -99,7 +96,7 @@ const updatePayload = (type, payload) => {
     }
     case INITIALIZE_GAME: {
       return {
-        ...initialGameState,
+        ...initialState,
         ...payload
       };
     }
