@@ -4,7 +4,7 @@ import { socket as socketConstants } from './constants/index';
 
 const {
   serverEmit: {
-    SERVER_RESET, ACCEPTED_INVITATION, GAME_STARTED, OPPONENT_SCREEN,
+    ACCEPTED_INVITATION, GAME_STARTED, OPPONENT_SCREEN,
   },
   clientEmit: { SEND_LOGGED_IN_USER },
   GAME_COUNTDOWN,
@@ -13,7 +13,7 @@ const {
 
 const { dispatch } = store;
 
-export const socketConnection = io(CONNECTION);
+const socketConnection = io(CONNECTION);
 
 export const clientEmitter = (event, dataToEmit) => {
   socketConnection.emit(event, dataToEmit);
@@ -65,6 +65,7 @@ OPPONENT_SCREEN: triggered by: UPDATED_CLIENT_SCREEN
 FINISH_GAME: triggered by: GAME_OVER
 */
 
+// used for client side manipulation of incoming special events before dispatching
 const socketActionMap = {
   SERVER_RESET: () => serverReset(),
   ACCEPTED_INVITATION: (data) => {
@@ -83,17 +84,16 @@ const socketActionMap = {
 
 export const handleServerSocketResponses = (event, ...args) => {
   if (!Object.keys(socketConstants.serverEmit).includes(event)) {
-    console.log(`No action map found for event = ${event}`);
+    console.log(`No dispatch handler found for incoming event = ${event}`);
     return;
   }
   const [data, callback] = args;
-  const specialEvents = [SERVER_RESET, ACCEPTED_INVITATION, GAME_STARTED, OPPONENT_SCREEN]
 
-  if (specialEvents.includes(event)) {
+  if (Object.keys(socketActionMap).includes(event)) {
     return socketActionMap[event](data, callback);
-  } else {
-    dispatch({ type: `socket/${event}`, payload: data });
   }
+
+  return dispatch({ type: `socket/${event}`, payload: data });
 }
 
 socketConnection.onAny((event, ...args) => handleServerSocketResponses(event, ...args));

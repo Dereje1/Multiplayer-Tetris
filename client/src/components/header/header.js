@@ -70,8 +70,7 @@ export class Header extends React.Component {
     const { getUser: getUserStatus } = this.props;
     await getUserStatus();
     const { user } = this.props;
-    user.profile.remove = true;
-    clientEmitter(USER_LOGGED_OUT, user.profile);
+    clientEmitter(USER_LOGGED_OUT,{ ...user.profile, remove: true});
     window.location.assign('/auth/logout');
   };
 

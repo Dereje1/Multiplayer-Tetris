@@ -251,11 +251,11 @@ export class Opponent extends React.Component {
           multiPlayer={multiPlayer}
           usersLoggedIn={usersLoggedIn}
         />
-        <canvas
+        {multiPlayer && <canvas
           ref={this.canvasOpponent}
           width={game.canvas.canvasMajor.width / 2}
           height={game.canvas.canvasMajor.height / 2}
-        />
+        />}
         {this.audioPlayer()}
       </div>
     );

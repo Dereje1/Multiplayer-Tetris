@@ -11,10 +11,6 @@ exports[`The Opponent component will render the oponent window 1`] = `
     setDifficulty={[Function]}
     socketState={Object {}}
   />
-  <canvas
-    height={300}
-    width={150}
-  />
   <audio
     src={
       Object {
