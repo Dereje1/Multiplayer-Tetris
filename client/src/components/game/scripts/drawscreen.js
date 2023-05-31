@@ -20,28 +20,30 @@ const drawScreen = ({
 
   // test for collision
   const collisionResult = runCollisionTest(game, shapeToDraw);
-  if (collisionResult && !collisionResult.length) {
-    endTick('collision check - Game Over');
-    return gameOver();
-  }
-  if (collisionResult && collisionResult.length) {
+
+  if (collisionResult) {
+    if (collisionResult === 'game over') {
+      endTick('collision check - Game Over');
+      return gameOver();
+    }
+    const { winRows, ...rest } = collisionResult
     // collision detected
     // end tick to perform collision
-    const debug = collisionResult[1] ? 'collision check - Win' : 'collision check - No Win';
+    const debug = winRows ? 'collision check - Win' : 'collision check - No Win';
     endTick(debug);
     // update redux with collision
-    collide(collisionResult[0]);
-    if (collisionResult[1]) { // winner found
+    collide(rest);
+    if (winRows) { // winner found
       // audio
-      if (collisionResult[1].length === 4) audio.maxLinesCleared();
+      if (winRows.length === 4) audio.maxLinesCleared();
       else audio.lineCleared();
       // animation timeout
-      winRubble(canvasContextMajor, game, collisionResult[1]);
+      winRubble(canvasContextMajor, game, winRows);
       const inter = setTimeout(() => {
         startTick();
         clearTimeout(inter);
       }, 250);
-    } else { // no winner found
+    } else { // no winner found/plain collision
       startTick();
     }
     return null;

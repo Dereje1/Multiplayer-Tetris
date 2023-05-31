@@ -27,8 +27,8 @@ export const gameStub = {
         "rotationStage": 0,
     },
     floor: {
-      floorHeight: 0,
-      floorIndices: []
+        floorHeight: 0,
+        floorIndices: []
     }
 }
 
@@ -39,123 +39,119 @@ export const shapeStub = {
     "rotationStage": 0,
 }
 
-export const noWinCollisionStub = [
-    {
-        "rubble": {
-            "occupiedCells": [
-                [
-                    "4-18",
-                    "yellow"
-                ],
-                [
-                    "4-19",
-                    "yellow"
-                ],
-                [
-                    "5-18",
-                    "yellow"
-                ],
-                [
-                    "5-19",
-                    "yellow"
-                ]
+export const noWinCollisionStub =
+{
+    "rubble": {
+        "occupiedCells": [
+            [
+                "4-18",
+                "yellow"
             ],
-            "winRows": null,
-            "boundaryCells": [
-                "0-20",
-                "1-20",
-                "2-20",
-                "3-20",
-                "4-20",
-                "5-20",
-                "6-20",
-                "7-20",
-                "8-20",
-                "9-20"
+            [
+                "4-19",
+                "yellow"
+            ],
+            [
+                "5-18",
+                "yellow"
+            ],
+            [
+                "5-19",
+                "yellow"
             ]
-        },
-        "points": {
-            "totalLinesCleared": 0,
-            "level": 0,
-            "levelUp": 5
-        }
+        ],
+        "winRows": null,
+        "boundaryCells": [
+            "0-20",
+            "1-20",
+            "2-20",
+            "3-20",
+            "4-20",
+            "5-20",
+            "6-20",
+            "7-20",
+            "8-20",
+            "9-20"
+        ]
     },
-    null,
-    2
-]
+    "points": {
+        "totalLinesCleared": 0,
+        "level": 0,
+        "levelUp": 5
+    },
+    winRows: null
+}
 
-export const winCollisionStub = [
-    {
-        "rubble": {
-            "occupiedCells": [
-                [
-                    "0-19",
-                    "blue"
-                ],
-                [
-                    "8-18",
-                    "green"
-                ],
-                [
-                    "8-19",
-                    "green"
-                ],
-                [
-                    "9-19",
-                    "green"
-                ],
-                [
-                    "8-17",
-                    "purple"
-                ],
-                [
-                    "9-16",
-                    "purple"
-                ],
-                [
-                    "9-17",
-                    "purple"
-                ],
-                [
-                    "9-18",
-                    "purple"
-                ],
-                [
-                    "3-18",
-                    "orange"
-                ],
-                [
-                    "3-19",
-                    "orange"
-                ]
+
+export const winCollisionStub =
+{
+    "rubble": {
+        "occupiedCells": [
+            [
+                "0-19",
+                "blue"
             ],
-            "winRows": [
-                19
+            [
+                "8-18",
+                "green"
             ],
-            "boundaryCells": [
-                "0-20",
-                "1-20",
-                "2-20",
-                "3-20",
-                "4-20",
-                "5-20",
-                "6-20",
-                "7-20",
-                "8-20",
-                "9-20"
+            [
+                "8-19",
+                "green"
+            ],
+            [
+                "9-19",
+                "green"
+            ],
+            [
+                "8-17",
+                "purple"
+            ],
+            [
+                "9-16",
+                "purple"
+            ],
+            [
+                "9-17",
+                "purple"
+            ],
+            [
+                "9-18",
+                "purple"
+            ],
+            [
+                "3-18",
+                "orange"
+            ],
+            [
+                "3-19",
+                "orange"
             ]
-        },
-        "points": {
-            "totalLinesCleared": 1,
-            "level": 0,
-            "levelUp": 5
-        }
+        ],
+        "winRows": [
+            19
+        ],
+        "boundaryCells": [
+            "0-20",
+            "1-20",
+            "2-20",
+            "3-20",
+            "4-20",
+            "5-20",
+            "6-20",
+            "7-20",
+            "8-20",
+            "9-20"
+        ]
     },
-    [
-        19
-    ],
-    2
-]
+    "points": {
+        "totalLinesCleared": 1,
+        "level": 0,
+        "levelUp": 5
+    },
+    winRows: [19]
+}
+
 
 export const stubShapeI = {
     "name": "shapeI",

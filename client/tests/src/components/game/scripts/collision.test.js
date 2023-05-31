@@ -41,7 +41,7 @@ describe('collisions', () => {
         }
         args = [updatedGame, updatedShapeLocation]
         const ans = runCollisionTest(...args)
-        expect(ans).toEqual([])
+        expect(ans).toEqual('game over')
     })
     test('will detect a collision for no lines cleared', () => {
         const updatedShapeLocation = {
@@ -50,15 +50,15 @@ describe('collisions', () => {
         }
         args = [gameStub, updatedShapeLocation]
         const ans = runCollisionTest(...args)
-        expect(ans).toEqual([
+        expect(ans).toEqual(
             {
                 rubble: {
                     occupiedCells: [],
                 },
-                points: { totalLinesCleared: 0, level: 0, levelUp: 5 }
+                points: { totalLinesCleared: 0, level: 0, levelUp: 5 },
+                winRows: null
             },
-            null,
-        ])
+        )
     })
     test('will detect a collision for lines cleared', () => {
         const updatedGame = {
@@ -115,7 +115,7 @@ describe('collisions', () => {
         }
         args = [updatedGame, updatedShapeLocation]
         const ans = runCollisionTest(...args)
-        expect(ans).toEqual([
+        expect(ans).toEqual(
             {
                 rubble: {
                     occupiedCells: [
@@ -134,10 +134,10 @@ describe('collisions', () => {
                         [199, 'red']
                     ],
                 },
-                points: { totalLinesCleared: 1, level: 0, levelUp: 5 }
-            },
-            ["19"]
-        ])
+                points: { totalLinesCleared: 1, level: 0, levelUp: 5 },
+                winRows: ['19']
+            }
+        )
     })
 })
 

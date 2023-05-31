@@ -44,7 +44,7 @@ describe('drawing the screen', () => {
     })
 
     test('will end game if no collision result detected', () => {
-        collision.runCollisionTest.mockImplementation(() => [])
+        collision.runCollisionTest.mockImplementation(() => 'game over')
         drawScreen(args)
         expect(args.endTick).toHaveBeenCalledWith('collision check - Game Over')
         expect(args.gameOver).toHaveBeenCalled()
@@ -52,31 +52,34 @@ describe('drawing the screen', () => {
 
     test('will draw screen for a no win collision', () => {
         collision.runCollisionTest.mockImplementation(() => noWinCollisionStub)
+        const { winRows, ...rest } = noWinCollisionStub
         const ans = drawScreen(args)
         expect(args.endTick).toHaveBeenCalledWith('collision check - No Win')
-        expect(args.redux.collide).toHaveBeenCalledWith(noWinCollisionStub[0])
+        expect(args.redux.collide).toHaveBeenCalledWith(rest)
         expect(args.startTick).toHaveBeenCalled()
         expect(ans).toBe(null)
     })
 
     test('will draw screen for a single line win collision and play audio', () => {
         collision.runCollisionTest.mockImplementation(() => winCollisionStub)
+        const { winRows, ...rest } = winCollisionStub
         const ans = drawScreen(args)
         jest.advanceTimersByTime(250);
         expect(args.endTick).toHaveBeenCalledWith('collision check - Win')
-        expect(args.redux.collide).toHaveBeenCalledWith(winCollisionStub[0])
+        expect(args.redux.collide).toHaveBeenCalledWith(rest)
         expect(args.audio.lineCleared).toHaveBeenCalled()
         expect(args.startTick).toHaveBeenCalled()
         expect(ans).toBe(null)
     })
 
     test('will draw screen for a multi line win collision and play audio', () => {
-        const updatedStub = [winCollisionStub[0], [16, 17, 18, 19], 2]
+        const updatedStub = { ...winCollisionStub, winRows: [16, 17, 18, 19] }
         collision.runCollisionTest.mockImplementation(() => updatedStub)
+        const { winRows, ...rest } = updatedStub
         const ans = drawScreen(args)
         jest.advanceTimersByTime(250);
         expect(args.endTick).toHaveBeenCalledWith('collision check - Win')
-        expect(args.redux.collide).toHaveBeenCalledWith(winCollisionStub[0])
+        expect(args.redux.collide).toHaveBeenCalledWith(rest)
         expect(args.audio.maxLinesCleared).toHaveBeenCalled()
         expect(args.startTick).toHaveBeenCalled()
         expect(ans).toBe(null)

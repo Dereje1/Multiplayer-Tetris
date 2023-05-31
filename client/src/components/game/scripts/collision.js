@@ -75,7 +75,7 @@ export const runCollisionTest = (state, shapeTested) => {
   // upperBoundary ocupied cells
   const isUpperBoundary = testedShape.filter(c => c <= 9);
   if (isOccupied.length || isLowerBoundary) { // collision detected
-    if (isUpperBoundary.length) return [];// game over
+    if (isUpperBoundary.length) return 'game over';// game over
     // add color info to active shape
     preCollisionShape = preCollisionShape.map(c => [c, tetrisShapes[state.activeShape.name].color]);
     // add active shape to occupied cells
@@ -83,12 +83,14 @@ export const runCollisionTest = (state, shapeTested) => {
 
     const parsedRubble = parseRubbleChange(newOccupied);
     //object to update redux store with
+    // plain collision return
     let collisionData = {
       rubble: {
         ...state.rubble,
         occupiedCells: newOccupied
       },
       points: { ...state.points }, // unchanged
+      winRows: null
     };
 
     if (parsedRubble) { // winning row/s found
@@ -99,6 +101,7 @@ export const runCollisionTest = (state, shapeTested) => {
 
       const totalLinesCleared = collisionData.points.totalLinesCleared + winRows.length;
       const level = Math.floor(totalLinesCleared / (collisionData.points.levelUp))
+       // winner return
       collisionData = {
         rubble: {
           occupiedCells: winRubble
@@ -108,12 +111,10 @@ export const runCollisionTest = (state, shapeTested) => {
           totalLinesCleared,
           level
         },
-      };
-      // winner return
-      return [collisionData, winRows];
+        winRows
+      };      
     }
-    // plain collision return
-    return [collisionData, null];
+    return collisionData;
   }
   return null; // no collision return
 };
