@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { game } from '../constants/index';
+import { game, gameConstants } from '../constants/index';
 
 const initialState = { // determine what needs to go into state, a very small portion here
   timerInterval: 700,
@@ -65,16 +65,17 @@ export const gameSlice = createSlice({
 });
 
 export const getFloorRaiseBoundry = (game, raiseBy = 1) => {
+  const { CELLS_PER_ROW } = gameConstants
   const { rubble, floor: { floorHeight } } = game;
   const newFloorHeight = floorHeight + raiseBy;
   const raisedOccupiedCells = rubble.occupiedCells.map(([index, color]) => {
-    const newIndex = index - (10 * raiseBy)
+    const newIndex = index - (CELLS_PER_ROW * raiseBy)
     return [newIndex, color];
   });
 
   const floorIndices = [];
   const maxCells = 199;
-  for (let indices = maxCells; indices > (maxCells - (newFloorHeight * 10)); indices -= 1) {
+  for (let indices = maxCells; indices > (maxCells - (newFloorHeight * CELLS_PER_ROW)); indices -= 1) {
     floorIndices.push(indices)
   }
   return { raisedOccupiedCells, floorIndices, floorHeight: newFloorHeight };

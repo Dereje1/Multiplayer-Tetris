@@ -41,4 +41,7 @@ module.exports = {
     GAME_COUNTDOWN: 'GAME_COUNTDOWN',
     CONNECTION: process.env.NODE_ENV === 'development' ? 'http://localhost:5001/' : process.env.PORT,
   },
+  gameConstants: {
+    CELLS_PER_ROW: 10,
+  }
 };

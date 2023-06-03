@@ -1,21 +1,21 @@
 import { runCollisionTest, getSideBlock } from './collision';
 import tetrisShapes from './shapes';
+import { gameConstants } from '../../../constants';
 
-const getCanvasEdge = ({ indices, width, unitBlockSize }) => {
-  const cellsPerRow = width / unitBlockSize;
+const { CELLS_PER_ROW } = gameConstants;
 
+const getCanvasEdge = ({ indices }) => {
   for (const idx of indices) {
-    const column = idx % cellsPerRow;
+    const column = idx % CELLS_PER_ROW;
     if (column === 0) return 'leftEdge';
-    if (column === cellsPerRow - 1) return 'rightEdge';
+    if (column === CELLS_PER_ROW - 1) return 'rightEdge';
   }
-
   return 'noEdge'
 }
 
 const rotation = (state) => {
-  const { canvas: { canvasMajor: { width } }, activeShape } = state;
-  const updatedShape = tetrisShapes.onRotate({ activeShape, width });
+  const { activeShape } = state;
+  const updatedShape = tetrisShapes.onRotate({ activeShape });
   return runCollisionTest(state, updatedShape) ? activeShape : updatedShape;
 };
 
@@ -33,9 +33,9 @@ const playerMoves = (keyCode, state) => {
 
   if (!action) return null; // do nothing for any other keypress
 
-  const { canvas: { canvasMajor: { width } }, activeShape: { unitBlockSize, indices } } = state;
+  const { activeShape: { indices } } = state;
 
-  const edge = getCanvasEdge({ indices, width, unitBlockSize });
+  const edge = getCanvasEdge({ indices });
 
   if ((action === 'left' && edge === 'leftEdge') || (action === 'right' && edge === 'rightEdge')) return null;
 
@@ -62,7 +62,7 @@ const playerMoves = (keyCode, state) => {
     // of collision with drawscreen produces problems
     return runCollisionTest(state, {
       ...copyOfActiveShape,
-      indices: copyOfActiveShape.indices.map((idx) => idx + 10)
+      indices: copyOfActiveShape.indices.map((idx) => idx + CELLS_PER_ROW)
     }) ? null : 'forcedown';
   }
 

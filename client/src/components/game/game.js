@@ -22,7 +22,7 @@ import { processMatch, processSinglePlayer } from './scripts/dbinteraction';
 import Controls from '../controls/controls';
 import Opponent from '../oponnent/opponent';
 // socket
-import { socket as socketConstants, game as gameConstants } from '../../constants/index';
+import { socket as socketConstants, game as reduxConstants, gameConstants } from '../../constants/index';
 import { clientEmitter } from '../../sockethandler';
 
 const {
@@ -33,7 +33,9 @@ const {
 
 const {
   PAUSE, LEVEL_UP, SET_NEXT_SHAPE, SCREEN_UPDATE, COLLISION, INITIALIZE_GAME, RAISE_FLOOR,
-} = gameConstants;
+} = reduxConstants;
+
+const { CELLS_PER_ROW } = gameConstants;
 
 // reads from store
 const mapStateToProps = state => state;
@@ -196,7 +198,7 @@ export class Game extends React.Component {
   // get the next shape ypos
   positionForecast = () => {
     const { game: { activeShape } } = this.props;
-    const newPos = activeShape.indices.map((idx) => idx + 10)
+    const newPos = activeShape.indices.map((idx) => idx + CELLS_PER_ROW)
     return {
       ...activeShape,
       indices: newPos

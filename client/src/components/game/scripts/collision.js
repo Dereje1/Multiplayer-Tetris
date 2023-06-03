@@ -1,8 +1,10 @@
 import tetrisShapes from './shapes';
+import { gameConstants } from '../../../constants/index';
+
+const { CELLS_PER_ROW } = gameConstants
 
 // turn rubble into object to ease parsing of winners
 const parseRubbleChange = (newOccupied) => {
-  const CELLS_PER_ROW = 10;
   const parsedRubble = {}
   let hasWinners = false;
   newOccupied.forEach((cell) => {
@@ -28,7 +30,7 @@ const modifyHigherRows = (higherRows, rubble) => {
     .reduce((acc, key) => {
       acc[Number(key) + 1] = {
         ...rubble[key],
-        indices: rubble[key].indices.map(([index, color]) => [index + 10, color])
+        indices: rubble[key].indices.map(([index, color]) => [index + CELLS_PER_ROW, color])
       }
       return acc;
     }, {})
@@ -71,13 +73,13 @@ export const runCollisionTest = (state, shapeTested) => {
   // game play area occupied cells
   const isOccupied = testedShape.filter(c => (occupiedCellLocations.includes(c)));
   // bottom boundary occupied cells
-  const isLowerBoundary = Math.max(...testedShape) > (199 - (state.floor.floorHeight * 10));
+  const isLowerBoundary = Math.max(...testedShape) > (199 - (state.floor.floorHeight * CELLS_PER_ROW));
   // upperBoundary ocupied cells
   const isUpperBoundary = testedShape.filter(c => c <= 9);
   if (isOccupied.length || isLowerBoundary) { // collision detected
     if (isUpperBoundary.length) return 'game over';// game over
     // add color info to active shape
-    preCollisionShape = preCollisionShape.map(c => [c, tetrisShapes[state.activeShape.name].color]);
+    preCollisionShape = preCollisionShape.map(c => [c, tetrisShapes.shapes[state.activeShape.name].color]);
     // add active shape to occupied cells
     const newOccupied = [...state.rubble.occupiedCells, ...preCollisionShape];
 
@@ -101,7 +103,7 @@ export const runCollisionTest = (state, shapeTested) => {
 
       const totalLinesCleared = collisionData.points.totalLinesCleared + winRows.length;
       const level = Math.floor(totalLinesCleared / (collisionData.points.levelUp))
-       // winner return
+      // winner return
       collisionData = {
         rubble: {
           occupiedCells: winRubble
@@ -112,7 +114,7 @@ export const runCollisionTest = (state, shapeTested) => {
           level
         },
         winRows
-      };      
+      };
     }
     return collisionData;
   }

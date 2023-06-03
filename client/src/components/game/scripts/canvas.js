@@ -1,5 +1,7 @@
-/* eslint-disable max-len */
 import tetrisShapes from './shapes';
+import { gameConstants } from '../../../constants';
+
+const { CELLS_PER_ROW } = gameConstants;
 // clear canvas
 // eslint-disable-next-line no-unused-vars
 export const clearCanvas = (canvasContext, clearHeight, caller) => {
@@ -41,7 +43,7 @@ export const drawCells = (ctx, shape, opponent = false) => {
     })
     canvasContext.beginPath();
     canvasContext.rect(x, y, unitBlockSize, unitBlockSize);
-    canvasContext.fillStyle = tetrisShapes[shape.name].color;
+    canvasContext.fillStyle = tetrisShapes.shapes[shape.name].color;
     canvasContext.fill();
     canvasContext.lineWidth = '3';
     canvasContext.strokeStyle = 'grey';
@@ -96,15 +98,14 @@ export const drawNextShape = async (ctx, newShape, state) => {
 export const winRubble = (ctx, state, winners) => {
   const canvasContext = ctx;
   const b = state.activeShape.unitBlockSize;
-  const blocksPerRow = state.canvas.canvasMajor.width / b;
   winners.forEach((row) => {
-    const index = Number(row) * blocksPerRow
+    const index = Number(row) * CELLS_PER_ROW
     const [x, y] = tetrisShapes.getCoordinatesFromIndex({
       index: index,
       width: ctx.canvas.width,
       cellSize: b
     })
-    for (let i = 0; i < blocksPerRow; i += 1) {
+    for (let i = 0; i < CELLS_PER_ROW; i += 1) {
       // filled rects
       canvasContext.fillStyle = 'white';
       canvasContext.fillRect(x + (i * b), y, b, b);
