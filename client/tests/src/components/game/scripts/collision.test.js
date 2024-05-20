@@ -106,9 +106,10 @@ describe('collisions', () => {
             },
             activeShape: {
                 ...gameStub.activeShape,
-                indices: [159, 169, 179, 199]
+                indices: [169, 179, 189, 199]
             }
         }
+        // move down active shape by one position for forecast
         const updatedShapeLocation = {
             ...shapeStub,
             indices: [179, 189, 199, 209]
@@ -119,18 +120,8 @@ describe('collisions', () => {
             {
                 rubble: {
                     occupiedCells: [
-                        [169, 'red'],
                         [179, 'red'],
                         [189, 'red'],
-                        [190, 'yellow'],
-                        [191, 'yellow'],
-                        [192, 'yellow'],
-                        [193, 'yellow'],
-                        [194, 'yellow'],
-                        [195, 'yellow'],
-                        [196, 'yellow'],
-                        [197, 'yellow'],
-                        [198, 'yellow'],
                         [199, 'red']
                     ],
                 },
