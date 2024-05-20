@@ -53,36 +53,33 @@ describe('drawing the screen', () => {
     test('will draw screen for a no win collision', () => {
         collision.runCollisionTest.mockImplementation(() => noWinCollisionStub)
         const { winRows, ...rest } = noWinCollisionStub
-        const ans = drawScreen(args)
+        drawScreen(args)
         expect(args.endTick).toHaveBeenCalledWith('collision check - No Win')
         expect(args.redux.collide).toHaveBeenCalledWith(rest)
         expect(args.startTick).toHaveBeenCalled()
-        expect(ans).toBe(null)
     })
 
     test('will draw screen for a single line win collision and play audio', () => {
         collision.runCollisionTest.mockImplementation(() => winCollisionStub)
         const { winRows, ...rest } = winCollisionStub
-        const ans = drawScreen(args)
+        drawScreen(args)
         jest.advanceTimersByTime(250);
         expect(args.endTick).toHaveBeenCalledWith('collision check - Win')
         expect(args.redux.collide).toHaveBeenCalledWith(rest)
         expect(args.audio.lineCleared).toHaveBeenCalled()
         expect(args.startTick).toHaveBeenCalled()
-        expect(ans).toBe(null)
     })
 
     test('will draw screen for a multi line win collision and play audio', () => {
         const updatedStub = { ...winCollisionStub, winRows: [16, 17, 18, 19] }
         collision.runCollisionTest.mockImplementation(() => updatedStub)
         const { winRows, ...rest } = updatedStub
-        const ans = drawScreen(args)
+        drawScreen(args)
         jest.advanceTimersByTime(250);
         expect(args.endTick).toHaveBeenCalledWith('collision check - Win')
         expect(args.redux.collide).toHaveBeenCalledWith(rest)
         expect(args.audio.maxLinesCleared).toHaveBeenCalled()
         expect(args.startTick).toHaveBeenCalled()
-        expect(ans).toBe(null)
     })
 
     test('will only refresh screen if no collision found', () => {

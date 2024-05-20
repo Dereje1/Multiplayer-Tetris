@@ -1,10 +1,6 @@
-// utility that checks for collision and refreshses screen data
-// custom functions
+// Utility that checks for collision and refreshes screen data
 import { runCollisionTest } from './collision';
-import {
-  refreshCanvas,
-  winRubble,
-} from './canvas';
+import { refreshCanvas, winRubble } from './canvas';
 
 const drawScreen = ({
   updatedShape,
@@ -18,44 +14,90 @@ const drawScreen = ({
   const { game, collide, updateScreen } = redux;
   const shapeToDraw = { ...updatedShape };
 
-  // test for collision
+  // Test for collision
   const collisionResult = runCollisionTest(game, shapeToDraw);
 
   if (collisionResult) {
-    if (collisionResult === 'game over') {
-      endTick('collision check - Game Over');
-      return gameOver();
-    }
-    const { winRows, ...rest } = collisionResult
-    // collision detected
-    // end tick to perform collision
-    const debug = winRows ? 'collision check - Win' : 'collision check - No Win';
-    endTick(debug);
-    // update redux with collision
-    collide(rest);
-    if (winRows) { // winner found
-      // audio
-      if (winRows.length === 4) audio.maxLinesCleared();
-      else audio.lineCleared();
-      // animation timeout
-      winRubble(canvasContextMajor, game, winRows);
-      const inter = setTimeout(() => {
-        startTick();
-        clearTimeout(inter);
-      }, 250);
-    } else { // no winner found/plain collision
-      startTick();
-    }
-    return null;
+    handleCollision(collisionResult, {
+      endTick,
+      gameOver,
+      collide,
+      game,
+      canvasContextMajor,
+      startTick,
+      audio,
+    });
+  } else {
+    // No collision found, just refresh the screen
+    refreshScreen(game, shapeToDraw, updateScreen, canvasContextMajor);
   }
-  /*  no collision is found, just do a screen refresh */
+};
+
+const handleCollision = (
+  collisionResult,
+  {
+    endTick,
+    gameOver,
+    collide,
+    game,
+    canvasContextMajor,
+    startTick,
+    audio,
+  }
+) => {
+  if (collisionResult === 'game over') {
+    endTick('collision check - Game Over');
+    gameOver();
+    return;
+  }
+
+  const { winRows, ...rest } = collisionResult;
+  const debugMessage = winRows ? 'collision check - Win' : 'collision check - No Win';
+  endTick(debugMessage);
+
+  // Update redux with collision results
+  collide(rest);
+
+  if (winRows) {
+    handleWinningRows(winRows, {
+      audio,
+      canvasContextMajor,
+      game,
+      startTick,
+    });
+  } else {
+    startTick();
+  }
+};
+
+const handleWinningRows = (winRows, { audio, canvasContextMajor, game, startTick }) => {
+  // Play appropriate audio based on the number of lines cleared
+  if (winRows.length === 4) {
+    audio.maxLinesCleared();
+  } else {
+    audio.lineCleared();
+  }
+
+  // Animate the cleared rows
+  winRubble(canvasContextMajor, game, winRows);
+
+  // Restart the game tick after a short delay
+  const inter = setTimeout(() => {
+    startTick();
+    clearTimeout(inter);
+  }, 250);
+};
+
+const refreshScreen = (game, shapeToDraw, updateScreen, canvasContextMajor) => {
   const screenRefreshData = {
     ...game,
     activeShape: shapeToDraw,
     paused: false,
   };
+
+  // Update the game state and refresh the canvas
   updateScreen(screenRefreshData);
-  return refreshCanvas(canvasContextMajor, screenRefreshData);
+  refreshCanvas(canvasContextMajor, screenRefreshData);
 };
 
 export default drawScreen;
