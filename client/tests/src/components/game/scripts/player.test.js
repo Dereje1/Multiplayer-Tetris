@@ -84,12 +84,16 @@ describe('Player moves', () => {
     test('will handle down move for no collision', () => {
         const updatedGameStub = {
             ...gameStub,
+            activeShape: {
+                ...gameStub.activeShape,
+                indices: [3, 4, 5, 6]
+            },
             paused: false
         }
         collision.getSideBlock.mockImplementation(() => false)
         collision.runCollisionTest.mockImplementation(() => false)
         const ans = player(40, updatedGameStub, {})
-        expect(ans).toBe('forcedown')
+        expect(ans.indices).toEqual([13, 14, 15, 16])
     })
 
     test('will handle down move for collision', () => {

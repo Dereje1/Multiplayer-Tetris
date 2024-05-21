@@ -280,12 +280,7 @@ export class Game extends React.Component {
     const { game } = this.props;
     const ans = playerMoves(keyCode, game, this.canvasContextMajor);
     if (ans) {
-      if (ans === 'forcedown') {
-        this.endTick('Down Key');
-        this.moveShape();
-      } else {
         this.moveShape(ans);
-      }
     }
   };
 
